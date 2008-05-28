@@ -39,3 +39,4 @@ sudo puppetd --no-http_enable_post_connection_check --vardir /tmp/puppet/var --c
 ls -altrR /tmp/puppet/var/reports/
 ls -tr /tmp/puppet/var/reports/*/ | tail -1 | sed 's:^:sudo cat /tmp/puppet/var/reports/*/:' | sh -s
 
+cat /tmp/bullshit.txt
