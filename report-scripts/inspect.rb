@@ -6,13 +6,22 @@ Puppet::Reports.register_report(:inspect) do
 
     def process
       File.open('/tmp/bullshit.txt', 'w') do |f|
-	f.puts self.to_yaml
-
- 	f.puts self.methods.collect{|m| ":#{m}"}.sort.join(", ")
-	
-	f.puts self.inspect
-
-	f.puts "host: " + self.host
+	f.puts to_yaml
+        f.puts
+ 	f.puts methods.collect{|m| ":#{m}"}.sort.join(", ")
+        f.puts
+	f.puts inspect
+        f.puts
+	f.puts "host: " + host
+        f.puts
+        f.puts "metrics:"
+        f.puts metrics.inspect
+        f.puts
+        f.puts "metrics yaml: "
+        f.puts metrics.to_yaml
+        f.puts
+        @metrics = nil
+        f.puts inspect
       end
     end
 end
