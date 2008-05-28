@@ -1,1 +1,26 @@
-initial commit
+PuppetShow tool for viewing and manipulating Puppet Report data
+
+ - ensure that you have Puppet from the reductivelabs.com 0.24.x git branch pulled and checked out
+ - ensure that you have Facter (ditto) pulled and installed
+ - read 'go' and set environment variables according to your system
+ - you should be able to then run 'sh -x go' and have it exercise the puppet/puppetmasterd tools and generate a single (store) report and a single (inspect) report
+
+
+A (fully pending) spec is in place describing the data available in the Puppet report objects. 
+From here we should review the monitoring user stories, review the data spec, and begin building the aplication back to the database.
+
+We should at some point then load the .yaml reports we have into the database.  Note: It is possible to instantiate a report instance from a report.yaml file:
+
+
+rb(main):002:0> require 'puppet'
+=> true
+irb(main):003:0> require 'puppet/reports'
+=> []
+irb(main):004:0> y = File.read('../puppetshow/reports/fedora1.madstop.com/200707060254.yaml')
+=> "--- !ruby/object:Puppet::Transaction::Report \nhost: fedora1.madstop.com\nlogs: []\n\nmetrics: \n  time: !ruby/object:Puppet::Util::Metric \n    label: Time\n    name: time\n    values: \n    - - :package\n      - Package\n      - 0.161075353622437\n    - - :file\n      - File\n      - 1.1431679725647\n    - - :config_retrieval\n      - Config retrieval\n      - 2.20731401443481\n    - - :user\n      - User\n      - 0.0019080638885498\n    - - :total\n      - Total\n      - 3.51390838623047\n    - - :schedule\n      - Schedule\n      - 0.000273942947387695\n    - - :filebucket\n      - Filebucket\n      - 0.000169038772583008\n  resources: !ruby/object:Puppet::Util::Metric \n    label: Resources\n    name: resources\n    values: \n    - - :restarted\n      - Restarted\n      - 0\n    - - :out_of_sync\n      - Out of sync\n      - 0\n    - - :failed_restarts\n      - Failed restarts\n      - 0\n    - - :failed\n      - Failed\n      - 0\n    - - :total\n      - Total\n      - 40\n    - - :applied\n      - Applied\n      - 0\n    - - :skipped\n      - Skipped\n      - 0\n    - - :scheduled\n      - Scheduled\n      - 44\n  changes: !ruby/object:Puppet::Util::Metric \n    label: Changes\n    name: changes\n    values: \n    - - :total\n      - Total\n      - 0\nrecords: {}\n\ntime: 2007-04-25 05:36:25.238728 -05:00\n"
+irb(main):005:0> r = YAML.load(y)
+=> #<Puppet::Transaction::Report:0x26e493c @logs=[], @host="fedora1.madstop.com", @time=Wed Apr 25 05:36:25 -0500 2007, @records={}, @metrics={"time"=>#<Puppet::Util::Metric:0x26e5f6c @values=[[:package, "Package", 0.161075353622437], [:file, "File", 1.1431679725647], [:config_retrieval, "Config retrieval", 2.20731401443481], [:user, "User", 0.0019080638885498], [:total, "Total", 3.51390838623047], [:schedule, "Schedule", 0.000273942947387695], [:filebucket, "Filebucket", 0.000169038772583008]], @label="Time", @name="time">, "resources"=>#<Puppet::Util::Metric:0x26e54cc @values=[[:restarted, "Restarted", 0], [:out_of_sync, "Out of sync", 0], [:failed_restarts, "Failed restarts", 0], [:failed, "Failed", 0], [:total, "Total", 40], [:applied, "Applied", 0], [:skipped, "Skipped", 0], [:scheduled, "Scheduled", 44]], @label="Resources", @name="resources">, "changes"=>#<Puppet::Util::Metric:0x26e4f90 @values=[[:total, "Total", 0]], @label="Changes", @name="changes">}>
+irb(main):006:0> r.class
+=> Puppet::Transaction::Report
+irb(main):007:0> r.metrics
+=> {"time"=>#<Puppet::Util::Metric:0x26e5f6c @values=[[:package, "Package", 0.161075353622437], [:file, "File", 1.1431679725647], [:config_retrieval, "Config retrieval", 2.20731401443481], [:user, "User", 0.0019080638885498], [:total, "Total", 3.51390838623047], [:schedule, "Schedule", 0.000273942947387695], [:filebucket, "Filebucket", 0.000169038772583008]], @label="Time", @name="time">, "resources"=>#<Puppet::Util::Metric:0x26e54cc @values=[[:restarted, "Restarted", 0], [:out_of_sync, "Out of sync", 0], [:failed_restarts, "Failed restarts", 0], [:failed, "Failed", 0], [:total, "Total", 40], [:applied, "Applied", 0], [:skipped, "Skipped", 0], [:scheduled, "Scheduled", 44]], @label="Resources", @name="resources">, "changes"=>#<Puppet::Util::Metric:0x26e4f90 @values=[[:total, "Total", 0]], @label="Changes", @name="changes">}
