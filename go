@@ -1,10 +1,13 @@
-
 SETUP_DIR=/Users/rick/git/
+THIS_DIR=${SETUP_DIR}/puppetshow
 PATH=$PATH:$SETUP_DIR/facter/bin:$SETUP_DIR/puppet/bin
 RUBYLIB=$SETUP_DIR/facter/lib:$SETUP_DIR/puppet/lib
 export PATH RUBYLIB
 
-cd $SETUP_DIR/puppet	  # wherever the puppet checkout is
+cd ${SETUP_DIR}/puppet	  # wherever the puppet checkout is
+
+# install our custom report
+cp ${THIS_DIR}/report-scripts/inspect.rb ${SETUP_DIR}/puppet/lib/puppet/reports/
 
 # kill off any old processes
 ps auxwww | grep pup[p]etmaster | awk '{print $2}' | xargs sudo kill
