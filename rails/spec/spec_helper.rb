@@ -38,3 +38,10 @@ Spec::Runner.configure do |config|
   # config.mock_with :flexmock
   # config.mock_with :rr
 end
+
+Dir[File.dirname(__FILE__) + '/shared_behaviors/*_behavior.rb'].collect do |f|
+  File.expand_path(f)
+end.each do |file|
+  require file
+end
+
