@@ -50,11 +50,6 @@ shared_examples_for 'a RESTful controller with an index action' do
         assigns[@parent_name.to_sym].should == @parent
       end
     end
-    
-    it 'should use the default layout' do
-      do_get
-      response.layout.should == 'layouts/website'
-    end
   end
 end
 
@@ -110,11 +105,6 @@ shared_examples_for 'a RESTful controller with a show action' do
         assigns[@parent_name.to_sym].should == @parent
       end
     end
-    
-    it 'should use the default layout' do
-      do_get
-      response.layout.should == 'layouts/website'
-    end
   end
 end
 
@@ -159,11 +149,6 @@ shared_examples_for 'a RESTful controller with a new action' do
       do_get
       assigns[@model_singular.to_sym].should equal(@obj)
     end
-    
-    it 'should use the default layout' do
-      do_get
-      response.layout.should == 'layouts/website'
-    end
   end
 end
 
@@ -207,11 +192,6 @@ shared_examples_for 'a RESTful controller with a create action' do
       post_with_failed_save
       response.should render_template('new')
     end
-    
-    it 'should use the default layout on a failed save' do
-      post_with_failed_save
-      response.layout.should == 'layouts/website'
-    end
   end
 end
 
@@ -250,11 +230,6 @@ shared_examples_for 'a RESTful controller with an edit action' do
       do_get
       assigns[@model_singular.to_sym].should equal(@obj)
     end
-
-    it 'should use the default layout' do
-      do_get
-      response.layout.should == 'layouts/website'
-    end    
   end
 end
 
@@ -321,11 +296,6 @@ shared_examples_for 'a RESTful controller with an update action' do
     it "should re-render 'edit' on a failed update" do
       put_with_failed_update
       response.should render_template('edit')
-    end
-    
-    it 'should use the default layout on a failed update' do
-      put_with_failed_update
-      response.layout.should == 'layouts/website'
     end
   end
 end
