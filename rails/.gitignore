@@ -3,3 +3,4 @@ spec/spec.opts
 db/schema.rb
 db/*.sqlite3
 db/*.db
+log/*.log
