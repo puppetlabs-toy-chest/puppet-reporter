@@ -38,9 +38,3 @@ Spec::Runner.configure do |config|
   # config.mock_with :flexmock
   # config.mock_with :rr
 end
-
-module Spec::Example::ExampleGroupMethods
-  def currently(name, &block)
-    it("*** CURRENTLY *** #{name}", &block)
-  end
-end
