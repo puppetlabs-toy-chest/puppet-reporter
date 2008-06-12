@@ -24,3 +24,65 @@ irb(main):006:0> r.class
 => Puppet::Transaction::Report
 irb(main):007:0> r.metrics
 => {"time"=>#<Puppet::Util::Metric:0x26e5f6c @values=[[:package, "Package", 0.161075353622437], [:file, "File", 1.1431679725647], [:config_retrieval, "Config retrieval", 2.20731401443481], [:user, "User", 0.0019080638885498], [:total, "Total", 3.51390838623047], [:schedule, "Schedule", 0.000273942947387695], [:filebucket, "Filebucket", 0.000169038772583008]], @label="Time", @name="time">, "resources"=>#<Puppet::Util::Metric:0x26e54cc @values=[[:restarted, "Restarted", 0], [:out_of_sync, "Out of sync", 0], [:failed_restarts, "Failed restarts", 0], [:failed, "Failed", 0], [:total, "Total", 40], [:applied, "Applied", 0], [:skipped, "Skipped", 0], [:scheduled, "Scheduled", 44]], @label="Resources", @name="resources">, "changes"=>#<Puppet::Util::Metric:0x26e4f90 @values=[[:total, "Total", 0]], @label="Changes", @name="changes">}
+
+
+
+......
+accessing Facts via ruby:
+
+require 'puppet'
+
+irb(main):003:0> Puppet::Node::Facts.find "foo"
+=> #<Puppet::Node::Facts:0x26e8a14 @values={"sp_serial_number"=>"4H633244U9B", "kernel"=>"Darwin", "macosx_productname"=>"Mac OS X", "sp_current_processor_speed"=>"1.83 GHz", "sp_smc_version"=>"1.4f12", "hardwaremodel"=>"i386", "sp_boot_rom_version"=>"MB11.0061.B03", "rubysitedir"=>"/opt/local/lib/ruby/site_ruby/1.8", "operatingsystemrelease"=>"8.11.1", "sp_os_version"=>"Mac OS X 10.4.11 (8S2167)", "sp_kernel_version"=>"Darwin 8.11.1", "ipaddress"=>"70.148.117.116", "ps"=>"ps -auxwww", "kernelrelease"=>"8.11.1", "macosx_productversion"=>"10.4.11", "fqdn"=>"adsl-070-148-117-116.sip.bna.bellsouth.net", "sp_packages"=>1, "domain"=>"sip.bna.bellsouth.net", "macosx_buildversion"=>"8S2167", "sp_l2_cache_share"=>"2 MB", "sp_machine_name"=>"MacBook", "sp_boot_volume"=>"Macintosh HD", "sp_local_host_name"=>"Yer Mom's Computer", :_timestamp=>Wed Jun 11 15:43:38 -0500 2008, "sp_bus_speed"=>"667 MHz", "sshrsakey"=>"AAAAB3NzaC1yc2EAAAABIwAAAQEAyFJQndn+o8x8pPNdOj3le5WBYpV51U7X9xBChs7Jz70O/nsXOSI9FUQmCBMDuEYal36DCRipPeiCHxFMRdkFqUL9clCMDvtyp93yrmp7JIQ852M2+sRSJRVdiir8JVSoaZyMEdn3pH8MKQ9DdzsAF4jEhHGJUAwq/TxJ4YGyZ2VXrBEHwJr4/06DkPClRu+77VPfzSDipfDjDeEiRbTc777Z5Ebnc6eoIMFPcoWN6d/zyXTkTrYLvFs3+pvfct2j4fDppbHj0pqNtLJa71sqrirBU1Bt/1DUDnmOLLI3pjguo4i5qkvkY/NOkhZYhf84zfvlMC+NQiX26VJCjh7KGw==", "sp_physical_memory"=>"2 GB", "sp_user_name"=>"Rick Bradley (rick)", "hostname"=>"adsl-070-148-117-116", "sp_cpu_type"=>"Intel Core Duo", "puppetversion"=>"0.24.4", "sp_machine_model"=>"MacBook1,1", "interfaces"=>"lo0 gif0 stf0 en0 en1 wlt1 fw0", "sp_mmm_entry"=>{"MMM_state"=>"MMM_enabled"}, "rubyversion"=>"1.8.6", "facterversion"=>"1.3.8", "operatingsystem"=>"Darwin", "macaddress"=>"00:17:f2:29:fa:59", "sshdsakey"=>"AAAAB3NzaC1kc3MAAAEBALTlyRq+0kulTAX4A1uqISRUIlAXrmi/Yg+NGU0ExoF9vLubu+B7nsrFy2Dko4Ltw/dpgwaiZfTF58QcdFV+XfHSqFJOm69gmxpHzpqMkAxEzydoVRCERQ9ENL1L78gjJx1zU/b+uM7EkpXjlSb1MbibyiZ+0zcdDMdDL3lnLZ/nO/mdFjfxaBc93byuxx5lAed7wU2UIyIMS69w68uXzyt01zsdNJ8keE1NpEpW1Q54b4nC2vpgcAC3pUw214e7gHdtVL5qMepDOw8TIf5Ioa6FLkPbt06KZaowz7kRmCX34XFnYMCIzPvyJfJEuD7PUhcb3+oaf9aMFZtmrBwLUK8AAAAVANbCZnufmNw4gv4vCn2EPUwvU2hfAAABAE3haScdvFv0MzJ83Ckv//x5EQAGP2py8BsxRHmuk3y7VvDnVVRSwcatVWtqDwtTbfBfBBxOK5627zMEKw+2UqET4ze/cld/sH99YbuwJt5mEf0ftM3V+KzFYLLuyWMbcm0iD5QPHUzsVPENCkAYAVRSVpN8ijMEBh2LlXuMHul3RFFwzpgwHlGyEIelGpzH8UO3lDbjK3iQ/TMGxDHhJpGyFls9NFumteyfi35viTX9UgRh9jO2CBBzjvvNC45CLoaMo9xsjzKlzeBpMcfAFIGu+fRaBE4LaU2GevAC79Y/aB/AqEteUQmI+f7vQgq5ihGDTFapnyBrVG2/Hr4Z+5sAAAEAX0Hb5MwmxJxQ5pxhlWxRMiVLC8Ed9NqKWPpuCRpVDxq/OY254EMgM1TA9iIrVaXuy54xssYDIBkWEauDvRFvHFUT4y9Ar74HmvkpLoNKbcF46OuRmwuU3lmFm89RBXZwPDpj6jbjTQSuVI4dLX06Kl0h37Bi7RGcMOHnb+h8fCnEeGalKnkICniHV8VjqbAg2FrF6jNhDbIW3yTiJtS9ZWyoAhKmEpmbIIanT0CvdnuBo6/fcE2Q8JftEPR9W6uBLiJ8jzNQqYpeWfY+kn8zD/YcCLqlBqMJhc3BNuFakuWcbl0/Q2+vtNfLY1URKehIrLOVRhqM/oIcmnFgOLZw9w==", "sp_number_processors"=>2}, @name="foo", @expiration=Wed Jun 11 16:13:38 -0500 2008>
+irb(main):007:0> Puppet::Node::Facts.find("foo").values.keys 
+=> ["sp_serial_number", "kernel", "macosx_productname", "sp_current_processor_speed", "sp_smc_version", "hardwaremodel", "sp_boot_rom_version", "rubysitedir", "operatingsystemrelease", "sp_os_version", "sp_kernel_version", "ipaddress", "ps", "kernelrelease", "macosx_productversion", "fqdn", "sp_packages", "domain", "macosx_buildversion", "sp_l2_cache_share", "sp_machine_name", "sp_boot_volume", "sp_local_host_name", :_timestamp, "sp_bus_speed", "sshrsakey", "sp_physical_memory", "sp_user_name", "hostname", "sp_cpu_type", "puppetversion", "sp_machine_model", "interfaces", "sp_mmm_entry", "rubyversion", "facterversion", "operatingsystem", "macaddress", "sshdsakey", "sp_number_processors"]
+irb(main):008:0> Puppet::Node::Facts.find("foo").values.values
+=> ["4H633244U9B", "Darwin", "Mac OS X", "1.83 GHz", "1.4f12", "i386", "MB11.0061.B03", "/opt/local/lib/ruby/site_ruby/1.8", "8.11.1", "Mac OS X 10.4.11 (8S2167)", "Darwin 8.11.1", "70.148.117.116", "ps -auxwww", "8.11.1", "10.4.11", "adsl-070-148-117-116.sip.bna.bellsouth.net", 1, "sip.bna.bellsouth.net", "8S2167", "2 MB", "MacBook", "Macintosh HD", "Yer Mom's Computer", Wed Jun 11 15:44:28 -0500 2008, "667 MHz", "AAAAB3NzaC1yc2EAAAABIwAAAQEAyFJQndn+o8x8pPNdOj3le5WBYpV51U7X9xBChs7Jz70O/nsXOSI9FUQmCBMDuEYal36DCRipPeiCHxFMRdkFqUL9clCMDvtyp93yrmp7JIQ852M2+sRSJRVdiir8JVSoaZyMEdn3pH8MKQ9DdzsAF4jEhHGJUAwq/TxJ4YGyZ2VXrBEHwJr4/06DkPClRu+77VPfzSDipfDjDeEiRbTc777Z5Ebnc6eoIMFPcoWN6d/zyXTkTrYLvFs3+pvfct2j4fDppbHj0pqNtLJa71sqrirBU1Bt/1DUDnmOLLI3pjguo4i5qkvkY/NOkhZYhf84zfvlMC+NQiX26VJCjh7KGw==", "2 GB", "Rick Bradley (rick)", "adsl-070-148-117-116", "Intel Core Duo", "0.24.4", "MacBook1,1", "lo0 gif0 stf0 en0 en1 wlt1 fw0", {"MMM_state"=>"MMM_enabled"}, "1.8.6", "1.3.8", "Darwin", "00:17:f2:29:fa:59", "AAAAB3NzaC1kc3MAAAEBALTlyRq+0kulTAX4A1uqISRUIlAXrmi/Yg+NGU0ExoF9vLubu+B7nsrFy2Dko4Ltw/dpgwaiZfTF58QcdFV+XfHSqFJOm69gmxpHzpqMkAxEzydoVRCERQ9ENL1L78gjJx1zU/b+uM7EkpXjlSb1MbibyiZ+0zcdDMdDL3lnLZ/nO/mdFjfxaBc93byuxx5lAed7wU2UIyIMS69w68uXzyt01zsdNJ8keE1NpEpW1Q54b4nC2vpgcAC3pUw214e7gHdtVL5qMepDOw8TIf5Ioa6FLkPbt06KZaowz7kRmCX34XFnYMCIzPvyJfJEuD7PUhcb3+oaf9aMFZtmrBwLUK8AAAAVANbCZnufmNw4gv4vCn2EPUwvU2hfAAABAE3haScdvFv0MzJ83Ckv//x5EQAGP2py8BsxRHmuk3y7VvDnVVRSwcatVWtqDwtTbfBfBBxOK5627zMEKw+2UqET4ze/cld/sH99YbuwJt5mEf0ftM3V+KzFYLLuyWMbcm0iD5QPHUzsVPENCkAYAVRSVpN8ijMEBh2LlXuMHul3RFFwzpgwHlGyEIelGpzH8UO3lDbjK3iQ/TMGxDHhJpGyFls9NFumteyfi35viTX9UgRh9jO2CBBzjvvNC45CLoaMo9xsjzKlzeBpMcfAFIGu+fRaBE4LaU2GevAC79Y/aB/AqEteUQmI+f7vQgq5ihGDTFapnyBrVG2/Hr4Z+5sAAAEAX0Hb5MwmxJxQ5pxhlWxRMiVLC8Ed9NqKWPpuCRpVDxq/OY254EMgM1TA9iIrVaXuy54xssYDIBkWEauDvRFvHFUT4y9Ar74HmvkpLoNKbcF46OuRmwuU3lmFm89RBXZwPDpj6jbjTQSuVI4dLX06Kl0h37Bi7RGcMOHnb+h8fCnEeGalKnkICniHV8VjqbAg2FrF6jNhDbIW3yTiJtS9ZWyoAhKmEpmbIIanT0CvdnuBo6/fcE2Q8JftEPR9W6uBLiJ8jzNQqYpeWfY+kn8zD/YcCLqlBqMJhc3BNuFakuWcbl0/Q2+vtNfLY1URKehIrLOVRhqM/oIcmnFgOLZw9w==", 2]
+irb(main):009:0> puts Puppet::Node::Facts.find("foo").to_yaml
+--- !ruby/object:Puppet::Node::Facts 
+expiration: 2008-06-11 16:14:35.348064 -05:00
+name: foo
+values: 
+  sp_serial_number: 4H633244U9B
+  kernel: Darwin
+  macosx_productname: Mac OS X
+  sp_current_processor_speed: 1.83 GHz
+  sp_smc_version: 1.4f12
+  hardwaremodel: i386
+  sp_boot_rom_version: MB11.0061.B03
+  rubysitedir: /opt/local/lib/ruby/site_ruby/1.8
+  operatingsystemrelease: 8.11.1
+  sp_os_version: Mac OS X 10.4.11 (8S2167)
+  sp_kernel_version: Darwin 8.11.1
+  ipaddress: 70.148.117.116
+  ps: ps -auxwww
+  kernelrelease: 8.11.1
+  macosx_productversion: 10.4.11
+  fqdn: adsl-070-148-117-116.sip.bna.bellsouth.net
+  sp_packages: 1
+  domain: sip.bna.bellsouth.net
+  macosx_buildversion: 8S2167
+  sp_l2_cache_share: 2 MB
+  sp_machine_name: MacBook
+  sp_boot_volume: Macintosh HD
+  sp_local_host_name: Yer Mom's Computer
+  :_timestamp: 2008-06-11 15:44:35.348053 -05:00
+  sp_bus_speed: 667 MHz
+  sshrsakey: AAAAB3NzaC1yc2EAAAABIwAAAQEAyFJQndn+o8x8pPNdOj3le5WBYpV51U7X9xBChs7Jz70O/nsXOSI9FUQmCBMDuEYal36DCRipPeiCHxFMRdkFqUL9clCMDvtyp93yrmp7JIQ852M2+sRSJRVdiir8JVSoaZyMEdn3pH8MKQ9DdzsAF4jEhHGJUAwq/TxJ4YGyZ2VXrBEHwJr4/06DkPClRu+77VPfzSDipfDjDeEiRbTc777Z5Ebnc6eoIMFPcoWN6d/zyXTkTrYLvFs3+pvfct2j4fDppbHj0pqNtLJa71sqrirBU1Bt/1DUDnmOLLI3pjguo4i5qkvkY/NOkhZYhf84zfvlMC+NQiX26VJCjh7KGw==
+  sp_physical_memory: 2 GB
+  sp_user_name: Rick Bradley (rick)
+  hostname: adsl-070-148-117-116
+  sp_cpu_type: Intel Core Duo
+  puppetversion: 0.24.4
+  sp_machine_model: MacBook1,1
+  interfaces: lo0 gif0 stf0 en0 en1 wlt1 fw0
+  sp_mmm_entry: 
+    MMM_state: MMM_enabled
+  rubyversion: 1.8.6
+  facterversion: 1.3.8
+  operatingsystem: Darwin
+  macaddress: 00:17:f2:29:fa:59
+  sshdsakey: AAAAB3NzaC1kc3MAAAEBALTlyRq+0kulTAX4A1uqISRUIlAXrmi/Yg+NGU0ExoF9vLubu+B7nsrFy2Dko4Ltw/dpgwaiZfTF58QcdFV+XfHSqFJOm69gmxpHzpqMkAxEzydoVRCERQ9ENL1L78gjJx1zU/b+uM7EkpXjlSb1MbibyiZ+0zcdDMdDL3lnLZ/nO/mdFjfxaBc93byuxx5lAed7wU2UIyIMS69w68uXzyt01zsdNJ8keE1NpEpW1Q54b4nC2vpgcAC3pUw214e7gHdtVL5qMepDOw8TIf5Ioa6FLkPbt06KZaowz7kRmCX34XFnYMCIzPvyJfJEuD7PUhcb3+oaf9aMFZtmrBwLUK8AAAAVANbCZnufmNw4gv4vCn2EPUwvU2hfAAABAE3haScdvFv0MzJ83Ckv//x5EQAGP2py8BsxRHmuk3y7VvDnVVRSwcatVWtqDwtTbfBfBBxOK5627zMEKw+2UqET4ze/cld/sH99YbuwJt5mEf0ftM3V+KzFYLLuyWMbcm0iD5QPHUzsVPENCkAYAVRSVpN8ijMEBh2LlXuMHul3RFFwzpgwHlGyEIelGpzH8UO3lDbjK3iQ/TMGxDHhJpGyFls9NFumteyfi35viTX9UgRh9jO2CBBzjvvNC45CLoaMo9xsjzKlzeBpMcfAFIGu+fRaBE4LaU2GevAC79Y/aB/AqEteUQmI+f7vQgq5ihGDTFapnyBrVG2/Hr4Z+5sAAAEAX0Hb5MwmxJxQ5pxhlWxRMiVLC8Ed9NqKWPpuCRpVDxq/OY254EMgM1TA9iIrVaXuy54xssYDIBkWEauDvRFvHFUT4y9Ar74HmvkpLoNKbcF46OuRmwuU3lmFm89RBXZwPDpj6jbjTQSuVI4dLX06Kl0h37Bi7RGcMOHnb+h8fCnEeGalKnkICniHV8VjqbAg2FrF6jNhDbIW3yTiJtS9ZWyoAhKmEpmbIIanT0CvdnuBo6/fcE2Q8JftEPR9W6uBLiJ8jzNQqYpeWfY+kn8zD/YcCLqlBqMJhc3BNuFakuWcbl0/Q2+vtNfLY1URKehIrLOVRhqM/oIcmnFgOLZw9w==
+  sp_number_processors: 2
+=> nil
+
