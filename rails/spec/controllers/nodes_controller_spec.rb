@@ -52,6 +52,31 @@ describe NodesController do
       end
     end
     
+    describe 'when a node name is not specified' do
+      describe 'but an id is specified' do
+        it 'should not attempt to look up the node by name' do
+          Node.expects(:find_by_name).never
+          do_get('id' => 1)
+        end
+        
+        describe 'and the node with that id cannot be found' do
+          before :each do
+            Node.stubs(:find).raises(ActiveRecord::RecordNotFound)
+          end
+          
+          it 'should set a flash message about not being able to find the node' do
+            do_get('id' => 1)
+            flash[:notice].should match(/find/)
+          end
+          
+          it 'should redirect to the node index page' do
+            do_get('id' => 1)
+            response.should redirect_to(nodes_path)
+          end
+        end
+      end
+    end
+
     describe 'when neither a node name or an id is specified' do
       it 'should set a flash message about not being able to find the node' do
         do_get
