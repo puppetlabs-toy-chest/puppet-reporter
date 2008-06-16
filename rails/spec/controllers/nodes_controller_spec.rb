@@ -16,7 +16,7 @@ describe NodesController do
     describe 'when a node name is specified' do
       it 'should look up the node by name' do
         Node.expects(:find_by_name).returns(@node)
-        do_get('name' => 'foo')
+        do_get('id' => 'foo')
       end
       
       describe 'and the node cannot be found' do
@@ -25,12 +25,12 @@ describe NodesController do
         end
         
         it 'should set a flash message about not being able to find the node' do
-          do_get('name' => 'foo')
+          do_get('id' => 'foo')
           flash[:notice].should match(/find/)
         end
         
         it 'should redirect to the node index page' do
-          do_get('name' => 'foo')
+          do_get('id' => 'foo')
           response.should redirect_to(nodes_path)
         end
       end
@@ -41,19 +41,19 @@ describe NodesController do
         end
 
         it 'should make the node available to the view' do
-          do_get('name' => 'foo')
+          do_get('id' => 'foo')
           assigns[:node].should == @node
         end
         
         it 'should render the node show page' do
-          do_get('name' => 'foo')
+          do_get('id' => 'foo')
           response.should render_template('show')
         end
       end
     end
     
     describe 'when a node name is not specified' do
-      describe 'but an id is specified' do
+      describe 'but a numeric id is specified' do
         it 'should not attempt to look up the node by name' do
           Node.expects(:find_by_name).never
           do_get('id' => 1)

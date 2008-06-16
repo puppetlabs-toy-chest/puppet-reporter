@@ -9,7 +9,7 @@ describe NodesController, "when running integrations" do
     end
     
     def do_request
-      get :show, :name => 'foo'
+      get :show, :id => 'foo'
     end
     
     describe 'when no matching node exists' do

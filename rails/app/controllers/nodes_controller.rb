@@ -1,9 +1,9 @@
 class NodesController < ApplicationController
   def show
-    if params[:name]
-      @node = Node.find_by_name(params[:name])
-    else
+    if params[:id] =~ /^\d+$/
       @node = Node.find(params[:id]) rescue nil
+    else
+      @node = Node.find_by_name(params[:id])
     end
     
     unless @node
