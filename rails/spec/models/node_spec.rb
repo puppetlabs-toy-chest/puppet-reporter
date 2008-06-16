@@ -25,10 +25,21 @@ describe Node do
     end
   end
 
-  
   describe 'details' do
-    it 'should be a hash' do
-      @node.details.should be_a_kind_of(Hash)
+    it 'should allow specifying a timestamp'    
+
+    describe 'when a timestamp is specified' do
+      it 'should look up the most recent Facts for the Node before the specified timestamp'
+      it 'should return the looked up Facts'
     end
+
+    describe 'when no timestamp is provided' do
+      it 'should look up the most recent Facts for the Node'    
+      it 'should return the looked up Facts'    
+    end
+    
+    describe '(put this somewhere) when no Facts are available' do
+      it 'should call Facter to find the most recent Facts for the Node'
+    end    
   end
 end
