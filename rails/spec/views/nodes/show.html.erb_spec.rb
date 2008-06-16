@@ -16,7 +16,7 @@ describe '/nodes/show.html.erb' do
   end
 
   it 'should look up details for the node' do
-    @node.expects(:details)
+    @node.expects(:details).returns({})
     do_render
   end
 
