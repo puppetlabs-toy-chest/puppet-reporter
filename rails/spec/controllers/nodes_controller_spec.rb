@@ -4,15 +4,15 @@ describe NodesController do
 
   it_should_behave_like 'a RESTful controller with a show action'  # includes params[:id] specs
 
-  def do_get(params = {})
-    get :show, {}.merge(params)
-  end
-
   describe 'show' do
     before :each do
       @node = Node.new(:name => 'foo')
     end
     
+    def do_get(params = {})
+      get :show, {}.merge(params)
+    end
+
     describe 'when a node name is specified' do
       it 'should look up the node by name' do
         Node.expects(:find_by_name).returns(@node)
