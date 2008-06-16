@@ -1,2 +1,2 @@
-<h1>Node <%= @node.name %></h1>
+<h1>Node <%= link_to @node.name, node_path(@node) %></h1>
 <%= render :partial => 'facts', :locals => { :facts => @node.details } %>
