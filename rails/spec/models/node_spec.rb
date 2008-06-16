@@ -24,4 +24,11 @@ describe Node do
       @node.name.should be_nil
     end
   end
+
+  
+  describe 'details' do
+    it 'should be a hash' do
+      @node.details.should == {}
+    end
+  end
 end
