@@ -5,6 +5,41 @@ html1/DTD/xhtml1-strict.dtd">
 	  <%= stylesheet_link_tag 'normal' %>
 	</head>
 	<body>
-		<%= yield %>
+		 <ul id="navbar">
+			<li><%= link_to 'Nodes', nodes_path %></li>
+		 </ul>
+
+		<h1 id="masthead">
+			<a href="/"><img src="/images/Reductive-masthead.png" alt="Reductive Labs" /></a>
+		</h1>
+
+		<div id="content" class="column">
+			<%= yield :layout %>
+		</div>
+		
+		<div id="sidebar" class="column">
+    	<div id="topiclist">
+     		<br />
+		  	<h3>Links</h3>
+
+			  <div class="webgen-menu-vert">
+					<ul>
+						<li class="webgen-menu-item-selected">
+							<a href="http://reductivelabs.com/" title="Reductive Labs">Reductive Labs</a>
+						</li>
+					</ul>
+				</div>
+		  </div>
+		</div> 
+
+		<div id="foot">
+			<p>
+				<a href="http://reductivelabs.com/">
+				Copyright &copy;<span class="years">&nbsp;&nbsp;2008</span>
+
+				&nbsp;&nbsp;Reductive Labs, LLC.
+				</a>
+			</p>
+		</div>
 	</body>
 </html>
