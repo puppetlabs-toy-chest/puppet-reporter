@@ -28,7 +28,7 @@ describe Node do
   
   describe 'details' do
     it 'should be a hash' do
-      @node.details.should == {}
+      @node.details.should be_a_kind_of(Hash)
     end
   end
 end

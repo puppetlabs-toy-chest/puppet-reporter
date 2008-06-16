@@ -4,6 +4,6 @@ class Node < ActiveRecord::Base
   end
   
   def details
-    {}
+    { :operatingsystem => 'Darwin' }
   end
 end
