@@ -4,6 +4,10 @@ class Node < ActiveRecord::Base
   end
   
   def details(timestamp = Time.now)
-    { :operatingsystem => 'Darwin' }
+    most_recent_facts_on(timestamp)
+  end
+  
+  def most_recent_facts_on(timestamp)
+    
   end
 end

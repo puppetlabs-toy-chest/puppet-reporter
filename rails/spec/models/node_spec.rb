@@ -31,13 +31,30 @@ describe Node do
     end
 
     describe 'when a timestamp is specified' do
-      it 'should look up the most recent Facts for the Node before the specified timestamp'
-      it 'should return the looked up Facts'
+      it 'should look up the most recent Facts for the Node before the specified timestamp' do
+        @time = Time.now
+        @node.expects(:most_recent_facts_on).with(@time)
+        @node.details(@time)
+      end
+      
+      it 'should return the looked up Facts' do
+        @node.stubs(:most_recent_facts_on).returns('result')
+        @node.details(Time.now).should == 'result'
+      end
     end
 
     describe 'when no timestamp is provided' do
-      it 'should look up the most recent Facts for the Node'    
-      it 'should return the looked up Facts'    
+      it 'should look up the most recent Facts for the Node' do
+        @time = Time.now
+        Time.stubs(:now).returns(@time)
+        @node.expects(:most_recent_facts_on).with(@time)
+        @node.details
+      end
+      
+      it 'should return the looked up Facts' do
+        @node.stubs(:most_recent_facts_on).returns('result')
+        @node.details.should == 'result'        
+      end
     end
 
     describe '(put this somewhere) when no Facts are available' do
