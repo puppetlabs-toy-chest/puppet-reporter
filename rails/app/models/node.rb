@@ -3,7 +3,7 @@ class Node < ActiveRecord::Base
     name
   end
   
-  def details
+  def details(timestamp = Time.now)
     { :operatingsystem => 'Darwin' }
   end
 end

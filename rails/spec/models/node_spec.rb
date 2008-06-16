@@ -26,7 +26,9 @@ describe Node do
   end
 
   describe 'details' do
-    it 'should allow specifying a timestamp'    
+    it 'should allow specifying a timestamp' do
+      lambda { @node.details(Time.now) }.should_not raise_error
+    end
 
     describe 'when a timestamp is specified' do
       it 'should look up the most recent Facts for the Node before the specified timestamp'
@@ -37,7 +39,7 @@ describe Node do
       it 'should look up the most recent Facts for the Node'    
       it 'should return the looked up Facts'    
     end
-    
+
     describe '(put this somewhere) when no Facts are available' do
       it 'should call Facter to find the most recent Facts for the Node'
     end    
