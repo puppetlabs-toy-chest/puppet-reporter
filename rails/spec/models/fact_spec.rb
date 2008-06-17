@@ -42,4 +42,13 @@ describe Fact do
       @fact.reload.values.should == { :foo => 'bar' }
     end
   end
+  
+  describe 'when saving' do
+    it 'should default the timestamp to now' do
+      @time = Time.now
+      Time.stubs(:now).returns(@time)
+      @fact.save
+      @fact.reload.timestamp.to_i.should == @time.to_i
+    end
+  end
 end
