@@ -58,4 +58,24 @@ describe Fact do
       @fact.reload.values.should == {}
     end
   end
+  
+  describe 'as a class' do
+    describe 'important_facts' do
+      it 'should return an ordered list of important facts' do
+        Fact.important_facts.should respond_to(:size)
+      end
+      
+      it 'should have a label for each important fact' do
+        Fact.important_facts.each do |fact|
+          fact.has_key?(:label).should be_true
+        end
+      end
+      
+      it 'should have a key for each important fact' do
+        Fact.important_facts.each do |fact|
+          fact.has_key?(:key).should be_true
+        end
+      end
+    end
+  end
 end

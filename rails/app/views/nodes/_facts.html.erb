@@ -1,1 +1,7 @@
-Operating System: <%= facts[:operatingsystem] %>
+<div class="facts">
+	<ul>
+    <% Fact.important_facts.each do |which| -%>
+    <li><%= which[:label] %>: <%= facts[which[:key]] %></li>
+    <% end -%>
+  </ul>
+</div>
