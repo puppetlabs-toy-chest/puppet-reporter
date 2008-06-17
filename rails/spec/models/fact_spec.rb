@@ -50,5 +50,10 @@ describe Fact do
       @fact.save
       @fact.reload.timestamp.to_i.should == @time.to_i
     end
+    
+    it 'should default the values to an empty hash' do
+      @fact.save
+      @fact.reload.values.should == {}
+    end
   end
 end
