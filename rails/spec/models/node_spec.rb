@@ -5,8 +5,20 @@ describe Node do
     @node = Node.new(:name => 'foo')
   end
 
-  it "should be valid" do
-    @node.should be_valid
+  describe 'when validating' do
+    before :each do
+      @params = { :name => 'foo' }
+    end
+    
+    it 'should not be valid without a name' do
+      @node = Node.new(@params.merge(:name => nil))
+      @node.should_not be_valid
+      @node.should have(1).errors_on(:name)
+    end
+    
+    it "should be valid with a name" do
+      @node.should be_valid
+    end
   end
   
   describe 'to_param' do
@@ -32,54 +44,80 @@ describe Node do
   end
 
   describe 'details' do
+    before :each do
+      @fact = Fact.new(:values => {'foo' => 'bar'})
+      @node.stubs(:most_recent_facts_on).returns(@fact)
+    end
+    
     it 'should allow specifying a timestamp' do
-      lambda { @node.details(Time.now) }.should_not raise_error
+      lambda { @node.details(Time.zone.now) }.should_not raise_error
     end
 
     describe 'when a timestamp is specified' do
       it 'should look up the most recent Facts for the Node before the specified timestamp' do
-        @time = Time.now
+        @time = Time.zone.now
         @node.expects(:most_recent_facts_on).with(@time)
         @node.details(@time)
       end
       
-      it 'should return the looked up Facts' do
-        @node.stubs(:most_recent_facts_on).returns('result')
-        @node.details(Time.now).should == 'result'
+      it 'should return the hash of values from the looked up Facts' do
+        @node.details(Time.zone.now).should == @fact.values
+      end
+      
+      describe 'when there are no facts to be found' do
+        it 'should return a hash' do          
+          @node.stubs(:most_recent_facts_on).returns(nil)
+          @node.details(Time.zone.now).should == {}
+        end
       end
     end
 
-    describe 'when no timestamp is provided' do
+    describe 'when no timestamp is provided' do      
       it 'should look up the most recent Facts for the Node' do
-        @time = Time.now
-        Time.stubs(:now).returns(@time)
+        @time = Time.zone.now
+        @timezone = stub('time zone', :now => @time)
+        Time.stubs(:zone).returns(@timezone)
         @node.expects(:most_recent_facts_on).with(@time)
         @node.details
       end
       
-      it 'should return the looked up Facts' do
-        @node.stubs(:most_recent_facts_on).returns('result')
-        @node.details.should == 'result'        
+      it 'should return the hash of values from the looked up Facts' do
+        @node.details.should == @fact.values
+      end
+      
+      describe 'when there are no facts to be found' do
+        it 'should return a hash' do          
+          @node.stubs(:most_recent_facts_on).returns(nil)
+          @node.details.should == {}
+        end
       end
     end
-
-    describe '(put this somewhere) when no Facts are available' do
-      it 'should call Facter to find the most recent Facts for the Node'
-    end    
   end
   
   describe 'when looking up most recent facts' do
+    before :each do
+      @node = Node.generate
+      @time = Time.zone.now
+      @facts = [ Fact.generate(:values => {:name => 'old'}, :timestamp => 2.days.ago), 
+                 Fact.generate(:values => {:name => 'now'}, :timestamp => @time), 
+                 Fact.generate(:values => {:name => 'new'}, :timestamp => 2.days.from_now)]
+      @node.facts << @facts
+    end
+    
     it 'should require a timestamp' do
       lambda { @node.most_recent_facts_on }.should raise_error(ArgumentError)
     end
     
-    it 'should look up Facts for this Node' do
-      @node.expects(:facts)
-      @node.most_recent_facts_on(Time.now)
+    it 'should return the most recent Facts for this Node at the time specified' do
+      @node.most_recent_facts_on(1.hour.from_now(@time)).values[:name].should == 'now'
     end
     
-    it 'should limit Facts to a single Fact'
-    it 'should limit Facts to the most recent fact before the specified timestamp'
-    it 'should return the Facts found'
+    it 'should return nil if there are no facts at the time specified' do
+      @node.most_recent_facts_on(3.days.ago(@time)).should be_nil
+    end
+    
+    it 'should return nil if there are no facts at all for the node' do
+      Node.generate.most_recent_facts_on(Time.zone.now).should be_nil
+    end
   end
 end
