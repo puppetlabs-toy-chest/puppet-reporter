@@ -5,8 +5,10 @@ describe Fact do
     @fact = Fact.new
   end
 
-  it "should be valid" do
-    @fact.should be_valid
+  describe "when validating" do
+    it "should be valid" do
+      @fact.should be_valid
+    end    
   end
   
   describe 'associations' do
