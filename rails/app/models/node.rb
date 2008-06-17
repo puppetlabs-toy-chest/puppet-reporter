@@ -8,6 +8,6 @@ class Node < ActiveRecord::Base
   end
   
   def most_recent_facts_on(timestamp)
-    
+    {}
   end
 end
