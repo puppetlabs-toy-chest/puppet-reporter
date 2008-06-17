@@ -1,6 +1,7 @@
 class Node < ActiveRecord::Base
   has_many :facts
   validates_presence_of :name
+  validates_uniqueness_of :name
   
   # allow controllers to look up and link to Nodes by name
   def to_param

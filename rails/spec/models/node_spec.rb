@@ -17,7 +17,14 @@ describe Node do
     end
     
     it "should be valid with a name" do
-      @node.should be_valid
+      Node.new(@params).should be_valid
+    end
+    
+    it 'should require names to be unique' do
+      Node.generate(:name => 'foo')
+      @node = Node.new(:name => 'foo')
+      @node.should_not be_valid
+      @node.should have(1).errors_on(:name)
     end
   end
   
