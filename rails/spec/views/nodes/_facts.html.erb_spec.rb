@@ -16,11 +16,20 @@ describe '/nodes/_facts.html.erb' do
     do_render
   end
   
-  it 'should show important facts on the view'
-  it 'should use the important fact labels in the view'
-
-  it 'should include the operatingsystem fact' do
+  it 'should use the important fact labels in the view' do
     do_render
-    response.should have_text(Regexp.new(@facts[:operatingsystem]))
+    Fact.important_facts.each do |fact|
+      response.should have_text(Regexp.new(fact[:label]))
+    end
   end
+  
+  it 'should show important facts on the view' do
+    @facts = {}
+    Fact.important_facts.each {|fact| @facts[fact[:key]] = "data-#{fact[:key]}"}
+    
+    do_render
+    Fact.important_facts.each do |fact|
+      response.should have_text(Regexp.new(@facts[fact[:key]]))
+    end
+  end  
 end
