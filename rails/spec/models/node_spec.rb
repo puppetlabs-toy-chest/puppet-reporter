@@ -15,6 +15,12 @@ describe Node do
     end
   end
   
+  describe 'associations' do
+    it 'can have facts' do
+      @node.facts.should == []
+    end
+  end
+  
   describe 'attributes' do
     before :each do
       @node = Node.new
@@ -60,5 +66,20 @@ describe Node do
     describe '(put this somewhere) when no Facts are available' do
       it 'should call Facter to find the most recent Facts for the Node'
     end    
+  end
+  
+  describe 'when looking up most recent facts' do
+    it 'should require a timestamp' do
+      lambda { @node.most_recent_facts_on }.should raise_error(ArgumentError)
+    end
+    
+    it 'should look up Facts for this Node' do
+      @node.expects(:facts)
+      @node.most_recent_facts_on(Time.now)
+    end
+    
+    it 'should limit Facts to a single Fact'
+    it 'should limit Facts to the most recent fact before the specified timestamp'
+    it 'should return the Facts found'
   end
 end
