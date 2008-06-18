@@ -19,12 +19,36 @@ describe Report do
   
   describe 'as a class' do
     describe 'loading report data from YAML files' do
-      it 'should require at least one file name'
-      it 'should read each file'
-      it 'should create a record from the contents of each file'
+      before :each do
+        @files = [ '/tmp/1', '/tmp/2', '/tmp/3' ]
+        @files.each {|file| File.stubs(:read).with(file).returns("#{file} contents") }
+        Report.stubs(:from_yaml)
+      end
       
-      describe 'if loading of a file fails' do        
-        it 'should emit a warning about the file'
+      it 'should require at least one file name' do
+        lambda { Report.import_from_yaml_files }.should raise_error(ArgumentError)
+      end
+      
+      it 'should read each file' do
+        @files.each {|file| File.expects(:read).with(file).returns("#{file} contents") }
+        Report.import_from_yaml_files(@files)
+      end
+      
+      it 'should create a report from the contents of each file' do
+        @files.each do |file| 
+          File.stubs(:read).with(file).returns("#{file} contents")
+          Report.expects(:from_yaml).with("#{file} contents")
+        end
+        Report.import_from_yaml_files(@files)
+      end
+      
+      describe 'if a file cannot be read' do
+        it 'should emit a warning about the file'        
+        it 'should continue to process other files'
+      end
+      
+      describe 'if a report cannot be created from the contents of a file' do        
+        it 'should emit a warning about the file'        
         it 'should continue to process other files'
       end
       
