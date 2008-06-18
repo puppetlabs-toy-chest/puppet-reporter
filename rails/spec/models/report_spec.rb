@@ -21,8 +21,11 @@ describe Report do
     describe 'loading report data from YAML files' do
       before :each do
         @files = [ '/tmp/1', '/tmp/2', '/tmp/3' ]
-        @files.each {|file| File.stubs(:read).with(file).returns("#{file} contents") }
-        Report.stubs(:from_yaml)
+        @report = Report.new
+        @files.each do |file| 
+          File.stubs(:read).with(file).returns("#{file} contents")
+          Report.stubs(:from_yaml).with("#{file} contents").returns(@report)
+        end
       end
       
       it 'should require at least one file name' do
@@ -63,12 +66,34 @@ describe Report do
       end
       
       describe 'if a report cannot be created from the contents of a file' do        
-        it 'should emit a warning about the file'        
-        it 'should continue to process other files'
+        before :each do
+          Report.stubs(:from_yaml).with("#{@files[1]} contents").raises(RuntimeError)
+        end
+
+        it 'should not fail' do
+          lambda { Report.import_from_yaml_files(@files) }.should_not raise_error               
+        end        
+        
+        it 'should emit a warning about the file' do
+          Report.expects(:warn)
+          Report.import_from_yaml_files(@files)
+        end
+        
+        it 'should continue to process other files' do
+          Report.expects(:from_yaml).with("#{@files.last} contents")
+          Report.import_from_yaml_files(@files)
+        end
       end
       
-      it 'should return a list of the files which had reports successfully created'
-      it 'should return a list of the files which did not have reports successfully created'
+      it 'should return a list of the files which had reports successfully created' do
+        File.stubs(:read).with(@files[1]).raises(Errno::ENOENT)          
+        Report.import_from_yaml_files(@files).first.should == [ @files.first, @files.last ]
+      end
+      
+      it 'should return a list of the files which did not have reports successfully created' do
+        File.stubs(:read).with(@files[1]).raises(Errno::ENOENT)          
+        Report.import_from_yaml_files(@files).last.should == [ @files[1] ]
+      end
     end
     
     describe 'creating reports from YAML' do
