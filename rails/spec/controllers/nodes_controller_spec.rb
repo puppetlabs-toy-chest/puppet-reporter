@@ -4,15 +4,36 @@ describe NodesController do
   
   it_should_behave_like 'a RESTful controller with an index action'
 
-  it_should_behave_like 'a RESTful controller with a show action'  # includes params[:id] specs
+  before :each do
+    @node = Node.new(:name => 'foo')
+    @node.stubs(:most_recent_report_on).returns(@report)
+    @report = Report.new
+    Node.stubs(:find).returns(@node)
+  end
 
   describe 'show' do
-    before :each do
-      @node = Node.new(:name => 'foo')
-    end
-    
     def do_get(params = {})
       get :show, {}.merge(params)
+    end
+
+    it "should be successful" do
+      do_get('id' => '1')
+      response.should be_success
+    end
+  
+    it "should render the show template" do
+      do_get('id' => '1')
+      response.should render_template('show')
+    end
+  
+    it "should find the node requested" do
+      Node.expects(:find).with('1').returns(@node)
+      do_get('id' => '1')
+    end
+
+    it "should make the found object available to the view" do
+      do_get('id' => '1')
+      assigns[:node].should == @node
     end
 
     describe 'when a node name is specified' do
@@ -52,9 +73,16 @@ describe NodesController do
           response.should render_template('show')
         end
         
-        it 'should look up the most recent node report'
+        it 'should look up the most recent node report' do
+          @node.expects(:most_recent_report_on).returns(@report)
+          do_get('id' => 'foo')
+        end
                 
-        it 'should make the most recent node report available to the view'
+        it 'should make the most recent node report available to the view' do
+          @node.stubs(:most_recent_report_on).returns(@report)
+          do_get('id' => 'foo')
+          assigns[:most_recent_report].should == @report
+        end
       end
     end
     

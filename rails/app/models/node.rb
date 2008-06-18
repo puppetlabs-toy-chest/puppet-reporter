@@ -7,7 +7,7 @@ class Node < ActiveRecord::Base
   
   # allow controllers to look up and link to Nodes by name
   def to_param
-    name
+    CGI.escape(name).gsub('.', '%2E')
   end
 
   # get a hash of Node details, via Facts

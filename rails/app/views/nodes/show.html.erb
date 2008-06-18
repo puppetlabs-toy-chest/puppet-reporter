@@ -1,7 +1,7 @@
 <h1>Node <%= link_to @node.name, node_path(@node) %></h1>
 <h3>Last report: 
 	<% if @most_recent_report %>
-	  <%= link_to  @most_recent_report.timestamp.to_s, report_path(@most_recent_report) %>
+	  <%= link_to distance_of_time_in_words_to_now(@most_recent_report.timestamp) + " ago", report_path(@most_recent_report) %> (<%= @most_recent_report.timestamp %>)
 	<% else %>
 	  Never reported in.
 	<% end %>
