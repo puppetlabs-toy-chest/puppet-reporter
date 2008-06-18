@@ -9,6 +9,8 @@ describe Report do
     it "should be valid" do
       @report.should be_valid
     end
+    
+    it 'should enforce uniqueness based on node and timestamp'
   end
   
   describe 'associations' do
