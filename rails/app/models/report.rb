@@ -1,5 +1,9 @@
 class Report < ActiveRecord::Base
+  serialize :details
+  
   belongs_to :node
+  
+  delegate :logs, :to => :details
   
   # create Report instances from files containing Puppet YAML reports
   def self.import_from_yaml_files(filenames)

@@ -4,5 +4,18 @@ Node: <%= link_to @report.node.name, node_path(@report.node) %>
 <br />
 Time: <%= @report.timestamp %>
 
-<div id="report_details" class="report_details">
+<div id="report_details" class="details">
+  Logs:
+  <ul id="report_logs" class="logs">
+    <% @report.logs.each do |log| %>
+      <li>
+        level: <%= log.level %>
+        <br />
+        message: <%= log.message %>
+        <br />
+        time: <%= log.time %>
+        <br />
+      </li>
+    <% end %>
+  </ul>
 </div>
