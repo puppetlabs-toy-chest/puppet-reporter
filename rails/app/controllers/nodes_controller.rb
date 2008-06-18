@@ -1,4 +1,8 @@
 class NodesController < ApplicationController
+  def index
+    @nodes = Node.find(:all)
+  end
+  
   def show
     if params[:id] =~ /^\d+$/
       @node = Node.find(params[:id]) rescue nil
