@@ -10,5 +10,7 @@ class NodesController < ApplicationController
       flash[:notice] = 'Could not find information for that node.'
       return redirect_to(nodes_path)
     end
+    
+    @most_recent_report = @node.most_recent_report_on(Time.zone.now)
   end
 end

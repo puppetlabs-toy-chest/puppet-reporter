@@ -38,6 +38,25 @@ describe NodesController, "when running integrations" do
         do_request
         response.should render_template('show')
       end
+      
+      describe 'when the node has reports' do
+        before :each do
+          @time = 1.day.ago
+          @node.reports.generate(:timestamp => @time)
+        end
+        
+        it 'should show the time of the most recent report' do
+          do_request
+          response.should_not have_text(/Never reported/)
+        end
+      end
+      
+      describe 'when the node has no reports' do
+        it 'should indicate that the node never reported in' do
+          do_request
+          response.should have_text(/Never reported/)
+        end
+      end
     end
   end
 end
