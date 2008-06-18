@@ -1,2 +1,8 @@
-<h1>Reports#show</h1>
-<p>Find me in app/views/reports/show.html.erb</p>
+<h1>Report</h1>
+
+Node: <%= link_to @report.node.name, node_path(@report.node) %>
+<br />
+Time: <%= @report.timestamp %>
+
+<div id="report_details" class="report_details">
+</div>
