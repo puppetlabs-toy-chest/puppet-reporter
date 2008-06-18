@@ -89,7 +89,12 @@ describe "/reports/show" do
             @log.stubs(:tags).returns([])
           end
           
-          it 'should not include any tag information for the log'
+          it 'should not include any tag information for the log' do
+            do_render
+            response.should have_tag('ul[id=?]', 'report_logs') do
+              without_tag('li', :text => Regexp.new(/tags:/))
+            end            
+          end
         end
       end
       
