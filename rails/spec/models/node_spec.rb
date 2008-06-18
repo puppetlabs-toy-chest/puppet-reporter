@@ -38,6 +38,10 @@ describe Node do
     it 'can have facts' do
       @node.facts.should == []
     end
+    
+    it 'can have reports' do
+      @node.reports.should == []
+    end
   end
   
   describe 'attributes' do
@@ -125,6 +129,33 @@ describe Node do
     
     it 'should return nil if there are no facts at all for the node' do
       Node.generate.most_recent_facts_on(Time.zone.now).should be_nil
+    end
+  end
+  
+  describe 'when looking up most recent reports' do
+    before :each do
+      @node = Node.generate
+      @time = Time.zone.now
+      @reports = [ Report.generate(:details => 'old', :timestamp => 2.days.ago), 
+                 Report.generate(:details => 'now', :timestamp => @time), 
+                 Report.generate(:details => 'new', :timestamp => 2.days.from_now)]
+      @node.reports << @reports
+    end
+    
+    it 'should require a timestamp' do
+      lambda { @node.most_recent_report_on }.should raise_error(ArgumentError)
+    end
+    
+    it 'should return the most recent report for this Node at the time specified' do
+      @node.most_recent_report_on(1.hour.from_now(@time)).details.should == 'now'
+    end
+    
+    it 'should return nil if there are no reports at the time specified' do
+      @node.most_recent_report_on(3.days.ago(@time)).should be_nil
+    end
+    
+    it 'should return nil if there are no reports at all for the node' do
+      Node.generate.most_recent_report_on(Time.zone.now).should be_nil
     end
   end
   

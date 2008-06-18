@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  timestamp: 2008-06-17 22:14:42
+  node_id: 1
+  body: MyText
+
+two:
+  timestamp: 2008-06-17 22:14:42
+  node_id: 1
+  body: MyText
