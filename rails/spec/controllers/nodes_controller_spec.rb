@@ -49,6 +49,10 @@ describe NodesController do
           do_get('id' => 'foo')
           response.should render_template('show')
         end
+        
+        it 'should look up the most recent node report'
+                
+        it 'should make the most recent node report available to the view'
       end
     end
     
