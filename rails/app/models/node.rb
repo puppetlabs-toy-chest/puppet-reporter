@@ -18,4 +18,11 @@ class Node < ActiveRecord::Base
   def most_recent_facts_on(timestamp)
     facts.find(:first, :conditions => ['timestamp < ?', timestamp], :order => 'timestamp desc')
   end
+  
+  # pull new Facts for this node from the source
+  def refresh_facts
+    fact = Fact.refresh_for_node(self)
+    facts << fact
+    fact
+  end
 end

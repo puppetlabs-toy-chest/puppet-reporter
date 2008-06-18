@@ -59,7 +59,66 @@ describe Fact do
     end
   end
   
+  class Puppet
+    class Node
+      class Facts
+      end
+    end
+  end
+  
   describe 'as a class' do
+    describe 'refreshing facts for a node' do
+      before :each do
+        @node = Node.new(:name => 'foo')
+        @hash = { :operatingsystem => 'Darwin', 'processor' => '386'}
+        Puppet::Node::Facts.stubs(:terminus_class=)
+        Puppet::Node::Facts.stubs(:find).returns(@hash)
+      end
+      
+      it 'should require a node' do
+        lambda { Fact.refresh_for_node }.should raise_error(ArgumentError)
+      end
+      
+      it 'should ensure that the YAML fact terminus is in use' do
+        Puppet::Node::Facts.expects(:terminus_class=).with(:yaml)
+        Fact.refresh_for_node(@node)
+      end
+      
+      it 'should ask Puppet for Facts for the node' do
+        Puppet::Node::Facts.expects(:find).with(@node.name).returns(@hash)
+        Fact.refresh_for_node(@node)        
+      end
+      
+      describe 'when there is an error asking Puppet for Facts' do
+        it 'should raise an error' do
+          Puppet::Node::Facts.expects(:find).raises(Exception)
+          lambda { Fact.refresh_for_node(@node) }.should raise_error          
+        end
+      end
+      
+      describe 'when there are no Facts found' do
+        it 'should raise an error' do
+          Puppet::Node::Facts.expects(:find).returns(nil)
+          lambda { Fact.refresh_for_node(@node) }.should raise_error                    
+        end
+      end
+      
+      describe 'when Facts are found' do
+        before :each do
+          Puppet::Node::Facts.stubs(:find).returns(@hash)
+        end
+        
+        it 'should store them as a new Fact instance' do
+          Fact.expects(:new).with {|args| args[:values] == @hash }
+          Fact.refresh_for_node(@node)
+        end
+                
+        it 'should return the new Fact instance' do
+          Fact.refresh_for_node(@node).values.should == @hash
+        end
+      end
+    end
+    
     describe 'important_facts' do
       it 'should return an ordered list of important facts' do
         Fact.important_facts.should respond_to(:size)

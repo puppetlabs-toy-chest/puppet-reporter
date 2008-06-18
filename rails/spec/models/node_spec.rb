@@ -127,4 +127,50 @@ describe Node do
       Node.generate.most_recent_facts_on(Time.zone.now).should be_nil
     end
   end
+  
+  describe 'refresh Facts from source' do
+    before :each do
+      @node = Node.generate
+      @fact = Fact.generate
+    end
+    
+    it 'should take no arguments' do
+      lambda { @node.refresh_facts('something') }.should raise_error(ArgumentError)
+    end
+    
+    it 'should ask for facts to be refreshed' do
+      Fact.expects(:refresh_for_node).with(@node).returns(@fact)
+      @node.refresh_facts
+    end
+    
+    describe 'if fact refresh fails' do
+      before :each do
+        Fact.stubs(:refresh_for_node).raises(RuntimeError)
+      end
+      
+      it 'should not update the facts for the node' do
+        lambda { @node.refresh_facts }
+        @node.reload.facts.should be_empty
+      end
+      
+      it 'should raise an error' do
+        lambda { @node.refresh_facts }.should raise_error
+      end
+    end
+    
+    describe 'if fact refresh succeeds' do
+      before :each do
+        Fact.stubs(:refresh_for_node).returns(@fact)
+      end
+      
+      it 'should save the facts as the most recent facts for the node' do
+        @node.refresh_facts
+        @node.reload.facts.first.should == @fact
+      end
+      
+      it 'should return the facts' do
+        @node.refresh_facts.should == @fact
+      end
+    end
+  end
 end
