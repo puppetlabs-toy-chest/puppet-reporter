@@ -3,7 +3,7 @@ class NodesController < ApplicationController
     if params[:id] =~ /^\d+$/
       @node = Node.find(params[:id]) rescue nil
     else
-      @node = Node.find_by_name(params[:id])
+      @node = Node.find_by_name(CGI.unescape(params[:id])) unless params[:id].blank?
     end
     
     unless @node
