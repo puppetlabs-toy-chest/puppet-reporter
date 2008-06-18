@@ -4,7 +4,7 @@ describe "/reports/show" do
   before(:each) do
     @node = Node.generate!
     @report = @node.reports.generate!
-    @log = stub('log', :level => 'log level', :message => 'log message', :time => Time.zone.now)
+    @log = stub('log', :level => 'log level', :message => 'log message', :time => Time.zone.now, :tags => [])
     @report.stubs(:logs).returns([@log])
     assigns[:report] = @report
   end
@@ -70,10 +70,31 @@ describe "/reports/show" do
             with_tag('li', :text => Regexp.new(Regexp.escape(@log.time.to_s)))
           end
         end
+
+        describe 'when log has tags' do
+          before :each do
+            @log.stubs(:tags).returns(['basenode', 'main', 'os::darwin'])
+          end
+          
+          it "should include a sorted comma-separated list of the log's tags" do
+            do_render
+            response.should have_tag('ul[id=?]', 'report_logs') do
+              with_tag('li', :text => Regexp.new(Regexp.escape(@log.tags.sort.join(', '))))
+            end
+          end
+        end
+        
+        describe 'when log has no tags' do
+          before :each do
+            @log.stubs(:tags).returns([])
+          end
+          
+          it 'should not include any tag information for the log'
+        end
       end
       
       it 'should include a log item for each log' do
-        other_log = stub('log', :level => 'log level 2', :message => 'log message 2', :time => Time.zone.now - 3456)
+        other_log = stub('log', :level => 'log level 2', :message => 'log message 2', :tags => [], :time => Time.zone.now - 3456)
         logs = [@log, other_log]
         @report.stubs(:logs).returns(logs)
         
