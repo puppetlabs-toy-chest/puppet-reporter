@@ -1,3 +1,7 @@
 <h1>Nodes</h1>
 
-This is some boilerplate text.  Essentially, just ensuring we can view the layout.
+<ul id="node_list" class="node_list">
+  <% @nodes.each do |node| %>
+    <li id="node-<%= node.id %>"><%= link_to node.name, node_path(node) %></li>
+  <% end %>
+</ul>
