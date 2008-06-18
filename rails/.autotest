@@ -1,0 +1,14 @@
+# add rules for /other/ specs
+Autotest.add_hook :initialize do |at|
+  at.add_mapping(%r%^spec/other/.*rb$%) do |filename, _|
+    filename
+  end
+
+  at.add_mapping(%r%^lib/(.*)\.rb$%) do |_, m|
+    ["spec/other/#{m[1]}_spec.rb"]
+  end
+
+  at.add_mapping(%r%^script/(.*)\.rb$%) do |_, m|
+    ["spec/other/#{m[1]}_spec.rb"]
+  end
+end
