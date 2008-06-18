@@ -1,4 +1,5 @@
 config/database.yml
+config/puppet_lib.rb
 spec/spec.opts
 db/schema.rb
 db/*.sqlite3

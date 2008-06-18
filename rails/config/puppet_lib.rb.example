@@ -1,0 +1,4 @@
+PUPPET_LIB ='/Users/rick/git/puppet/lib/'
+
+$:.unshift(PUPPET_LIB)
+require 'puppet'
