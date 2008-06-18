@@ -123,10 +123,16 @@ describe Report do
   end
 
   describe 'when validating' do    
-    it "should be valid" do
-      @report.should be_valid
+    it "should not be valid without details" do
+      @report.should_not be_valid
+      @report.should have(1).errors_on(:details)
     end
     
+    it 'should be valid with details' do
+      @report.details = { :foo => :bar }
+      @report.should be_valid
+    end
+
     it 'should enforce uniqueness based on node and timestamp'
   end
   
