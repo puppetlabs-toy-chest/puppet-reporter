@@ -43,8 +43,23 @@ describe Report do
       end
       
       describe 'if a file cannot be read' do
-        it 'should emit a warning about the file'        
-        it 'should continue to process other files'
+        before :each do
+          File.stubs(:read).with(@files[1]).raises(Errno::ENOENT)          
+        end
+        
+        it 'should not fail' do
+          lambda { Report.import_from_yaml_files(@files) }.should_not raise_error               
+        end
+        
+        it 'should emit a warning about the file' do
+          Report.expects(:warn)
+          Report.import_from_yaml_files(@files)
+        end
+        
+        it 'should continue to process other files' do
+          Report.expects(:from_yaml).with("#{@files.last} contents")
+          Report.import_from_yaml_files(@files)
+        end
       end
       
       describe 'if a report cannot be created from the contents of a file' do        

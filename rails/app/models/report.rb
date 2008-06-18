@@ -3,7 +3,11 @@ class Report < ActiveRecord::Base
   
   def self.import_from_yaml_files(files)
     files.each do |file|
-      Report.from_yaml File.read(file)
+      begin
+        Report.from_yaml File.read(file)
+      rescue Errno::ENOENT => e
+        warn "Could not read file [#{file}]: #{e}"
+      end
     end
   end
 end
