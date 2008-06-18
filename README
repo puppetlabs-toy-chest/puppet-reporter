@@ -1,5 +1,7 @@
 PuppetShow tool for viewing and manipulating Puppet Report data
 
+PuppetShow requires Puppet and Facter to be installed and available.  See rails/config/environment.rb for PUPPET_LIB constant setting.
+
  - ensure that you have Puppet from the reductivelabs.com 0.24.x git branch pulled and checked out
  - ensure that you have Facter (ditto) pulled and installed
  - read 'go' and set environment variables according to your system

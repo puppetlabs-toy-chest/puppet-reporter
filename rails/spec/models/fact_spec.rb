@@ -59,13 +59,6 @@ describe Fact do
     end
   end
   
-  class Puppet
-    class Node
-      class Facts
-      end
-    end
-  end
-  
   describe 'as a class' do
     describe 'refreshing facts for a node' do
       before :each do

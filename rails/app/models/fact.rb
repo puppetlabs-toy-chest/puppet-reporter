@@ -16,7 +16,6 @@ class Fact < ActiveRecord::Base
   private :default_values_to_empty
   
   def self.refresh_for_node(node)
-    require 'puppet' unless defined? Puppet
     Puppet::Node::Facts.terminus_class = :yaml
     facts = Puppet::Node::Facts.find(node.name)
     raise RuntimeError, "unable to locate facts for node [#{node.name}]" unless facts

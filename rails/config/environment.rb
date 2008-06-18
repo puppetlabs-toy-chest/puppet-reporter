@@ -68,5 +68,9 @@ Rails::Initializer.run do |config|
   # config.active_record.observers = :cacher, :garbage_collector
 end
 
+PUPPET_LIB ='/Users/rick/git/puppet/lib/'
+
+$:.unshift(PUPPET_LIB)
+require 'puppet'
 require 'sparklines'
 
