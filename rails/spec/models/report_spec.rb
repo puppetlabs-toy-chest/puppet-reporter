@@ -160,7 +160,24 @@ describe Report do
       @report.should be_valid
     end
     
-    it 'should enforce uniqueness based on node and timestamp' do
+    it 'should not allow two reports with the same node and timestamp' do
+      other_report = Report.generate(:node => @report.node, :timestamp => @report.timestamp)
+      other_report.should_not be_valid
+    end
+    
+    it 'should allow two reports with the same node and different timestamps' do
+      other_report = Report.generate(:node => @report.node, :timestamp => @report.timestamp - 1)
+      other_report.should be_valid
+    end
+    
+    it 'should allow two reports with different nodes and the same timestamp' do
+      other_report = Report.generate(:node => Node.generate!, :timestamp => @report.timestamp)
+      other_report.should be_valid
+    end
+    
+    it 'should allow two reports with different nodes and different timestamps' do
+      other_report = Report.generate(:node => Node.generate!, :timestamp => @report.timestamp - 1)
+      other_report.should be_valid
     end
   end
   

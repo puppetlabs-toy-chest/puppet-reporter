@@ -3,6 +3,7 @@ class Report < ActiveRecord::Base
   validates_presence_of :node
 
   validates_presence_of :timestamp
+  validates_uniqueness_of :timestamp, :scope => :node_id
   
   validates_presence_of :details
   serialize :details
