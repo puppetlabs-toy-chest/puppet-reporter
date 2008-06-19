@@ -73,13 +73,22 @@ describe "/reports/show" do
 
         describe 'when log has tags' do
           before :each do
-            @log.stubs(:tags).returns(['basenode', 'main', 'os::darwin'])
+            @tags = ['basenode', 'main', 'os::darwin']
+            @log.stubs(:tags).returns(@tags)
           end
           
           it "should include a sorted comma-separated list of the log's tags" do
             do_render
             response.should have_tag('ul[id=?]', 'report_logs') do
-              with_tag('li', :text => Regexp.new(Regexp.escape(@log.tags.sort.join(', '))))
+              with_tag('li', :text => Regexp.new(Regexp.escape(@tags.sort.join(', '))))
+            end
+          end
+          
+          it 'should handle tags that are symbols' do
+            @log.stubs(:tags).returns([:basenode, :main, :'os::darwin'])
+            do_render
+            response.should have_tag('ul[id=?]', 'report_logs') do
+              with_tag('li', :text => Regexp.new(Regexp.escape(@tags.sort.join(', '))))
             end
           end
         end

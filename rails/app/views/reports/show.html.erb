@@ -16,7 +16,7 @@ Time: <%= @report.timestamp %>
         time: <%= log.time %>
         <br />
         <% unless log.tags.empty? -%>
-        tags: <%= log.tags.sort.join(', ') %>
+        tags: <%= log.tags.collect(&:to_s).sort.join(', ') %>
         <br />
         <% end -%>
       </li>
