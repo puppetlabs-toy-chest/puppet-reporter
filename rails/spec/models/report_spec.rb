@@ -473,4 +473,78 @@ describe Report do
     report.stubs(:details).returns(stub('details', :metrics => stub('metrics')))
     report.dtl_metrics.should == report.details.metrics
   end
+  
+  it 'should get reports in a time interval' do
+    Report.should respond_to(:between)
+  end
+  
+  describe 'getting reports in a time interval' do
+    before :each do
+      @time = Time.zone.now
+      @start_time = @time - 123
+      @end_time   = @start_time + 456
+      
+      @reports = {}
+      @reports[:early]  = Report.generate(:timestamp => @start_time - 1)
+      @reports[:start]  = Report.generate(:timestamp => @start_time)
+      @reports[:middle] =  Report.generate(:timestamp => @start_time + 123)
+      @reports[:end]    = Report.generate(:timestamp => @end_time)
+      @reports[:late]   = Report.generate(:timestamp => @end_time + 1)
+      
+      @timeframe_reports = Report.between(@start_time, @end_time)
+    end
+    
+    it 'should accept start and end times' do
+      lambda { Report.between(@start_time, @end_time) }.should_not raise_error(ArgumentError)
+    end
+    
+    it 'should require an end time' do
+      lambda { Report.between(@start_time) }.should raise_error(ArgumentError)
+    end
+    
+    it 'should require a start time' do
+      lambda { Report.between }.should raise_error(ArgumentError)
+    end
+    
+    it 'should return reports with timestamps between the two times' do
+      @timeframe_reports.sort_by(&:id).should == @reports.values_at(:start, :middle).sort_by(&:id)
+    end
+  end
+  
+  it 'should count reports in a time interval' do
+    Report.should respond_to(:count_between)
+  end
+  
+  describe 'counting reports in a time interval' do
+    before :each do
+      @time = Time.zone.now
+      @start_time = @time - 123
+      @end_time   = @start_time + 456
+      
+      @reports = {}
+      @reports[:early]  = Report.generate(:timestamp => @start_time - 1)
+      @reports[:start]  = Report.generate(:timestamp => @start_time)
+      @reports[:middle] =  Report.generate(:timestamp => @start_time + 123)
+      @reports[:end]    = Report.generate(:timestamp => @end_time)
+      @reports[:late]   = Report.generate(:timestamp => @end_time + 1)
+      
+      @timeframe_report_count = Report.count_between(@start_time, @end_time)
+    end
+    
+    it 'should accept start and end times' do
+      lambda { Report.count_between(@start_time, @end_time) }.should_not raise_error(ArgumentError)
+    end
+    
+    it 'should require an end time' do
+      lambda { Report.count_between(@start_time) }.should raise_error(ArgumentError)
+    end
+    
+    it 'should require a start time' do
+      lambda { Report.count_between }.should raise_error(ArgumentError)
+    end
+    
+    it 'should return reports with timestamps between the two times' do
+      @timeframe_report_count.should == 2
+    end
+  end
 end

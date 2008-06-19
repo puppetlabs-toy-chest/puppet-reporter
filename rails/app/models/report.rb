@@ -48,4 +48,14 @@ class Report < ActiveRecord::Base
     end
     report
   end
+  
+  class << self
+    def between(start_time, end_time)
+      find(:all, :conditions => ['timestamp >= ? and timestamp < ?', start_time, end_time])
+    end
+    
+    def count_between(start_time, end_time)
+      count(:conditions => ['timestamp >= ? and timestamp < ?', start_time, end_time])
+    end
+  end
 end
