@@ -7,16 +7,16 @@ Time: <%= @report.timestamp %>
 <div id="report_details" class="details">
   Logs:
   <ul id="report_logs" class="logs">
-    <% @report.dtl_logs.each do |log| %>
+    <% @report.logs.each do |log| %>
       <li>
         level: <%= log.level %>
         <br />
         message: <%= log.message %>
         <br />
-        time: <%= log.time %>
+        time: <%= log.timestamp %>
         <br />
-        <% unless log.tags.empty? -%>
-        tags: <%= log.tags.collect(&:to_s).sort.join(', ') %>
+        <% unless log.tags.blank? -%>
+        tags: <%= log.tags %>
         <br />
         <% end -%>
       </li>

@@ -4,8 +4,8 @@ describe "/reports/show" do
   before(:each) do
     @node = Node.generate!
     @report = @node.reports.generate!
-    @log = stub('log', :level => 'log level', :message => 'log message', :time => Time.zone.now, :tags => [])
-    @report.stubs(:dtl_logs).returns([@log])
+    @log = stub('log', :level => 'log level', :message => 'log message', :timestamp => Time.zone.now, :tags => '')
+    @report.stubs(:logs).returns([@log])
     @metrics = { }
     @report.stubs(:metrics).returns(@metrics)
     assigns[:report] = @report
@@ -69,35 +69,27 @@ describe "/reports/show" do
         it 'should include log time' do
           do_render
           response.should have_tag('ul[id=?]', 'report_logs') do
-            with_tag('li', :text => Regexp.new(Regexp.escape(@log.time.to_s)))
+            with_tag('li', :text => Regexp.new(Regexp.escape(@log.timestamp.to_s)))
           end
         end
 
         describe 'when log has tags' do
           before :each do
-            @tags = ['basenode', 'main', 'os::darwin']
+            @tags = 'basenode, main, os::darwin'
             @log.stubs(:tags).returns(@tags)
           end
           
-          it "should include a sorted comma-separated list of the log's tags" do
+          it 'should include the log tags' do
             do_render
             response.should have_tag('ul[id=?]', 'report_logs') do
-              with_tag('li', :text => Regexp.new(Regexp.escape(@tags.sort.join(', '))))
-            end
-          end
-          
-          it 'should handle tags that are symbols' do
-            @log.stubs(:tags).returns([:basenode, :main, :'os::darwin'])
-            do_render
-            response.should have_tag('ul[id=?]', 'report_logs') do
-              with_tag('li', :text => Regexp.new(Regexp.escape(@tags.sort.join(', '))))
+              with_tag('li', :text => Regexp.new(Regexp.escape(@tags)))
             end
           end
         end
         
         describe 'when log has no tags' do
           before :each do
-            @log.stubs(:tags).returns([])
+            @log.stubs(:tags).returns('')
           end
           
           it 'should not include any tag information for the log' do
@@ -110,9 +102,9 @@ describe "/reports/show" do
       end
       
       it 'should include a log item for each log' do
-        other_log = stub('log', :level => 'log level 2', :message => 'log message 2', :tags => [], :time => Time.zone.now - 3456)
+        other_log = stub('log', :level => 'log level 2', :message => 'log message 2', :tags => '', :timestamp => Time.zone.now - 3456)
         logs = [@log, other_log]
-        @report.stubs(:dtl_logs).returns(logs)
+        @report.stubs(:logs).returns(logs)
         
         do_render
         response.should have_tag('ul[id=?]', 'report_logs') do
@@ -123,7 +115,7 @@ describe "/reports/show" do
       end
       
       it 'should include no items if there are no logs' do
-        @report.stubs(:dtl_logs).returns([])
+        @report.stubs(:logs).returns([])
         do_render
         response.should have_tag('ul[id=?]', 'report_logs') do
           without_tag('li')
