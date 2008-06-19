@@ -6,6 +6,8 @@ describe "/reports/show" do
     @report = @node.reports.generate!
     @log = stub('log', :level => 'log level', :message => 'log message', :time => Time.zone.now, :tags => [])
     @report.stubs(:logs).returns([@log])
+    @metrics = { }
+    @report.stubs(:metrics).returns(@metrics)
     assigns[:report] = @report
   end
   
@@ -125,6 +127,88 @@ describe "/reports/show" do
         do_render
         response.should have_tag('ul[id=?]', 'report_logs') do
           without_tag('li')
+        end
+      end
+    end
+    
+    describe 'metrics' do
+      before :each do
+        @metrics['time'] = { 'values' => [] }
+      end
+      
+      it 'should include time metrics' do
+        do_render
+        response.should have_tag('div[id=?]', 'report_details') do
+          with_tag('ul[id=?]', 'report_time_metrics')
+        end
+      end
+      
+      describe 'time metrics' do
+        before :each do
+          @value = [:label, 'Label', 0.011544942855835]  # oh yeah
+          @metrics['time'] = { 'values' => [@value] }
+        end
+        
+        it 'should include a value item' do
+          do_render
+          response.should have_tag('ul[id=?]', 'report_time_metrics') do
+            with_tag('li')
+          end
+        end
+        
+        it "should include the value's name" do
+          do_render
+          response.should have_tag('ul[id=?]', 'report_time_metrics') do
+            with_tag('li', :text => Regexp.new(Regexp.escape(@value[1])))  # oh yeah
+          end
+        end
+        
+        it "should include the value's time" do
+          do_render
+          response.should have_tag('ul[id=?]', 'report_time_metrics') do
+            with_tag('li', :text => Regexp.new(Regexp.escape(@value[2].to_s)))  # oh yeah
+          end
+        end
+        
+        it 'should include a value item for each value' do
+          other_value = [:other_label, 'Other Label', 1.9401938492]  # oh yeah
+          values = [@value, other_value]
+          @metrics['time'] = { 'values' => values }
+          
+          do_render
+          response.should have_tag('ul[id=?]', 'report_time_metrics') do
+            values.each do |value|
+              with_tag('li', :text => Regexp.new(Regexp.escape(value[1])))  # oh yeah
+            end
+          end
+        end
+        
+        it 'should include no items if there are no values' do
+          @metrics['time'] = { 'values' => [] }
+          do_render
+          response.should have_tag('ul[id=?]', 'report_time_metrics') do
+            without_tag('li')
+          end
+        end
+      end
+      
+      it 'should not include time metrics if there is no time metric information' do
+        @metrics.delete('time')
+        do_render
+        response.should_not have_tag('ul[id=?]', 'report_time_metrics')
+      end
+      
+      it 'should include resources metrics' do
+        do_render
+        response.should have_tag('div[id=?]', 'report_details') do
+          with_tag('ul[id=?]', 'report_resources_metrics')
+        end
+      end
+      
+      it 'should include changes metrics' do
+        do_render
+        response.should have_tag('div[id=?]', 'report_details') do
+          with_tag('ul[id=?]', 'report_changes_metrics')
         end
       end
     end
