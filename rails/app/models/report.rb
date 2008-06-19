@@ -9,6 +9,8 @@ class Report < ActiveRecord::Base
   serialize :details
   delegate :metrics, :to => :details
   
+  has_many :logs
+  
   def dtl_logs
     details.logs
   end
@@ -35,6 +37,10 @@ class Report < ActiveRecord::Base
   def self.from_yaml(yaml)
     thawed = YAML.load(yaml)
     node = (Node.find_by_name(thawed.host) || Node.create!(:name => thawed.host))
-    Report.create!(:details => yaml, :timestamp => thawed.time, :node => node)
+    report = Report.create!(:details => yaml, :timestamp => thawed.time, :node => node)
+    thawed.logs.each do |log|
+      report.logs.create(:level => log.level.to_s, :message => log.message, :timestamp => log.time, :tags => log.tags.collect(&:to_s).sort.join(', '))
+    end
+    report
   end
 end
