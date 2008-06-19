@@ -68,6 +68,11 @@ Rails::Initializer.run do |config|
   # config.active_record.observers = :cacher, :garbage_collector
 end
 
-require File.join(File.dirname(__FILE__), 'puppet_lib')
+begin
+  require File.join(File.dirname(__FILE__), 'puppet_lib')
+rescue LoadError  # it's okay if the file doesn't exist, as it's only there to ensure the puppet lib is in the load path
+end
+require 'puppet'
+
 require 'sparklines'
 
