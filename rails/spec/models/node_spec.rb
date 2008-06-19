@@ -42,6 +42,22 @@ describe Node do
     it 'can have reports' do
       @node.reports.should == []
     end
+    
+    it 'can have logs' do
+      @node.logs.should == []
+    end
+    
+    it 'should get logs through its reports' do
+      @node = Node.generate!
+      2.times do |i|
+        rep = @node.reports.generate!(:timestamp => Time.zone.now + i)
+        3.times { rep.logs.generate! }
+      end
+      @node.reload
+      
+      logs = @node.reports.collect(&:logs).flatten
+      @node.logs.sort_by(&:id).should == logs.sort_by(&:id)
+    end
   end
   
   describe 'attributes' do
