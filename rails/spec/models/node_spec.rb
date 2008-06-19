@@ -136,10 +136,9 @@ describe Node do
     before :each do
       @node = Node.generate
       @time = Time.zone.now
-      @reports = [ Report.generate(:details => 'old', :timestamp => 2.days.ago), 
-                 Report.generate(:details => 'now', :timestamp => @time), 
-                 Report.generate(:details => 'new', :timestamp => 2.days.from_now)]
-      @node.reports << @reports
+      @node.reports.generate(:details => 'old', :timestamp => 2.days.ago)
+      @node.reports.generate(:details => 'now', :timestamp => @time)
+      @node.reports.generate(:details => 'new', :timestamp => 2.days.from_now)
     end
     
     it 'should require a timestamp' do

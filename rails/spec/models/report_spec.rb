@@ -122,8 +122,13 @@ describe Report do
     @report = Report.new
   end
 
-  describe 'when validating' do    
+  describe 'when validating' do
+    before :each do
+      @report = Report.generate!
+    end
+    
     it "should not be valid without details" do
+      @report.details = nil
       @report.should_not be_valid
       @report.should have(1).errors_on(:details)
     end
@@ -132,8 +137,20 @@ describe Report do
       @report.details = { :foo => :bar }
       @report.should be_valid
     end
-
-    it 'should enforce uniqueness based on node and timestamp'
+    
+    it 'should error on node if no node given' do
+      @report.node = nil
+      @report.should_not be_valid
+      @report.errors.should be_invalid(:node)
+    end
+    
+    it 'should not error on node if node given' do
+      @report.node = Node.new
+      @report.should be_valid
+    end
+    
+    it 'should enforce uniqueness based on node and timestamp' do
+    end
   end
   
   describe 'associations' do

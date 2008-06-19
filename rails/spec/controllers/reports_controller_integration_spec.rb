@@ -26,8 +26,7 @@ describe ReportsController, "when running integrations" do
     
     describe 'when a matching report exists' do
       before :all do
-        @node = Node.generate
-        @report = @node.reports.generate
+        @report = Report.generate!
       end
       
       it 'should make the report available to the view' do

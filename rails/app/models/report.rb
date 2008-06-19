@@ -2,6 +2,7 @@ class Report < ActiveRecord::Base
   serialize :details
   
   belongs_to :node
+  validates_presence_of :node
 
   validates_presence_of :details
   
