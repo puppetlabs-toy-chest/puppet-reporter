@@ -4,6 +4,7 @@ describe '/nodes/index.html.erb' do
   before :each do
     @node = Node.generate!(:name => 'foo')
     assigns[:nodes] = [@node]
+    template.stubs(:report_count_graph).returns('report count graph goes here')
   end
 
   def do_render
@@ -13,6 +14,11 @@ describe '/nodes/index.html.erb' do
   it 'should include the node list' do
     do_render
     response.should have_tag('ul[class=?][id=?]', 'node_list', 'node_list')
+  end
+  
+  it 'should include a report count graph' do
+    do_render
+    response.should have_text(Regexp.new(Regexp.escape('report count graph goes here')))
   end
   
   describe 'node list' do
