@@ -1,12 +1,29 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
-describe "/metrics/show" do
-  before(:each) do
-    render 'metrics/show'
+describe "/metrics/show.html.erb" do
+  before :each do
+    @report = Report.generate
+    @metric = Metric.new(:report => @report, :label => 'test', :value => 42)
+    assigns[:metric] = @metric
+  end
+
+  def do_render
+    render '/metrics/show.html.erb'
+  end
+
+  it 'should include the metric label' do
+    do_render
+    response.should have_text(Regexp.new(Regexp.escape(@metric.label)))
+  end
+
+  it 'should include the metric value' do
+    do_render
+    response.should have_text(Regexp.new(Regexp.escape(@metric.value.to_s)))    
   end
   
-  #Delete this example and add some real ones or delete this file
-  it "should tell you where to find the file" do
-    response.should have_tag('p', %r[Find me in app/views/metrics/show])
-  end
+  it 'should include a link to the report'
+  
+  it "should include the name of the report's node"
+  
+  it "should include a link to the report's node"
 end
