@@ -13,6 +13,10 @@ describe Log do
     @log.should respond_to(:message)
   end
   
+  it 'should have a source' do
+    @log.should respond_to(:source)
+  end
+  
   it 'should have a timestamp' do
     @log.should respond_to(:timestamp)
   end

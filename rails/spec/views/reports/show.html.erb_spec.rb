@@ -4,7 +4,7 @@ describe "/reports/show" do
   before(:each) do
     @node = Node.generate!
     @report = @node.reports.generate!
-    @log = stub('log', :level => 'log level', :message => 'log message', :timestamp => Time.zone.now, :tags => '')
+    @log = stub('log', :level => 'log level', :message => 'log message', :source => 'log source', :timestamp => Time.zone.now, :tags => '')
     @report.stubs(:logs).returns([@log])
     @metrics = { }
     @report.stubs(:metrics).returns(@metrics)
@@ -66,6 +66,13 @@ describe "/reports/show" do
           end
         end
         
+        it 'should include log source' do
+          do_render
+          response.should have_tag('ul[id=?]', 'report_logs') do
+            with_tag('li', :text => Regexp.new(Regexp.escape(@log.source)))
+          end
+        end
+        
         it 'should include log time' do
           do_render
           response.should have_tag('ul[id=?]', 'report_logs') do
@@ -102,7 +109,7 @@ describe "/reports/show" do
       end
       
       it 'should include a log item for each log' do
-        other_log = stub('log', :level => 'log level 2', :message => 'log message 2', :tags => '', :timestamp => Time.zone.now - 3456)
+        other_log = stub('log', :level => 'log level 2', :message => 'log message 2', :source => 'log source 2', :tags => '', :timestamp => Time.zone.now - 3456)
         logs = [@log, other_log]
         @report.stubs(:logs).returns(logs)
         
