@@ -149,6 +149,17 @@ describe Report do
       @report.should be_valid
     end
     
+    it 'should error on timestamp if no timestamp given' do
+      @report.timestamp = nil
+      @report.should_not be_valid
+      @report.errors.should be_invalid(:timestamp)
+    end
+    
+    it 'should error on timestamp if no timestamp given' do
+      @report.timestamp = Time.zone.now
+      @report.should be_valid
+    end
+    
     it 'should enforce uniqueness based on node and timestamp' do
     end
   end

@@ -1,11 +1,11 @@
 class Report < ActiveRecord::Base
-  serialize :details
-  
   belongs_to :node
   validates_presence_of :node
 
-  validates_presence_of :details
+  validates_presence_of :timestamp
   
+  validates_presence_of :details
+  serialize :details
   delegate :logs, :metrics, :to => :details
   
   # create Report instances from files containing Puppet YAML reports
