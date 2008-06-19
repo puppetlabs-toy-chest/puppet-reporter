@@ -4,7 +4,7 @@ PuppetShow tool for viewing and manipulating Puppet Report data
 
 SETUP:
 
- - install rmagick gem, sqlite3-ruby gem (what else did we miss?)
+ - install rmagick gem, sqlite3-ruby gem (what else did we miss?), imagemagick and imagemagick-dev
  - git clone Facter from reductive labs and install it
  - git clone Puppet (0.24.x branch) from reductive labs
  - copy puppetshow/rails/config/puppet_lib.rb.sample to puppetshow/rails/config/puppet_lib.rb and edit the PUPPET_LIB setting to reflect the location of your cloned puppet repo
@@ -25,4 +25,3 @@ Notes to sel(f|ves):
  - read 'go' and set environment variables according to your system
  - you should be able to then run 'sh -x go' and have it exercise the puppet/puppetmasterd tools and generate a single (store) report and a single (inspect) report
  - a (fully pending) spec is in place describing the data available in the Puppet report objects. 
-

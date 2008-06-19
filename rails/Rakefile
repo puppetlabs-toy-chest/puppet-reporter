@@ -8,3 +8,27 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 
 require 'tasks/rails'
+
+task :puppet_setup do
+    sh %{puppet -v ../puppet/manifests/site.pp}
+end
+
+file "config/puppet_lib.rb" do
+    puts "creating the Puppet library file"
+    text = File.read("config/puppet_lib.rb.example").sub("rick", ENV["USER"])
+
+    File.open("config/puppet_lib.rb", "w") { |f| f.print text }
+end
+
+file "config/database.yml" do
+    puts "creating the database configuration"
+    FileUtils.cp "config/database.yml.example", "config/database.yml"
+end
+
+task "db:migrate" => "config/database.yml"
+
+task :setup => [:puppet_setup, "config/puppet_lib.rb", "config/database.yml", "db:migrate", "db:test:prepare"]
+
+task :load do
+   sh %{time find ../reports -type f -name '*.yaml' | xargs ruby script/runner script/import_yaml_reports.rb}
+end
