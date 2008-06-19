@@ -323,4 +323,10 @@ describe Report do
     report.stubs(:details).returns(stub('details', :logs => stub('logs')))
     report.logs.should == report.details.logs
   end
+  
+  it "should delegate 'metrics' to its details" do
+    report = Report.new
+    report.stubs(:details).returns(stub('details', :metrics => stub('metrics')))
+    report.metrics.should == report.details.metrics
+  end
 end

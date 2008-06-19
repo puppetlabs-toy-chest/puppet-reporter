@@ -5,7 +5,7 @@ class Report < ActiveRecord::Base
 
   validates_presence_of :details
   
-  delegate :logs, :to => :details
+  delegate :logs, :metrics, :to => :details
   
   # create Report instances from files containing Puppet YAML reports
   def self.import_from_yaml_files(filenames)

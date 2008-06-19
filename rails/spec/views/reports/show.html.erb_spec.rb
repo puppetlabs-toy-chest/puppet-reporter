@@ -133,7 +133,7 @@ describe "/reports/show" do
     
     describe 'metrics' do
       before :each do
-        @metrics['time'] = { 'values' => [] }
+        @metrics['time'] = stub('time', :values => [])
       end
       
       it 'should include time metrics' do
@@ -146,7 +146,7 @@ describe "/reports/show" do
       describe 'time metrics' do
         before :each do
           @value = [:label, 'Label', 0.011544942855835]  # oh yeah
-          @metrics['time'] = { 'values' => [@value] }
+          @metrics['time'] = stub('time', :values => [@value])
         end
         
         it 'should include a value item' do
@@ -173,7 +173,7 @@ describe "/reports/show" do
         it 'should include a value item for each value' do
           other_value = [:other_label, 'Other Label', 1.9401938492]  # oh yeah
           values = [@value, other_value]
-          @metrics['time'] = { 'values' => values }
+          @metrics['time'] = stub('time', :values => values)
           
           do_render
           response.should have_tag('ul[id=?]', 'report_time_metrics') do
@@ -184,7 +184,7 @@ describe "/reports/show" do
         end
         
         it 'should include no items if there are no values' do
-          @metrics['time'] = { 'values' => [] }
+          @metrics['time'] = stub('time', :values => [])
           do_render
           response.should have_tag('ul[id=?]', 'report_time_metrics') do
             without_tag('li')

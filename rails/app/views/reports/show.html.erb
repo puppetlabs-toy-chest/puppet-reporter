@@ -27,7 +27,7 @@ Time: <%= @report.timestamp %>
     <div class="metrics">
       Time:
       <ul id="report_time_metrics">
-        <% @report.metrics['time']['values'].each do |time| %>
+        <% @report.metrics['time'].values.each do |time| %>
           <li><%= time[1] %> --- <%= time[2] %></li>
         <% end %>
       </ul>
