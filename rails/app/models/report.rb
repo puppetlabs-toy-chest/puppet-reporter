@@ -2,6 +2,8 @@ class Report < ActiveRecord::Base
   belongs_to :node
   validates_presence_of :node
 
+  has_many :metrics
+
   validates_presence_of :timestamp
   validates_uniqueness_of :timestamp, :scope => :node_id
   

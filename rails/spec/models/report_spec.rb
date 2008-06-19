@@ -189,6 +189,10 @@ describe Report do
     it 'can have many logs' do
       @report.logs.should == []
     end
+
+    it 'can have metrics' do
+      @report.metrics.should be_nil
+    end
   end
   
   describe 'as a class' do
