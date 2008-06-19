@@ -375,6 +375,11 @@ describe Report do
           Report.from_yaml(@yaml)
         end
         
+        it 'should set the log source' do
+          @report.logs.expects(:create).with(has_entry(:source => @log.source))
+          Report.from_yaml(@yaml)
+        end
+        
         it 'should set the log timestamp' do
           @report.logs.expects(:create).with(has_entry(:timestamp => @log.time))
           Report.from_yaml(@yaml)

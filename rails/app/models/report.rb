@@ -39,7 +39,7 @@ class Report < ActiveRecord::Base
     node = (Node.find_by_name(thawed.host) || Node.create!(:name => thawed.host))
     report = Report.create!(:details => yaml, :timestamp => thawed.time, :node => node)
     thawed.logs.each do |log|
-      report.logs.create(:level => log.level.to_s, :message => log.message, :timestamp => log.time, :tags => log.tags.collect(&:to_s).sort.join(', '))
+      report.logs.create(:level => log.level.to_s, :message => log.message, :source => log.source, :timestamp => log.time, :tags => log.tags.collect(&:to_s).sort.join(', '))
     end
     report
   end
