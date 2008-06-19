@@ -33,14 +33,24 @@ Time: <%= @report.timestamp %>
       </ul>
     </div>
   <% end %>
-  <div class="metrics">
-    Resources:
-    <ul id="report_resources_metrics">
-    </ul>
-  </div>
-  <div class="metrics">
-    Changes:
-    <ul id="report_changes_metrics">
-    </ul>
-  </div>
+  <% if @report.metrics['resources'] %>
+    <div class="metrics">
+      Resources:
+      <ul id="report_resources_metrics">
+        <% @report.metrics['resources'].values.each do |resources| %>
+          <li><%= resources[1] %> --- <%= resources[2] %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <% if @report.metrics['changes'] %>
+    <div class="metrics">
+      Changes:
+      <ul id="report_changes_metrics">
+        <% @report.metrics['changes'].values.each do |changes| %>
+          <li><%= changes[1] %> --- <%= changes[2] %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
 </div>
