@@ -7,7 +7,11 @@ class Report < ActiveRecord::Base
   
   validates_presence_of :details
   serialize :details
-  delegate :logs, :metrics, :to => :details
+  delegate :metrics, :to => :details
+  
+  def dtl_logs
+    details.logs
+  end
   
   # create Report instances from files containing Puppet YAML reports
   def self.import_from_yaml_files(filenames)

@@ -363,10 +363,10 @@ describe Report do
     report_details.time.should == yaml_details.time
   end
   
-  it "should delegate 'logs' to its details" do
+  it "should delegate 'dtl_logs' to its details (logs)" do
     report = Report.new
     report.stubs(:details).returns(stub('details', :logs => stub('logs')))
-    report.logs.should == report.details.logs
+    report.dtl_logs.should == report.details.logs
   end
   
   it "should delegate 'metrics' to its details" do

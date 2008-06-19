@@ -5,7 +5,7 @@ describe "/reports/show" do
     @node = Node.generate!
     @report = @node.reports.generate!
     @log = stub('log', :level => 'log level', :message => 'log message', :time => Time.zone.now, :tags => [])
-    @report.stubs(:logs).returns([@log])
+    @report.stubs(:dtl_logs).returns([@log])
     @metrics = { }
     @report.stubs(:metrics).returns(@metrics)
     assigns[:report] = @report
@@ -112,7 +112,7 @@ describe "/reports/show" do
       it 'should include a log item for each log' do
         other_log = stub('log', :level => 'log level 2', :message => 'log message 2', :tags => [], :time => Time.zone.now - 3456)
         logs = [@log, other_log]
-        @report.stubs(:logs).returns(logs)
+        @report.stubs(:dtl_logs).returns(logs)
         
         do_render
         response.should have_tag('ul[id=?]', 'report_logs') do
@@ -123,7 +123,7 @@ describe "/reports/show" do
       end
       
       it 'should include no items if there are no logs' do
-        @report.stubs(:logs).returns([])
+        @report.stubs(:dtl_logs).returns([])
         do_render
         response.should have_tag('ul[id=?]', 'report_logs') do
           without_tag('li')

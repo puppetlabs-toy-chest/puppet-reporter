@@ -7,7 +7,7 @@ Time: <%= @report.timestamp %>
 <div id="report_details" class="details">
   Logs:
   <ul id="report_logs" class="logs">
-    <% @report.logs.each do |log| %>
+    <% @report.dtl_logs.each do |log| %>
       <li>
         level: <%= log.level %>
         <br />
