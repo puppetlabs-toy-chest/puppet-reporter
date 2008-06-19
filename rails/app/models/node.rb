@@ -2,6 +2,7 @@ class Node < ActiveRecord::Base
   has_many :facts
   has_many :reports
   has_many :logs, :through => :reports
+  has_many :metrics, :through => :reports
   
   validates_presence_of :name
   validates_uniqueness_of :name

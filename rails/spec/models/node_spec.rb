@@ -58,6 +58,22 @@ describe Node do
       logs = @node.reports.collect(&:logs).flatten
       @node.logs.sort_by(&:id).should == logs.sort_by(&:id)
     end
+    
+    it 'can have metrics' do
+      @node.metrics.should == []
+    end
+    
+    it 'should get metrics through its reports' do
+      @node = Node.generate!
+      2.times do |i|
+        rep = @node.reports.generate!(:timestamp => Time.zone.now + i)
+        3.times { rep.metrics.generate! }
+      end
+      @node.reload
+      
+      metrics = @node.reports.collect(&:metrics).flatten
+      @node.metrics.sort_by(&:id).should == metrics.sort_by(&:id)
+    end    
   end
   
   describe 'attributes' do

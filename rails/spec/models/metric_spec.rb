@@ -59,6 +59,10 @@ describe Metric do
       @metric.report.should be_nil
     end
     
-    it 'should have a node'
+    it 'should have a node' do
+      @report = Report.generate
+      @metric.report = @report
+      @metric.node.should == @report.node
+    end
   end
 end

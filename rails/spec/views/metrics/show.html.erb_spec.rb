@@ -21,9 +21,23 @@ describe "/metrics/show.html.erb" do
     response.should have_text(Regexp.new(Regexp.escape(@metric.value.to_s)))    
   end
   
-  it 'should include a link to the report'
+  it 'should include a link to the report' do
+    do_render
+    response.should have_tag('a[href=?]', report_path(@report))
+  end
   
-  it "should include the name of the report's node"
+  it 'should include the time of the report' do
+    do_render
+    response.should have_text(Regexp.new(Regexp.escape(@report.timestamp.to_s)))
+  end
   
-  it "should include a link to the report's node"
+  it "should include the name of the report's node" do
+    do_render
+    response.should have_text(Regexp.new(Regexp.escape(@report.node.name)))
+  end
+  
+  it "should include a link to the report's node" do
+    do_render
+    response.should have_tag('a[href=?]', node_path(@report.node))
+  end
 end
