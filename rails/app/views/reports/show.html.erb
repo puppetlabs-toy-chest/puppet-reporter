@@ -25,31 +25,31 @@ Time: <%= @report.timestamp %>
     <% end %>
   </ul>
   Metrics:
-  <% if @report.metrics['time'] %>
+  <% if @report.dtl_metrics['time'] %>
     <div class="metrics">
       Time:
       <ul id="report_time_metrics">
-        <% @report.metrics['time'].values.each do |time| %>
+        <% @report.dtl_metrics['time'].values.each do |time| %>
           <li><%= time[1] %> --- <%= time[2] %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
-  <% if @report.metrics['resources'] %>
+  <% if @report.dtl_metrics['resources'] %>
     <div class="metrics">
       Resources:
       <ul id="report_resources_metrics">
-        <% @report.metrics['resources'].values.each do |resources| %>
+        <% @report.dtl_metrics['resources'].values.each do |resources| %>
           <li><%= resources[1] %> --- <%= resources[2] %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
-  <% if @report.metrics['changes'] %>
+  <% if @report.dtl_metrics['changes'] %>
     <div class="metrics">
       Changes:
       <ul id="report_changes_metrics">
-        <% @report.metrics['changes'].values.each do |changes| %>
+        <% @report.dtl_metrics['changes'].values.each do |changes| %>
           <li><%= changes[1] %> --- <%= changes[2] %></li>
         <% end %>
       </ul>

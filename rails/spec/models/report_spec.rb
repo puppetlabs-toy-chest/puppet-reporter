@@ -191,7 +191,7 @@ describe Report do
     end
 
     it 'can have metrics' do
-      @report.metrics.should be_nil
+      @report.metrics.should == []
     end
   end
   
@@ -471,6 +471,6 @@ describe Report do
   it "should delegate 'metrics' to its details" do
     report = Report.new
     report.stubs(:details).returns(stub('details', :metrics => stub('metrics')))
-    report.metrics.should == report.details.metrics
+    report.dtl_metrics.should == report.details.metrics
   end
 end

@@ -7,7 +7,7 @@ describe "/reports/show" do
     @log = stub('log', :level => 'log level', :message => 'log message', :source => 'log source', :timestamp => Time.zone.now, :tags => '')
     @report.stubs(:logs).returns([@log])
     @metrics = { }
-    @report.stubs(:metrics).returns(@metrics)
+    @report.stubs(:dtl_metrics).returns(@metrics)
     assigns[:report] = @report
   end
   

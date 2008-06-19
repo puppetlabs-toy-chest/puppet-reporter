@@ -9,10 +9,13 @@ class Report < ActiveRecord::Base
   
   validates_presence_of :details
   serialize :details
-  delegate :metrics, :to => :details
   
   has_many :logs
   
+  def dtl_metrics
+    details.metrics
+  end
+
   def dtl_logs
     details.logs
   end
