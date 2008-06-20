@@ -365,8 +365,8 @@ describe Report do
         before :each do
           Report.stubs(:create!).returns(@report)
           @thawed = YAML.load(@yaml)
-          YAML.stubs(:load).with(@yaml).returns(@thawed)
           @metrics = @thawed.metrics
+          YAML.stubs(:load).with(@yaml).returns(@thawed)
         end
         
         it 'should create a metric object' do
@@ -376,7 +376,17 @@ describe Report do
       end
       
       describe 'if the yaml contains no metrics' do
-        it 'should not create metric objects'
+        before :each do
+          Report.stubs(:create!).returns(@report)
+          @thawed = YAML.load(@yaml)
+          @thawed.stubs(:metrics).returns([])
+          YAML.stubs(:load).with(@yaml).returns(@thawed)
+        end
+        
+        it 'should not create metric objects' do
+          Metric.expects(:from_puppet_metrics).never
+          Report.from_yaml(@yaml)
+        end
       end
       
       it 'should return the created report' do
