@@ -4,6 +4,6 @@ class AddSourceToLog < ActiveRecord::Migration
   end
 
   def self.down
-    drop_column 'logs', 'source'
+    remove_column 'logs', 'source'
   end
 end

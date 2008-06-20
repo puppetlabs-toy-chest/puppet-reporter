@@ -4,6 +4,6 @@ class IndexReportTimestamp < ActiveRecord::Migration
   end
 
   def self.down
-    drop_index 'reports', 'timestamp'
+    remove_index 'reports', 'timestamp'
   end
 end
