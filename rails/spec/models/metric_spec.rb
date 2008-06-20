@@ -151,5 +151,77 @@ describe Metric do
         end
       end
     end
+    
+    it 'should get total changes in a time interval' do
+      Metric.should respond_to(:total_changes_between)
+    end
+
+    describe 'getting reports in a time interval' do
+      before :each do
+        Metric.delete_all
+
+        @time = Time.zone.now
+        @start_time = @time - 123
+        @end_time   = @start_time + 1000
+
+        @metrics = []
+        @metrics.push Metric.generate!(:report => Report.generate!(:timestamp => @start_time - 1), :category => 'changes', :label => 'Total')
+        10.times do |i|
+          @metrics.push Metric.generate!(:report => Report.generate!(:timestamp => @start_time + (100 *i)), :category => 'changes', :label => 'Total')
+        end
+        @metrics.push Metric.generate!(:report => Report.generate!(:timestamp => @end_time), :category => 'changes', :label => 'Total')
+        @metrics.push Metric.generate!(:report => Report.generate!(:timestamp => @end_time + 1), :category => 'changes', :label => 'Total')
+      end
+
+      it 'should accept start and end times' do
+        lambda { Metric.total_changes_between(@start_time, @end_time) }.should_not raise_error(ArgumentError)
+      end
+
+      it 'should require an end time' do
+        lambda { Metric.total_changes_between(@start_time) }.should raise_error(ArgumentError)
+      end
+
+      it 'should require a start time' do
+        lambda { Metric.total_changes_between }.should raise_error(ArgumentError)
+      end
+
+      it 'should return total changes belonging to reports with timestamps between the two times' do
+        total_changes = @metrics[1..-3].collect(&:value).inject(&:+)
+        Metric.total_changes_between(@start_time, @end_time).should == total_changes
+      end
+      
+      it 'should not include non-total change metrics' do
+        Metric.generate!(:report => Report.generate!(:timestamp => @start_time + 1), :category => 'changes', :label => 'Bang')
+        
+        total_changes = @metrics[1..-3].collect(&:value).inject(&:+)
+        Metric.total_changes_between(@start_time, @end_time).should == total_changes
+      end
+      
+      it 'should not include non-change metrics' do
+        Metric.generate!(:report => Report.generate!(:timestamp => @start_time + 1), :category => 'time', :label => 'Total')
+        
+        total_changes = @metrics[1..-3].collect(&:value).inject(&:+)
+        Metric.total_changes_between(@start_time, @end_time).should == total_changes
+      end
+      
+      it 'should accept options' do
+        lambda { Metric.total_changes_between(@start_time, @end_time, :interval => 100) }.should_not raise_error(ArgumentError)
+      end
+
+      describe 'when given an interval' do
+        it 'should return an array of total change counts for each interval' do
+          total_changes = @metrics[1..-3].collect(&:value)
+          Metric.total_changes_between(@start_time, @end_time, :interval => 100).should == total_changes
+        end
+
+        it 'should include a partial interval at the end' do
+          total_changes = []
+          [1..3, 4..6, 7..9, 10..10].each do |range|
+            total_changes.push @metrics[range].collect(&:value).inject(&:+)
+          end
+          Metric.total_changes_between(@start_time, @end_time, :interval => 300).should == total_changes
+        end
+      end
+    end
   end
 end
