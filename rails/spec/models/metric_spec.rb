@@ -69,8 +69,6 @@ describe Metric do
   describe 'as a class' do
     before :each do
       @report = Report.generate
-      @report_metrics = stub('metrics', :create! => true)
-      @report.stubs(:metrics).returns(@report_metrics)
       @metrics = @report.dtl_metrics
       @metric_items = @metrics.keys.inject([]) {|list, key| list += @metrics[key].values }
     end
@@ -85,33 +83,40 @@ describe Metric do
       end
       
       it 'should use the report to create a Metric for every puppet metric' do
-        @report_metrics.expects(:create!).times(@metric_items.size)
+        Metric.expects(:create).times(@metric_items.size)
         Metric.from_puppet_metrics(@report, @metrics)          
       end
       
       describe 'and creating a metric' do    
         it 'should set the metric name' do
           @metric_items.each do |metric|
-            @report_metrics.expects(:create!).with {|args| args[:name] == metric[0] }
+            Metric.expects(:create).with {|args| args[:name] == metric[0] }
           end
           Metric.from_puppet_metrics(@report, @metrics)                    
         end
 
         it 'should set the metric label' do
           @metric_items.each do |metric|
-            @report_metrics.expects(:create!).with {|args| args[:label] == metric[1] }
+            Metric.expects(:create).with {|args| args[:label] == metric[1] }
           end
           Metric.from_puppet_metrics(@report, @metrics)          
         end
         
         it 'should set the metric value' do
           @metric_items.each do |metric|
-            @report_metrics.expects(:create!).with {|args| args[:value] == metric[2] }
+            Metric.expects(:create).with {|args| args[:value] == metric[2] }
           end
           Metric.from_puppet_metrics(@report, @metrics)                              
         end
         
-        it 'should set the metric category'
+        it 'should set the metric category' do
+          @metrics.keys.each do |category|
+            @metrics[category].values.each do |metric|
+              Metric.expects(:create).with {|args| args[:category] == category }
+            end
+          end
+          Metric.from_puppet_metrics(@report, @metrics)
+        end
       end
     end
   end
