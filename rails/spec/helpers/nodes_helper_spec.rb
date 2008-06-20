@@ -49,7 +49,6 @@ describe NodesHelper do
     end
   end
   
-  
   it 'should create a node report count graph' do
     helper.should respond_to(:node_report_count_graph)
   end
@@ -103,6 +102,109 @@ describe NodesHelper do
       sparkline = stub('sparkline')
       helper.stubs(:sparkline_tag).returns(sparkline)
       helper.node_report_count_graph(@node).should == sparkline
+    end
+  end
+  
+  it 'should create a total change graph' do
+    helper.should respond_to(:total_change_graph)
+  end
+  
+  describe 'creating a total change graph' do
+    before :each do
+      helper.stubs(:sparkline_tag)
+      Metric.stubs(:total_changes_between)
+    end
+    
+    it 'should create a sparkline' do
+      helper.expects(:sparkline_tag)
+      helper.total_change_graph
+    end
+    
+    it 'should get total change data' do
+      Metric.expects(:total_changes_between)
+      helper.total_change_graph
+    end
+    
+    it 'should get total change data for 30 minute intervals over the past day' do
+      now = Time.zone.now
+      Time.zone.stubs(:now).returns(now)
+      
+      Metric.expects(:total_changes_between).with(now - 1.day, now, :interval => 30.minutes)
+      helper.total_change_graph
+    end
+    
+    it 'should create a sparkline using the total change data' do
+      data_points = stub('data points')
+      Metric.stubs(:total_changes_between).returns(data_points)
+      helper.expects(:sparkline_tag).with(data_points, anything)
+      helper.total_change_graph
+    end
+    
+    it 'should create a smooth sparkline' do
+      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'smooth'))
+      helper.total_change_graph
+    end
+    
+    it 'should return the sparkline tag' do
+      sparkline = stub('sparkline')
+      helper.stubs(:sparkline_tag).returns(sparkline)
+      helper.total_change_graph.should == sparkline
+    end
+  end
+  
+  it 'should create a node total change graph' do
+    helper.should respond_to(:node_total_change_graph)
+  end
+
+  describe 'creating a node total change graph' do
+    before :each do
+      @node = Node.generate!
+      helper.stubs(:sparkline_tag)
+      @node.metrics.stubs(:total_changes_between)
+    end
+    
+    it 'should require a node' do
+      lambda { helper.node_total_change_graph }.should raise_error(ArgumentError)
+    end
+    
+    it 'should accept a node' do
+      lambda { helper.node_total_change_graph(@node) }.should_not raise_error(ArgumentError)
+    end
+
+    it 'should create a sparkline' do
+      helper.expects(:sparkline_tag)
+      helper.node_total_change_graph(@node)
+    end
+
+    it 'should get total change data for the node' do
+      @node.metrics.expects(:total_changes_between)
+      helper.node_total_change_graph(@node)
+    end
+
+    it 'should get total change data for the node for 30 minute intervals over the past day' do
+      now = Time.zone.now
+      Time.zone.stubs(:now).returns(now)
+
+      @node.metrics.expects(:total_changes_between).with(now - 1.day, now, :interval => 30.minutes)
+      helper.node_total_change_graph(@node)
+    end
+
+    it 'should create a sparkline using the total change data' do
+      data_points = stub('data points')
+      @node.metrics.stubs(:total_changes_between).returns(data_points)
+      helper.expects(:sparkline_tag).with(data_points, anything)
+      helper.node_total_change_graph(@node)
+    end
+
+    it 'should create a discrete sparkline' do
+      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'discrete'))
+      helper.node_total_change_graph(@node)
+    end
+
+    it 'should return the sparkline tag' do
+      sparkline = stub('sparkline')
+      helper.stubs(:sparkline_tag).returns(sparkline)
+      helper.node_total_change_graph(@node).should == sparkline
     end
   end
 end
