@@ -65,4 +65,29 @@ describe Metric do
       @metric.node.should == @report.node
     end
   end
+  
+  describe 'as a class' do
+    before :each do
+      @report = Report.new
+    end
+    
+    describe 'when importing from puppet metrics' do
+      it 'should require a report' do
+        lambda { Metric.from_puppet_metrics }.should raise_error(ArgumentError)
+      end
+      
+      it 'should require puppet metrics' do
+        lambda { Metric.from_puppet_metrics(@report) }.should raise_error(ArgumentError)
+      end
+      
+      it 'should create a Metric for every puppet metric'
+      
+      describe 'and creating a metric' do
+        it 'should set the metric label'
+        it 'should set the metric name'
+        it 'should set the metric value'
+        it 'should attach the metric to the report'          
+      end
+    end
+  end
 end
