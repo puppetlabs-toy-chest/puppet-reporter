@@ -156,6 +156,12 @@ describe Log do
       Log.from_puppet_logs(@logs)
     end
     
+    it 'should set the tags to the empty string if there are nil tags' do
+      @log.stubs(:tags).returns(nil)
+      Log.expects(:create).with(has_entry(:tags => ''))
+      Log.from_puppet_logs(@logs)
+    end
+    
     it 'should create a log for each element of the log data' do
       other_log = stub('log', :level => 'warn', :message => 'log message 2', :source => 'log source 2', :time => Time.zone.now - 134, :tags => [])
       @logs.push other_log
