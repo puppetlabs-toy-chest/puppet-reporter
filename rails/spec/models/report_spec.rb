@@ -353,95 +353,12 @@ describe Report do
         end    
       end
       
-      describe 'if the yaml contains a log' do
-        before :each do
-          @old_yaml = @yaml
-          rep = YAML.load(@yaml)
-          @logs = rep.logs
-          @log = @logs.first
-          rep.logs = [@log]
-          @yaml = rep.to_yaml
-          Report.stubs(:create!).returns(@report)
-        end
-        
-        it 'should create a log object' do
-          @report.logs.expects(:create)
-          Report.from_yaml(@yaml)
-        end
-        
-        it 'should set the log level' do
-          @report.logs.expects(:create).with(has_entry(:level => @log.level.to_s))
-          Report.from_yaml(@yaml)
-        end
-        
-        it 'should set the log message' do
-          @report.logs.expects(:create).with(has_entry(:message => @log.message))
-          Report.from_yaml(@yaml)
-        end
-        
-        it 'should set the log source' do
-          @report.logs.expects(:create).with(has_entry(:source => @log.source))
-          Report.from_yaml(@yaml)
-        end
-        
-        it 'should set the log timestamp' do
-          @report.logs.expects(:create).with(has_entry(:timestamp => @log.time))
-          Report.from_yaml(@yaml)
-        end
-        
-        it 'should set the log tags to a sorted, comma-separated list of the yaml log tags' do
-          rep = YAML.load(@yaml)
-          log = rep.logs.first
-          log.tags = %w[file main osx darwin source]
-          rep.logs = [log]
-          expected_tags = 'darwin, file, main, osx, source'
-          
-          @report.logs.expects(:create).with(has_entry(:tags => expected_tags))
-          Report.from_yaml(rep.to_yaml)
-        end
-        
-        it 'should handle symbol tags' do
-          rep = YAML.load(@yaml)
-          log = rep.logs.first
-          log.tags = [:file, :main, :osx, :darwin, :source]
-          rep.logs = [log]
-          expected_tags = 'darwin, file, main, osx, source'
-          
-          @report.logs.expects(:create).with(has_entry(:tags => expected_tags))
-          Report.from_yaml(rep.to_yaml)
-        end
-        
-        it 'should not set tags to the empty string if the yaml log has no tags' do
-          rep = YAML.load(@yaml)
-          log = rep.logs.first
-          log.tags = []
-          rep.logs = [log]
-          
-          @report.logs.expects(:create).with(has_entry(:tags => ''))
-          Report.from_yaml(rep.to_yaml)
-        end
-        
-        it 'should create a log object for each yaml log' do
-          @logs.each do |log|
-            @report.logs.expects(:create).with(has_entry(:message => log.message))
-          end
-          
-          Report.from_yaml(@old_yaml)
-        end
-      end
-      
-      describe 'if the yaml contains no logs' do
-        before :each do
-          rep = YAML.load(@yaml)
-          rep.logs = []
-          @yaml = rep.to_yaml
-          Report.stubs(:create!).returns(@report)
-        end
-        
-        it 'should create no log objects' do
-          @report.logs.expects(:create).never
-          Report.from_yaml(@yaml)
-        end
+      it 'should pass the logs on to be created by the log model' do
+        rep = YAML.load(@yaml)
+        YAML.stubs(:load).returns(rep)
+        Report.stubs(:create!).returns(@report)
+        @report.logs.expects(:from_puppet_logs).with(rep.logs)
+        Report.from_yaml(@yaml)
       end
       
       it 'should return the created report' do
