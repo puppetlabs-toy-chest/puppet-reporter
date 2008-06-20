@@ -1,10 +1,12 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe '/nodes/index.html.erb' do
+  
   before :each do
     @node = Node.generate!(:name => 'foo')
     assigns[:nodes] = [@node]
     template.stubs(:report_count_graph).returns('report count graph goes here')
+    template.stubs(:node_report_count_graph).returns('node report count graph goes here')
   end
 
   def do_render
@@ -40,6 +42,16 @@ describe '/nodes/index.html.erb' do
         response.should have_tag('li[id=?]', "node-#{@node.id}") do
           with_tag('a[href=?]', node_path(@node))
         end
+      end
+      
+      it 'should include a report count graph for the node' do
+        do_render
+        response.should have_tag('li[id=?]', "node-#{@node.id}", :text => Regexp.new(Regexp.escape('node report count graph goes here')))
+      end
+      
+      it 'should get the report count graph for the node' do
+        template.expects(:node_report_count_graph).with(@node)
+        do_render
       end
     end
     

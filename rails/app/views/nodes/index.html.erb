@@ -4,6 +4,6 @@
 
 <ul id="node_list" class="node_list">
   <% @nodes.each do |node| %>
-    <li id="node-<%= node.id %>"><%= link_to node.name, node_path(node) %></li>
+    <li id="node-<%= node.id %>"><%= link_to node.name, node_path(node) %> <%= node_report_count_graph(node) %></li>
   <% end %>
 </ul>
