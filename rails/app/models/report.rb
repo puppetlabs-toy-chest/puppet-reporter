@@ -46,7 +46,7 @@ class Report < ActiveRecord::Base
       node = (Node.find_by_name(thawed.host) || Node.create!(:name => thawed.host))
       report = Report.create!(:details => yaml, :timestamp => thawed.time, :node => node)
       report.logs.from_puppet_logs(thawed.logs)
-      Metric.from_puppet_metrics(report, thawed.metrics) if thawed.metrics
+      Metric.from_puppet_metrics(report, thawed.metrics) unless thawed.metrics.blank?
       report
     end
     
