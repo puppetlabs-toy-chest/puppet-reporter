@@ -20,35 +20,36 @@ class Report < ActiveRecord::Base
     details.logs
   end
   
-  # create Report instances from files containing Puppet YAML reports
-  def self.import_from_yaml_files(filenames)
-    good, bad = [], []
-    filenames.each do |file|
-      begin
-        Report.from_yaml File.read(file)
-        good << file
-      rescue SystemCallError => e
-        warn "Could not read file [#{file}]: #{e}"
-        bad << file
-      rescue Exception => e
-        warn "There was an error processing file [#{file}]: #{e}"
-        bad << file
-      end
-    end
-    [ good, bad ]
-  end
-  
-  # create a single Report instance from a Puppet report YAML string
-  def self.from_yaml(yaml)
-    thawed = YAML.load(yaml)
-    node = (Node.find_by_name(thawed.host) || Node.create!(:name => thawed.host))
-    report = Report.create!(:details => yaml, :timestamp => thawed.time, :node => node)
-    report.logs.from_puppet_logs(thawed.logs)
-    Metric.from_puppet_metrics(report, thawed.metrics) if thawed.metrics
-    report
-  end
-  
   class << self
+
+    # create Report instances from files containing Puppet YAML reports
+    def import_from_yaml_files(filenames)
+      good, bad = [], []
+      filenames.each do |file|
+        begin
+          Report.from_yaml File.read(file)
+          good << file
+        rescue SystemCallError => e
+          warn "Could not read file [#{file}]: #{e}"
+          bad << file
+        rescue Exception => e
+          warn "There was an error processing file [#{file}]: #{e}"
+          bad << file
+        end
+      end
+      [ good, bad ]
+    end
+  
+    # create a single Report instance from a Puppet report YAML string
+    def from_yaml(yaml)
+      thawed = YAML.load(yaml)
+      node = (Node.find_by_name(thawed.host) || Node.create!(:name => thawed.host))
+      report = Report.create!(:details => yaml, :timestamp => thawed.time, :node => node)
+      report.logs.from_puppet_logs(thawed.logs)
+      Metric.from_puppet_metrics(report, thawed.metrics) if thawed.metrics
+      report
+    end
+    
     def between(start_time, end_time, options = {})
       if interval = options[:interval]
         reports = []
