@@ -35,10 +35,10 @@ class Metric < ActiveRecord::Base
           end
         end
         
-        metrics.collect { |met|  met.collect(&:value).inject(&:+) }
+        metrics.collect { |met|  met.collect(&:value).inject(&:+) || 0 }
       else
         metrics = find(:all, :include => :report, :conditions => ['reports.timestamp >= ? and reports.timestamp < ? and category = ? and label = ?', start_time, end_time, 'changes', 'Total'])
-        metrics.collect(&:value).inject(&:+)
+        metrics.collect(&:value).inject(&:+) || 0
       end
     end
   end

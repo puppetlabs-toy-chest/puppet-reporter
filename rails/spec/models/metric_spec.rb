@@ -190,6 +190,11 @@ describe Metric do
         Metric.total_changes_between(@start_time, @end_time).should == total_changes
       end
       
+      it 'should return 0 if there are no matching metrics' do
+        @metrics[1..-3].each(&:destroy)
+        Metric.total_changes_between(@start_time, @end_time).should == 0
+      end
+      
       it 'should not include non-total change metrics' do
         Metric.generate!(:report => Report.generate!(:timestamp => @start_time + 1), :category => 'changes', :label => 'Bang')
         
@@ -213,7 +218,14 @@ describe Metric do
           total_changes = @metrics[1..-3].collect(&:value)
           Metric.total_changes_between(@start_time, @end_time, :interval => 100).should == total_changes
         end
-
+        
+        it 'should return 0 for any interval without a total change metric' do
+          total_changes = @metrics[1..-3].collect(&:value)
+          @metrics[2].destroy
+          total_changes[1] = 0
+          Metric.total_changes_between(@start_time, @end_time, :interval => 100).should == total_changes
+        end
+        
         it 'should include a partial interval at the end' do
           total_changes = []
           [1..3, 4..6, 7..9, 10..10].each do |range|
