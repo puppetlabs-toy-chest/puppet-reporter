@@ -74,17 +74,13 @@ describe Metric do
     end
     
     describe 'when importing from puppet metrics' do
-      it 'should require a report' do
-        lambda { Metric.from_puppet_metrics }.should raise_error(ArgumentError)
-      end
-      
       it 'should require puppet metrics' do
-        lambda { Metric.from_puppet_metrics(@report) }.should raise_error(ArgumentError)
+        lambda { Metric.from_puppet_metrics }.should raise_error(ArgumentError)
       end
       
       it 'should use the report to create a Metric for every puppet metric' do
         Metric.expects(:create).times(@metric_items.size)
-        Metric.from_puppet_metrics(@report, @metrics)          
+        Metric.from_puppet_metrics(@metrics)          
       end
       
       describe 'and creating a metric' do    
@@ -92,21 +88,21 @@ describe Metric do
           @metric_items.each do |metric|
             Metric.expects(:create).with {|args| args[:name] == metric[0] }
           end
-          Metric.from_puppet_metrics(@report, @metrics)                    
+          Metric.from_puppet_metrics(@metrics)                    
         end
 
         it 'should set the metric label' do
           @metric_items.each do |metric|
             Metric.expects(:create).with {|args| args[:label] == metric[1] }
           end
-          Metric.from_puppet_metrics(@report, @metrics)          
+          Metric.from_puppet_metrics(@metrics)                    
         end
         
         it 'should set the metric value' do
           @metric_items.each do |metric|
             Metric.expects(:create).with {|args| args[:value] == metric[2] }
           end
-          Metric.from_puppet_metrics(@report, @metrics)                              
+          Metric.from_puppet_metrics(@metrics)                    
         end
         
         it 'should set the metric category' do
@@ -115,7 +111,7 @@ describe Metric do
               Metric.expects(:create).with {|args| args[:category] == category }
             end
           end
-          Metric.from_puppet_metrics(@report, @metrics)
+          Metric.from_puppet_metrics(@metrics)                    
         end
       end
     end

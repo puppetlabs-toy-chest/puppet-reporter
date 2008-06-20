@@ -361,34 +361,14 @@ describe Report do
         Report.from_yaml(@yaml)
       end
       
-      describe 'if the yaml contains metrics' do
-        before :each do
-          Report.stubs(:create!).returns(@report)
-          @thawed = YAML.load(@yaml)
-          @metrics = @thawed.metrics
-          YAML.stubs(:load).with(@yaml).returns(@thawed)
-        end
-        
-        it 'should create a metric object' do
-          Metric.expects(:from_puppet_metrics).with(@report, @metrics)
-          Report.from_yaml(@yaml)
-        end
+      it 'should pass the metrics on to be created by the metric model' do
+        rep = YAML.load(@yaml)
+        YAML.stubs(:load).returns(rep)
+        Report.stubs(:create!).returns(@report)
+        @report.metrics.expects(:from_puppet_metrics).with(rep.metrics)
+        Report.from_yaml(@yaml)
       end
-      
-      describe 'if the yaml contains no metrics' do
-        before :each do
-          Report.stubs(:create!).returns(@report)
-          @thawed = YAML.load(@yaml)
-          @thawed.stubs(:metrics).returns([])
-          YAML.stubs(:load).with(@yaml).returns(@thawed)
-        end
-        
-        it 'should not create metric objects' do
-          Metric.expects(:from_puppet_metrics).never
-          Report.from_yaml(@yaml)
-        end
-      end
-      
+
       it 'should return the created report' do
         Report.stubs(:create!).returns(@report)
         Report.from_yaml(@yaml).should == @report
