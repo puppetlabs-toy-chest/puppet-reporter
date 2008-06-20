@@ -25,34 +25,18 @@ Time: <%= @report.timestamp %>
     <% end %>
   </ul>
   Metrics:
-  <% if @report.dtl_metrics['time'] %>
+  <% categorized = Metric.categorize(@report.metrics) %>
+  <% categorized.keys.sort.each do |category| %>
+  <div class="report_<%= category %>_metrics">
+		<h3><%= category.titleize %></h3>
     <div class="metrics">
-      Time:
-      <ul id="report_time_metrics">
-        <% @report.dtl_metrics['time'].values.each do |time| %>
-          <li><%= time[1] %> --- <%= time[2] %></li>
-        <% end %>
+	    <ul id="report_<%= category %>_metrics">
+    <% categorized[category].each do |metric| %>
+        <li><%= metric.label %>: <%= metric.value %></li>
+    <% end -%>
       </ul>
     </div>
-  <% end %>
-  <% if @report.dtl_metrics['resources'] %>
-    <div class="metrics">
-      Resources:
-      <ul id="report_resources_metrics">
-        <% @report.dtl_metrics['resources'].values.each do |resources| %>
-          <li><%= resources[1] %> --- <%= resources[2] %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-  <% if @report.dtl_metrics['changes'] %>
-    <div class="metrics">
-      Changes:
-      <ul id="report_changes_metrics">
-        <% @report.dtl_metrics['changes'].values.each do |changes| %>
-          <li><%= changes[1] %> --- <%= changes[2] %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+	</div>
+  <% end -%>
 </div>
+	

@@ -12,10 +12,6 @@ class Report < ActiveRecord::Base
   
   has_many :logs
   
-  def dtl_metrics
-    details.metrics
-  end
-
   class << self
 
     # create Report instances from files containing Puppet YAML reports

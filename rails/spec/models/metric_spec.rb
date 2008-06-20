@@ -67,13 +67,49 @@ describe Metric do
   end
   
   describe 'as a class' do
-    before :each do
-      @report = Report.generate
-      @metrics = @report.dtl_metrics
-      @metric_items = @metrics.keys.inject([]) {|list, key| list += @metrics[key].values }
+    describe 'when organizing metrics by category' do
+      before :each do
+        @report = Report.from_yaml(report_yaml)
+        @metrics = @report.metrics
+      end
+      
+      it 'should require metrics' do
+        lambda { Metric.categorize }.should raise_error(ArgumentError)
+      end
+      
+      it 'should return a hash' do
+        Metric.categorize(@metrics).should be_a_kind_of(Hash)
+      end
+      
+      describe 'returned hash' do
+        it 'should have a key for each category present in the metrics' do
+          Metric.categorize(@metrics).keys.sort.should == @metrics.collect(&:category).sort.uniq
+        end
+        
+        it 'should have a list of values under each category' do
+          Metric.categorize(@metrics).values.each {|a| a.should be_a_kind_of(Array) }
+        end
+        
+        it 'should sort values by label' do
+          Metric.categorize(@metrics).values.each do |list|
+            list.should == list.sort_by(&:label)
+          end
+        end
+                
+        it 'should include all metrics somewhere in the categorization' do
+          Metric.categorize(@metrics).values.flatten.size.should == @metrics.size
+        end
+      end
     end
     
+    
     describe 'when importing from puppet metrics' do
+      before :each do
+        @report = Report.generate
+        @metrics = @report.details.metrics  # these are the metrics, as thawed from Puppet, to be converted in Metrics
+        @metric_items = @metrics.keys.inject([]) {|list, key| list += @metrics[key].values }
+      end
+
       it 'should require puppet metrics' do
         lambda { Metric.from_puppet_metrics }.should raise_error(ArgumentError)
       end

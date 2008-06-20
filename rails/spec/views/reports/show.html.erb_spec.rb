@@ -7,7 +7,6 @@ describe "/reports/show" do
     @log = stub('log', :level => 'log level', :message => 'log message', :source => 'log source', :timestamp => Time.zone.now, :tags => '')
     @report.stubs(:logs).returns([@log])
     @metrics = { }
-    @report.stubs(:dtl_metrics).returns(@metrics)
     assigns[:report] = @report
   end
   
@@ -132,188 +131,44 @@ describe "/reports/show" do
     
     describe 'metrics' do
       before :each do
-        @metrics['time'] = stub('time', :values => [])
-        @metrics['resources'] = stub('resources', :values => [])
-        @metrics['changes'] = stub('changes', :values => [])
+        @report = Report.from_yaml(report_yaml)
+        assigns[:report] = @report
+        @metrics = @report.metrics
+        @categories = Metric.categorize(@metrics)
       end
       
-      it 'should include time metrics' do
+      it 'should organize the metrics by categories' do
+        Metric.expects(:categorize).with(@metrics).returns(@categories)
         do_render
-        response.should have_tag('div[id=?]', 'report_details') do
-          with_tag('ul[id=?]', 'report_time_metrics')
+      end
+      
+      it 'should include a section for each category' do
+        do_render
+        @categories.keys.each do |category|
+          response.should have_tag('div[class=?]', "report_#{category}_metrics")
         end
       end
       
-      describe 'time metrics' do
-        before :each do
-          @value = [:label, 'Label', 0.011544942855835]  # oh yeah
-          @metrics['time'] = stub('time', :values => [@value])
-        end
-        
-        it 'should include a value item' do
-          do_render
-          response.should have_tag('ul[id=?]', 'report_time_metrics') do
-            with_tag('li')
-          end
-        end
-        
-        it "should include the value's name" do
-          do_render
-          response.should have_tag('ul[id=?]', 'report_time_metrics') do
-            with_tag('li', :text => Regexp.new(Regexp.escape(@value[1])))  # oh yeah
-          end
-        end
-        
-        it "should include the value's time" do
-          do_render
-          response.should have_tag('ul[id=?]', 'report_time_metrics') do
-            with_tag('li', :text => Regexp.new(Regexp.escape(@value[2].to_s)))  # oh yeah
-          end
-        end
-        
-        it 'should include a value item for each value' do
-          other_value = [:other_label, 'Other Label', 1.9401938492]  # oh yeah
-          values = [@value, other_value]
-          @metrics['time'] = stub('time', :values => values)
-          
-          do_render
-          response.should have_tag('ul[id=?]', 'report_time_metrics') do
-            values.each do |value|
-              with_tag('li', :text => Regexp.new(Regexp.escape(value[1])))  # oh yeah
+      it 'should show the label for each metric in the section for its category' do
+        do_render
+        @categories.keys.each do |category|
+          response.should have_tag('div[class=?]', "report_#{category}_metrics") do
+            @categories[category].each do |metric|
+              with_tag('li', Regexp.new(Regexp.escape(metric.label)))
             end
           end
-        end
-        
-        it 'should include no items if there are no values' do
-          @metrics['time'] = stub('time', :values => [])
-          do_render
-          response.should have_tag('ul[id=?]', 'report_time_metrics') do
-            without_tag('li')
-          end
-        end
+        end        
       end
       
-      it 'should not include time metrics if there is no time metric information' do
-        @metrics.delete('time')
+      it 'should show the value for each metric in the section for its category' do
         do_render
-        response.should_not have_tag('ul[id=?]', 'report_time_metrics')
-      end
-      
-      it 'should include resources metrics' do
-        do_render
-        response.should have_tag('div[id=?]', 'report_details') do
-          with_tag('ul[id=?]', 'report_resources_metrics')
-        end
-      end
-      
-      describe 'resources metrics' do
-        before :each do
-          @value = [:label, 'Label', 38]  # oh yeah
-          @metrics['resources'] = stub('resources', :values => [@value])
-        end
-        
-        it 'should include a value item' do
-          do_render
-          response.should have_tag('ul[id=?]', 'report_resources_metrics') do
-            with_tag('li')
-          end
-        end
-        
-        it "should include the value's name" do
-          do_render
-          response.should have_tag('ul[id=?]', 'report_resources_metrics') do
-            with_tag('li', :text => Regexp.new(Regexp.escape(@value[1])))  # oh yeah
-          end
-        end
-        
-        it "should include the value's amount" do
-          do_render
-          response.should have_tag('ul[id=?]', 'report_resources_metrics') do
-            with_tag('li', :text => Regexp.new(Regexp.escape(@value[2].to_s)))  # oh yeah
-          end
-        end
-        
-        it 'should include a value item for each value' do
-          other_value = [:other_label, 'Other Label', 4]  # oh yeah
-          values = [@value, other_value]
-          @metrics['resources'] = stub('resources', :values => values)
-          
-          do_render
-          response.should have_tag('ul[id=?]', 'report_resources_metrics') do
-            values.each do |value|
-              with_tag('li', :text => Regexp.new(Regexp.escape(value[1])))  # oh yeah
+        @categories.keys.each do |category|
+          response.should have_tag('div[class=?]', "report_#{category}_metrics") do
+            @categories[category].each do |metric|
+              with_tag('li', Regexp.new(Regexp.escape(metric.value.to_s)))
             end
           end
-        end
-        
-        it 'should include no items if there are no values' do
-          @metrics['resources'] = stub('resources', :values => [])
-          do_render
-          response.should have_tag('ul[id=?]', 'report_resources_metrics') do
-            without_tag('li')
-          end
-        end
-      end
-      
-      it 'should not include resources metrics if there is no resources metric information' do
-        @metrics.delete('resources')
-        do_render
-        response.should_not have_tag('ul[id=?]', 'report_resources_metrics')
-      end
-      
-      describe 'changes metrics' do
-        before :each do
-          @value = [:label, 'Label', 2]  # oh yeah
-          @metrics['changes'] = stub('changes', :values => [@value])
-        end
-        
-        it 'should include a value item' do
-          do_render
-          response.should have_tag('ul[id=?]', 'report_changes_metrics') do
-            with_tag('li')
-          end
-        end
-        
-        it "should include the value's name" do
-          do_render
-          response.should have_tag('ul[id=?]', 'report_changes_metrics') do
-            with_tag('li', :text => Regexp.new(Regexp.escape(@value[1])))  # oh yeah
-          end
-        end
-        
-        it "should include the value's amount" do
-          do_render
-          response.should have_tag('ul[id=?]', 'report_changes_metrics') do
-            with_tag('li', :text => Regexp.new(Regexp.escape(@value[2].to_s)))  # oh yeah
-          end
-        end
-        
-        it 'should include a value item for each value' do
-          other_value = [:other_label, 'Other Label', 5]  # oh yeah
-          values = [@value, other_value]
-          @metrics['changes'] = stub('changes', :values => values)
-          
-          do_render
-          response.should have_tag('ul[id=?]', 'report_changes_metrics') do
-            values.each do |value|
-              with_tag('li', :text => Regexp.new(Regexp.escape(value[1])))  # oh yeah
-            end
-          end
-        end
-        
-        it 'should include no items if there are no values' do
-          @metrics['changes'] = stub('changes', :values => [])
-          do_render
-          response.should have_tag('ul[id=?]', 'report_changes_metrics') do
-            without_tag('li')
-          end
-        end
-      end
-      
-      it 'should not include changes metrics if there is no changes metric information' do
-        @metrics.delete('changes')
-        do_render
-        response.should_not have_tag('ul[id=?]', 'report_changes_metrics')
+        end                
       end
     end
   end
