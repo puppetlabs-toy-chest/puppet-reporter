@@ -18,27 +18,21 @@ describe NodesHelper do
     end
     
     it 'should get report count data' do
-      Report.expects(:count_between).at_least_once
+      Report.expects(:count_between)
+      helper.report_count_graph
+    end
+    
+    it 'should get report count data for 30 minute intervals over the past day' do
+      now = Time.zone.now
+      Time.zone.stubs(:now).returns(now)
+      
+      Report.expects(:count_between).with(now - 1.day, now, :interval => 30.minutes)
       helper.report_count_graph
     end
     
     it 'should create a sparkline using the report count data' do
-      now = Time.zone.now
-      Time.zone.stubs(:now).returns(now)
-      
-      start_time = now - 1.day
-      end_time = start_time + 30.minutes
-      
-      data_points = []
-      while end_time <= now
-        data_point = stub("data point #{end_time}")
-        Report.stubs(:count_between).with(start_time, end_time).returns(data_point)
-        data_points.push data_point
-        
-        start_time = end_time
-        end_time += 30.minutes
-      end
-      
+      data_points = stub('data points')
+      Report.stubs(:count_between).returns(data_points)
       helper.expects(:sparkline_tag).with(data_points, anything)
       helper.report_count_graph
     end
@@ -54,5 +48,4 @@ describe NodesHelper do
       helper.report_count_graph.should == sparkline
     end
   end
-
 end

@@ -50,12 +50,46 @@ class Report < ActiveRecord::Base
   end
   
   class << self
-    def between(start_time, end_time)
-      find(:all, :conditions => ['timestamp >= ? and timestamp < ?', start_time, end_time])
+    def between(start_time, end_time, options = {})
+      if interval = options[:interval]
+        reports = []
+        low_time = start_time
+        high_time = low_time + interval
+        
+        while high_time <= end_time
+          reports.push find(:all, :conditions => ['timestamp >= ? and timestamp < ?', low_time, high_time])
+          
+          low_time   = high_time
+          high_time += interval
+          if high_time > end_time
+            high_time = end_time unless low_time == end_time
+          end
+        end
+        reports
+      else
+        find(:all, :conditions => ['timestamp >= ? and timestamp < ?', start_time, end_time])
+      end
     end
     
-    def count_between(start_time, end_time)
-      count(:conditions => ['timestamp >= ? and timestamp < ?', start_time, end_time])
+    def count_between(start_time, end_time, options = {})
+      if interval = options[:interval]
+        counts = []
+        low_time = start_time
+        high_time = low_time + interval
+        
+        while high_time <= end_time
+          counts.push count(:conditions => ['timestamp >= ? and timestamp < ?', low_time, high_time])
+          
+          low_time   = high_time
+          high_time += interval
+          if high_time > end_time
+            high_time = end_time unless low_time == end_time
+          end
+        end
+        counts
+      else
+        count(:conditions => ['timestamp >= ? and timestamp < ?', start_time, end_time])
+      end
     end
   end
 end

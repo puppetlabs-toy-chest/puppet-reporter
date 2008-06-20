@@ -480,18 +480,19 @@ describe Report do
   
   describe 'getting reports in a time interval' do
     before :each do
+      Report.delete_all
+      
       @time = Time.zone.now
       @start_time = @time - 123
-      @end_time   = @start_time + 456
+      @end_time   = @start_time + 1000
       
-      @reports = {}
-      @reports[:early]  = Report.generate(:timestamp => @start_time - 1)
-      @reports[:start]  = Report.generate(:timestamp => @start_time)
-      @reports[:middle] =  Report.generate(:timestamp => @start_time + 123)
-      @reports[:end]    = Report.generate(:timestamp => @end_time)
-      @reports[:late]   = Report.generate(:timestamp => @end_time + 1)
-      
-      @timeframe_reports = Report.between(@start_time, @end_time)
+      @reports = []
+      @reports.push Report.generate!(:timestamp => @start_time - 1)
+      10.times do |i|
+        @reports.push Report.generate!(:timestamp => @start_time + (100 * i))
+      end
+      @reports.push Report.generate!(:timestamp => @end_time)
+      @reports.push Report.generate!(:timestamp => @end_time + 1)
     end
     
     it 'should accept start and end times' do
@@ -507,7 +508,21 @@ describe Report do
     end
     
     it 'should return reports with timestamps between the two times' do
-      @timeframe_reports.sort_by(&:id).should == @reports.values_at(:start, :middle).sort_by(&:id)
+      Report.between(@start_time, @end_time).sort_by(&:id).should == @reports[1..-3].sort_by(&:id)
+    end
+    
+    it 'should accept options' do
+      lambda { Report.between(@start_time, @end_time, :interval => 100) }.should_not raise_error(ArgumentError)
+    end
+    
+    describe 'when given an interval' do
+      it 'should return an array of reports for each interval' do
+        Report.between(@start_time, @end_time, :interval => 100).should == @reports[1..-3].collect { |rep|  [rep] }
+      end
+      
+      it 'should include a partial interval at the end' do
+        Report.between(@start_time, @end_time, :interval => 300).should == [@reports[1..3], @reports[4..6], @reports[7..9], [@reports[10]]]
+      end
     end
   end
   
@@ -517,18 +532,19 @@ describe Report do
   
   describe 'counting reports in a time interval' do
     before :each do
+      Report.delete_all
+      
       @time = Time.zone.now
       @start_time = @time - 123
-      @end_time   = @start_time + 456
+      @end_time   = @start_time + 1000
       
-      @reports = {}
-      @reports[:early]  = Report.generate(:timestamp => @start_time - 1)
-      @reports[:start]  = Report.generate(:timestamp => @start_time)
-      @reports[:middle] =  Report.generate(:timestamp => @start_time + 123)
-      @reports[:end]    = Report.generate(:timestamp => @end_time)
-      @reports[:late]   = Report.generate(:timestamp => @end_time + 1)
-      
-      @timeframe_report_count = Report.count_between(@start_time, @end_time)
+      @reports = []
+      @reports.push Report.generate!(:timestamp => @start_time - 1)
+      10.times do |i|
+        @reports.push Report.generate!(:timestamp => @start_time + (100 * i))
+      end
+      @reports.push Report.generate!(:timestamp => @end_time)
+      @reports.push Report.generate!(:timestamp => @end_time + 1)
     end
     
     it 'should accept start and end times' do
@@ -544,7 +560,21 @@ describe Report do
     end
     
     it 'should return reports with timestamps between the two times' do
-      @timeframe_report_count.should == 2
+      Report.count_between(@start_time, @end_time).should == 10
+    end
+    
+    it 'should accept options' do
+      lambda { Report.count_between(@start_time, @end_time, :interval => 100) }.should_not raise_error(ArgumentError)
+    end
+    
+    describe 'when given an interval' do
+      it 'should return an array of counts for each interval' do
+        Report.count_between(@start_time, @end_time, :interval => 100).should == [1] * 10
+      end
+      
+      it 'should include a partial interval at the end' do
+        Report.count_between(@start_time, @end_time, :interval => 300).should == [3, 3, 3, 1]
+      end
     end
   end
 end
