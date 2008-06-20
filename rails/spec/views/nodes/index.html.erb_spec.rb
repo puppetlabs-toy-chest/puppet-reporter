@@ -7,6 +7,8 @@ describe '/nodes/index.html.erb' do
     assigns[:nodes] = [@node]
     template.stubs(:report_count_graph).returns('report count graph goes here')
     template.stubs(:node_report_count_graph).returns('node report count graph goes here')
+    template.stubs(:total_change_graph).returns('total change graph goes here')
+    template.stubs(:node_total_change_graph).returns('node total change graph goes here')
   end
 
   def do_render
@@ -22,6 +24,13 @@ describe '/nodes/index.html.erb' do
     do_render
     response.should have_tag('table[id=?]', 'node_list') do
       with_tag('thead', :text => Regexp.new(Regexp.escape('report count graph goes here')))
+    end
+  end
+  
+  it 'should include a total change graph' do
+    do_render
+    response.should have_tag('table[id=?]', 'node_list') do
+      with_tag('thead', :text => Regexp.new(Regexp.escape('total change graph goes here')))
     end
   end
   
@@ -53,6 +62,16 @@ describe '/nodes/index.html.erb' do
       
       it 'should get the report count graph for the node' do
         template.expects(:node_report_count_graph).with(@node)
+        do_render
+      end
+      
+      it 'should include a total change graph for the node' do
+        do_render
+        response.should have_tag('tr[id=?]', "node-#{@node.id}", :text => Regexp.new(Regexp.escape('node total change graph goes here')))
+      end
+      
+      it 'should get the total change graph for the node' do
+        template.expects(:node_total_change_graph).with(@node)
         do_render
       end
     end

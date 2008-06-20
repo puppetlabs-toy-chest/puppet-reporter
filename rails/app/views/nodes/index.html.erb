@@ -4,12 +4,14 @@
   <thead>
     <th></th>
     <th><%= report_count_graph %></th>
+    <th><%= total_change_graph %></th>
   </thead>
   <tbody>
     <% @nodes.each do |node| %>
     <tr id="node-<%= node.id %>">
       <td><%= link_to node.name, node_path(node) %></td>
       <td><%= node_report_count_graph(node) %></td>
+      <td><%= node_total_change_graph(node) %></td>
     </tr>
     <% end %>
   </tbody>

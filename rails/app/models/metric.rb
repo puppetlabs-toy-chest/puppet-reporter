@@ -20,13 +20,16 @@ class Metric < ActiveRecord::Base
     end
     
     def total_changes_between(start_time, end_time, options = {})
+      find_options = {}
+      find_options[:include] = :report unless ((scope(:find) || {})[:joins] || '').match(/reports\.id/)
+      
       if interval = options[:interval]
         metrics = []
         low_time = start_time
         high_time = low_time + interval
         
         while high_time <= end_time
-          metrics.push find(:all, :include => :report, :conditions => ['reports.timestamp >= ? and reports.timestamp < ? and category = ? and label = ?', low_time, high_time, 'changes', 'Total'])
+          metrics.push find(:all, { :conditions => ['reports.timestamp >= ? and reports.timestamp < ? and category = ? and label = ?', low_time, high_time, 'changes', 'Total'] }.merge(find_options))
           
           low_time   = high_time
           high_time += interval
@@ -37,7 +40,7 @@ class Metric < ActiveRecord::Base
         
         metrics.collect { |met|  met.collect(&:value).inject(&:+) || 0 }
       else
-        metrics = find(:all, :include => :report, :conditions => ['reports.timestamp >= ? and reports.timestamp < ? and category = ? and label = ?', start_time, end_time, 'changes', 'Total'])
+        metrics = find(:all, { :conditions => ['reports.timestamp >= ? and reports.timestamp < ? and category = ? and label = ?', start_time, end_time, 'changes', 'Total'] }.merge(find_options))
         metrics.collect(&:value).inject(&:+) || 0
       end
     end
