@@ -30,6 +30,13 @@ describe NodesHelper do
       helper.report_count_graph
     end
     
+    it 'should use a passed-in time' do
+      time = Time.zone.now - 1234
+      
+      Report.expects(:count_between).with(time - 1.day, time, :interval => 30.minutes)
+      helper.report_count_graph(time)
+    end
+    
     it 'should create a sparkline using the report count data' do
       data_points = stub('data points')
       Report.stubs(:count_between).returns(data_points)
@@ -85,6 +92,13 @@ describe NodesHelper do
       @node.reports.expects(:count_between).with(now - 1.day, now, :interval => 30.minutes)
       helper.node_report_count_graph(@node)
     end
+    
+    it 'should use a passed-in time' do
+      time = Time.zone.now - 1234
+      
+      @node.reports.expects(:count_between).with(time - 1.day, time, :interval => 30.minutes)
+      helper.node_report_count_graph(@node, time)
+    end
 
     it 'should create a sparkline using the report count data' do
       data_points = stub('data points')
@@ -131,6 +145,13 @@ describe NodesHelper do
       
       Metric.expects(:total_changes_between).with(now - 1.day, now, :interval => 30.minutes)
       helper.total_change_graph
+    end
+    
+    it 'should use a passed-in time' do
+      time = Time.zone.now - 1234
+      
+      Metric.expects(:total_changes_between).with(time - 1.day, time, :interval => 30.minutes)
+      helper.total_change_graph(time)
     end
     
     it 'should create a sparkline using the total change data' do
@@ -187,6 +208,13 @@ describe NodesHelper do
 
       @node.metrics.expects(:total_changes_between).with(now - 1.day, now, :interval => 30.minutes)
       helper.node_total_change_graph(@node)
+    end
+    
+    it 'should use a passed-in time' do
+      time = Time.zone.now - 1234
+      
+      @node.metrics.expects(:total_changes_between).with(time - 1.day, time, :interval => 30.minutes)
+      helper.node_total_change_graph(@node, time)
     end
 
     it 'should create a sparkline using the total change data' do
