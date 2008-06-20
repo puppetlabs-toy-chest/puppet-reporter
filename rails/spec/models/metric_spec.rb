@@ -102,7 +102,6 @@ describe Metric do
       end
     end
     
-    
     describe 'when importing from puppet metrics' do
       before :each do
         @report = Report.generate
@@ -156,7 +155,7 @@ describe Metric do
       Metric.should respond_to(:total_changes_between)
     end
 
-    describe 'getting reports in a time interval' do
+    describe 'getting total changes in a time interval' do
       before :each do
         Metric.delete_all
 
