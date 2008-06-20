@@ -1,17 +1,18 @@
+<% now = Time.zone.now %>
 <h1>Nodes</h1>
 
 <table id="node_list" class="node_list">
   <thead>
     <th></th>
-    <th><%= report_count_graph %></th>
-    <th><%= total_change_graph %></th>
+    <th><%= report_count_graph(now) %></th>
+    <th><%= total_change_graph(now) %></th>
   </thead>
   <tbody>
     <% @nodes.each do |node| %>
     <tr id="node-<%= node.id %>">
       <td><%= link_to node.name, node_path(node) %></td>
-      <td><%= node_report_count_graph(node) %></td>
-      <td><%= node_total_change_graph(node) %></td>
+      <td><%= node_report_count_graph(node, now) %></td>
+      <td><%= node_total_change_graph(node, now) %></td>
     </tr>
     <% end %>
   </tbody>

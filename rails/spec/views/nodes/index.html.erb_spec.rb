@@ -9,6 +9,8 @@ describe '/nodes/index.html.erb' do
     template.stubs(:node_report_count_graph).returns('node report count graph goes here')
     template.stubs(:total_change_graph).returns('total change graph goes here')
     template.stubs(:node_total_change_graph).returns('node total change graph goes here')
+    @now = Time.zone.now
+    Time.zone.stubs(:now).returns(@now)
   end
 
   def do_render
@@ -27,12 +29,23 @@ describe '/nodes/index.html.erb' do
     end
   end
   
+  it 'should base the report count graph off now' do
+    template.expects(:report_count_graph).with(@now)
+    do_render
+  end
+  
   it 'should include a total change graph' do
     do_render
     response.should have_tag('table[id=?]', 'node_list') do
       with_tag('thead', :text => Regexp.new(Regexp.escape('total change graph goes here')))
     end
   end
+  
+  it 'should base the total change graph off now' do
+    template.expects(:total_change_graph).with(@now)
+    do_render
+  end
+  
   
   describe 'node list' do
     it 'should include a node list item' do
@@ -61,7 +74,12 @@ describe '/nodes/index.html.erb' do
       end
       
       it 'should get the report count graph for the node' do
-        template.expects(:node_report_count_graph).with(@node)
+        template.expects(:node_report_count_graph).with(@node, anything)
+        do_render
+      end
+      
+      it 'should base the node report count graph off now' do
+        template.expects(:node_report_count_graph).with(anything, @now)
         do_render
       end
       
@@ -71,7 +89,12 @@ describe '/nodes/index.html.erb' do
       end
       
       it 'should get the total change graph for the node' do
-        template.expects(:node_total_change_graph).with(@node)
+        template.expects(:node_total_change_graph).with(@node, anything)
+        do_render
+      end
+      
+      it 'should base the node total change graph off now' do
+        template.expects(:node_total_change_graph).with(anything, @now)
         do_render
       end
     end
