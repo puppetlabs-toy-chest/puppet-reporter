@@ -213,7 +213,6 @@ td {
 			border-left: thin solid #ddd;			
 			border-right: thin solid #444;
 			border-bottom: thin solid #444;
-			float: right;
 }
 #content img.float.left {
 			margin: 15px 15px 15px 0px;	
