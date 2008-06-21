@@ -17,7 +17,10 @@ body {font: 0.8125em Helvetica, Arial, sans-serif;
 			line-height: 1; 
 			color: #000;
 			margin: 0; 
-			padding: 0;}
+			padding: 0;
+            background-image: url(/images/left-edge-puppets-pattern.png);
+            background-repeat: repeat-y; 
+        }
 a {text-decoration: none;}
 a img {border: none;}
 
