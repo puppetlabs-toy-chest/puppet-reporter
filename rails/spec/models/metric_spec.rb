@@ -402,5 +402,43 @@ describe Metric do
         end
       end
     end
+    
+    it 'should get failures' do
+      Metric.should respond_to(:failures)
+    end
+    
+    describe 'when getting failures' do
+      before :each do
+        Metric.delete_all
+        
+        @failures = Array.new(3) do |i|
+          Metric.generate!(:category => 'resources', :label => 'Failed', :value => 5.0 * (i+1))
+        end
+      end
+      
+      it 'should return failure metrics' do
+        Metric.failures.sort_by(&:id).should == @failures.sort_by(&:id)
+      end
+      
+      it 'should not include non-failure resource metrics' do
+        metric = Metric.generate!(:category => 'resources', :label => 'Total', :value => 5.0)
+        Metric.failures.should_not include(metric)
+      end
+      
+      it 'should not include non-resource metrics' do
+        metric = Metric.generate!(:category => 'time', :label => 'Failed', :value => 5.0)
+        Metric.failures.should_not include(metric)
+      end
+      
+      it 'should return an empty array if there are no matching metrics' do
+        Metric.delete_all
+        Metric.failures.should == []
+      end
+      
+      it 'should not include failure metrics with a value of 0' do
+        metric = Metric.generate!(:category => 'resources', :label => 'Failed', :value => 0)
+        Metric.failures.should_not include(metric)
+      end
+    end
   end
 end
