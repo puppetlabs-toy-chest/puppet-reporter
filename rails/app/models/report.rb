@@ -51,19 +51,7 @@ class Report < ActiveRecord::Base
         end_time   = Time.parse(end_time.to_s)
         
         partitioned_reports = Hash.new { |h, k| h[k] = [] }
-        partitions = []
-        
-        low_time  = start_time
-        high_time = low_time + interval
-        while high_time <= end_time
-          partitions.push [low_time, high_time]
-          
-          low_time   = high_time
-          high_time += interval
-          if high_time > end_time
-            high_time = end_time unless low_time == end_time
-          end
-        end
+        partitions = (start_time..end_time).partitions(interval)
         
         reports.each do |report|
           partition = partitions.detect { |part|  (part.first...part.last).include?(report.timestamp) }
@@ -88,19 +76,7 @@ class Report < ActiveRecord::Base
         end_time   = Time.parse(end_time.to_s)
         
         partitioned_counts = Hash.new(0)
-        partitions = []
-        
-        low_time  = start_time
-        high_time = low_time + interval
-        while high_time <= end_time
-          partitions.push [low_time, high_time]
-          
-          low_time   = high_time
-          high_time += interval
-          if high_time > end_time
-            high_time = end_time unless low_time == end_time
-          end
-        end
+        partitions = (start_time..end_time).partitions(interval)
         
         reports.each do |report|
           partition = partitions.detect { |part|  (part.first...part.last).include?(report.timestamp) }

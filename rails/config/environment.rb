@@ -76,3 +76,4 @@ require 'puppet'
 
 require 'sparklines'
 
+require 'partition_points'
