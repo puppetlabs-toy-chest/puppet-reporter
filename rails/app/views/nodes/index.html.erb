@@ -6,6 +6,8 @@
     <th></th>
     <th><%= report_count_graph(now) %></th>
     <th><%= total_change_graph(now) %></th>
+    <th><%= total_failure_graph(now) %></th>
+    <th><%= total_resource_graph(now) %></th>
   </thead>
   <tbody>
     <% @nodes.each do |node| %>
@@ -13,6 +15,8 @@
       <td><%= link_to node.name, node_path(node) %></td>
       <td><%= node_report_count_graph(node, now) %></td>
       <td><%= node_total_change_graph(node, now) %></td>
+      <td><%= node_total_failure_graph(node, now) %></td>
+      <td><%= node_total_resource_graph(node, now) %></td>
     </tr>
     <% end %>
   </tbody>
