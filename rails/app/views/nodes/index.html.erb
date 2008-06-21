@@ -3,11 +3,20 @@
 
 <table id="node_list" class="node_list">
   <thead>
-    <th></th>
-    <th><%= report_count_graph(now) %></th>
-    <th><%= total_change_graph(now) %></th>
-    <th><%= total_failure_graph(now) %></th>
-    <th><%= total_resource_graph(now) %></th>
+    <tr>
+      <th>Name</th>
+      <th>Reports</th>
+      <th>Changes</th>
+      <th>Failures</th>
+      <th>Resources</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th><%= report_count_graph(now) %></th>
+      <th><%= total_change_graph(now) %></th>
+      <th><%= total_failure_graph(now) %></th>
+      <th><%= total_resource_graph(now) %></th>
+    </tr>
   </thead>
   <tbody>
     <% @nodes.each do |node| %>
