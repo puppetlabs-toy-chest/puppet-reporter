@@ -80,6 +80,16 @@ describe Report do
     it 'can have metrics' do
       @report.metrics.should == []
     end
+    
+    it 'can have failures' do
+      @report.should respond_to(:failures)
+    end
+    
+    it 'should get failures from its metrics' do
+      failures = stub('failures')
+      @report.metrics.stubs(:failures).returns(failures)
+      @report.failures.should == failures
+    end
   end
   
   describe 'as a class' do

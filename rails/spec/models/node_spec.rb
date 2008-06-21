@@ -73,7 +73,39 @@ describe Node do
       
       metrics = @node.reports.collect(&:metrics).flatten
       @node.metrics.sort_by(&:id).should == metrics.sort_by(&:id)
-    end    
+    end
+    
+    it 'can have failures' do
+      @node.should respond_to(:failures)
+    end
+    
+    it 'should get failures through its reports' do
+      @node = Node.generate!
+      2.times do |i|
+        rep = @node.reports.generate!(:timestamp => Time.zone.now + i)
+        3.times do |j|
+          rep.metrics.generate!(:category => 'resources', :label => 'Failed', :value => 5.0 * (i+1))
+        end
+      end
+      @node.reload
+      
+      failures = @node.reports.collect(&:failures).flatten
+      @node.failures.sort_by(&:id).should == failures.sort_by(&:id)
+    end
+    
+    it 'should order failures by report timestamp, most recent first' do
+      @node = Node.generate!
+      failures = []
+      rep = @node.reports.generate!(:timestamp => Time.zone.now + 5)
+      failures.push rep.metrics.generate!(:category => 'resources', :label => 'Failed', :value => 5.0)
+      rep = @node.reports.generate!(:timestamp => Time.zone.now - 5)
+      failures.push rep.metrics.generate!(:category => 'resources', :label => 'Failed', :value => 5.0)
+      rep = @node.reports.generate!(:timestamp => Time.zone.now + 20)
+      failures.unshift rep.metrics.generate!(:category => 'resources', :label => 'Failed', :value => 5.0)
+      @node.reload
+      
+      @node.failures.should == failures
+    end
   end
   
   describe 'attributes' do

@@ -3,7 +3,8 @@ class Report < ActiveRecord::Base
   validates_presence_of :node
 
   has_many :metrics
-
+  delegate :failures, :to => :metrics
+  
   validates_presence_of :timestamp
   validates_uniqueness_of :timestamp, :scope => :node_id
   
