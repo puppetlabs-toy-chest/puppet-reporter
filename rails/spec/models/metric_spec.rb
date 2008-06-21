@@ -318,5 +318,89 @@ describe Metric do
         end
       end
     end
+    
+    it 'should get total resources in a time interval' do
+      Metric.should respond_to(:total_resources_between)
+    end
+
+    describe 'getting total resources in a time interval' do
+      before :each do
+        Metric.delete_all
+
+        @time = Time.zone.now
+        @start_time = @time - 123
+        @end_time   = @start_time + 1000
+
+        @metrics = []
+        @metrics.push Metric.generate!(:report => Report.generate!(:timestamp => @start_time - 1), :category => 'resources', :label => 'Total')
+        10.times do |i|
+          @metrics.push Metric.generate!(:report => Report.generate!(:timestamp => @start_time + (100 *i)), :category => 'resources', :label => 'Total')
+        end
+        @metrics.push Metric.generate!(:report => Report.generate!(:timestamp => @end_time), :category => 'resources', :label => 'Total')
+        @metrics.push Metric.generate!(:report => Report.generate!(:timestamp => @end_time + 1), :category => 'resources', :label => 'Total')
+      end
+
+      it 'should accept start and end times' do
+        lambda { Metric.total_resources_between(@start_time, @end_time) }.should_not raise_error(ArgumentError)
+      end
+
+      it 'should require an end time' do
+        lambda { Metric.total_resources_between(@start_time) }.should raise_error(ArgumentError)
+      end
+
+      it 'should require a start time' do
+        lambda { Metric.total_resources_between }.should raise_error(ArgumentError)
+      end
+
+      it 'should return total resources belonging to reports with timestamps between the two times' do
+        total_resources = @metrics[1..-3].collect(&:value).inject(&:+)
+        Metric.total_resources_between(@start_time, @end_time).should == total_resources
+      end
+      
+      it 'should return 0 if there are no matching metrics' do
+        @metrics[1..-3].each(&:destroy)
+        Metric.total_resources_between(@start_time, @end_time).should == 0
+      end
+      
+      it 'should not include non-total resource metrics' do
+        Metric.generate!(:report => Report.generate!(:timestamp => @start_time + 1), :category => 'resources', :label => 'Bang')
+        
+        total_resources = @metrics[1..-3].collect(&:value).inject(&:+)
+        Metric.total_resources_between(@start_time, @end_time).should == total_resources
+      end
+      
+      it 'should not include non-resource metrics' do
+        Metric.generate!(:report => Report.generate!(:timestamp => @start_time + 1), :category => 'time', :label => 'Total')
+        
+        total_resources = @metrics[1..-3].collect(&:value).inject(&:+)
+        Metric.total_resources_between(@start_time, @end_time).should == total_resources
+      end
+      
+      it 'should accept options' do
+        lambda { Metric.total_resources_between(@start_time, @end_time, :interval => 100) }.should_not raise_error(ArgumentError)
+      end
+
+      describe 'when given an interval' do
+        it 'should return an array of total resource counts for each interval' do
+          total_resources = @metrics[1..-3].collect(&:value)
+          Metric.total_resources_between(@start_time, @end_time, :interval => 100).should == total_resources
+        end
+        
+        it 'should return 0 for any interval without a failure metric' do
+          total_resources = @metrics[1..-3].collect(&:value)
+          @metrics[2].destroy
+          total_resources[1] = 0
+          Metric.total_resources_between(@start_time, @end_time, :interval => 100).should == total_resources
+        end
+        
+        it 'should include a partial interval at the end' do
+          total_resources = []
+          [1..3, 4..6, 7..9, 10..10].each do |range|
+            total_resources.push @metrics[range].collect(&:value).inject(&:+)
+          end
+          Metric.total_resources_between(@start_time, @end_time, :interval => 300).should == total_resources
+        end
+      end
+    end
   end
 end

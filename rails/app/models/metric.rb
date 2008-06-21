@@ -50,8 +50,9 @@ class Metric < ActiveRecord::Base
     end
     
     {
-      :changes  => { :category => 'changes',   :label => 'Total' },
-      :failures => { :category => 'resources', :label => 'Failed' }
+      :changes   => { :category => 'changes',   :label => 'Total' },
+      :failures  => { :category => 'resources', :label => 'Failed' },
+      :resources => { :category => 'resources', :label => 'Total' }
     }.each do |type, data|
       define_time_interval_method(type, data)
     end
