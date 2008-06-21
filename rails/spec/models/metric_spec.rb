@@ -234,5 +234,89 @@ describe Metric do
         end
       end
     end
+    
+    it 'should get total failures in a time interval' do
+      Metric.should respond_to(:total_failures_between)
+    end
+
+    describe 'getting total failures in a time interval' do
+      before :each do
+        Metric.delete_all
+
+        @time = Time.zone.now
+        @start_time = @time - 123
+        @end_time   = @start_time + 1000
+
+        @metrics = []
+        @metrics.push Metric.generate!(:report => Report.generate!(:timestamp => @start_time - 1), :category => 'resources', :label => 'Failed')
+        10.times do |i|
+          @metrics.push Metric.generate!(:report => Report.generate!(:timestamp => @start_time + (100 *i)), :category => 'resources', :label => 'Failed')
+        end
+        @metrics.push Metric.generate!(:report => Report.generate!(:timestamp => @end_time), :category => 'resources', :label => 'Failed')
+        @metrics.push Metric.generate!(:report => Report.generate!(:timestamp => @end_time + 1), :category => 'resources', :label => 'Failed')
+      end
+
+      it 'should accept start and end times' do
+        lambda { Metric.total_failures_between(@start_time, @end_time) }.should_not raise_error(ArgumentError)
+      end
+
+      it 'should require an end time' do
+        lambda { Metric.total_failures_between(@start_time) }.should raise_error(ArgumentError)
+      end
+
+      it 'should require a start time' do
+        lambda { Metric.total_failures_between }.should raise_error(ArgumentError)
+      end
+
+      it 'should return total failures belonging to reports with timestamps between the two times' do
+        total_failures = @metrics[1..-3].collect(&:value).inject(&:+)
+        Metric.total_failures_between(@start_time, @end_time).should == total_failures
+      end
+      
+      it 'should return 0 if there are no matching metrics' do
+        @metrics[1..-3].each(&:destroy)
+        Metric.total_failures_between(@start_time, @end_time).should == 0
+      end
+      
+      it 'should not include non-failure resource metrics' do
+        Metric.generate!(:report => Report.generate!(:timestamp => @start_time + 1), :category => 'resources', :label => 'Bang')
+        
+        total_failures = @metrics[1..-3].collect(&:value).inject(&:+)
+        Metric.total_failures_between(@start_time, @end_time).should == total_failures
+      end
+      
+      it 'should not include non-resource metrics' do
+        Metric.generate!(:report => Report.generate!(:timestamp => @start_time + 1), :category => 'time', :label => 'Failed')
+        
+        total_failures = @metrics[1..-3].collect(&:value).inject(&:+)
+        Metric.total_failures_between(@start_time, @end_time).should == total_failures
+      end
+      
+      it 'should accept options' do
+        lambda { Metric.total_failures_between(@start_time, @end_time, :interval => 100) }.should_not raise_error(ArgumentError)
+      end
+
+      describe 'when given an interval' do
+        it 'should return an array of total failure counts for each interval' do
+          total_failures = @metrics[1..-3].collect(&:value)
+          Metric.total_failures_between(@start_time, @end_time, :interval => 100).should == total_failures
+        end
+        
+        it 'should return 0 for any interval without a failure metric' do
+          total_failures = @metrics[1..-3].collect(&:value)
+          @metrics[2].destroy
+          total_failures[1] = 0
+          Metric.total_failures_between(@start_time, @end_time, :interval => 100).should == total_failures
+        end
+        
+        it 'should include a partial interval at the end' do
+          total_failures = []
+          [1..3, 4..6, 7..9, 10..10].each do |range|
+            total_failures.push @metrics[range].collect(&:value).inject(&:+)
+          end
+          Metric.total_failures_between(@start_time, @end_time, :interval => 300).should == total_failures
+        end
+      end
+    end
   end
 end
