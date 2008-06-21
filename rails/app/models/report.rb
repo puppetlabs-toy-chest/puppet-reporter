@@ -45,11 +45,11 @@ class Report < ActiveRecord::Base
     def between(start_time, end_time, options = {})
       reports = find(:all, :conditions => ['timestamp >= ? and timestamp < ?', start_time, end_time])
       
-      # getting rid of usec
-      start_time = Time.parse(start_time.to_s)
-      end_time   = Time.parse(end_time.to_s)
-      
       if interval = options[:interval]
+        # getting rid of usec
+        start_time = Time.parse(start_time.to_s)
+        end_time   = Time.parse(end_time.to_s)
+        
         partitioned_reports = Hash.new { |h, k| h[k] = [] }
         partitions = []
         
@@ -78,13 +78,22 @@ class Report < ActiveRecord::Base
     end
     
     def count_between(start_time, end_time, options = {})
+      quoted_start = connection.quote(start_time)
+      quoted_end   = connection.quote(end_time)
+      reports = find_by_sql("select timestamp from reports where timestamp >= #{quoted_start} and timestamp < #{quoted_end}")
+      
       if interval = options[:interval]
-        counts = []
-        low_time = start_time
-        high_time = low_time + interval
+        # getting rid of usec
+        start_time = Time.parse(start_time.to_s)
+        end_time   = Time.parse(end_time.to_s)
         
+        partitioned_counts = Hash.new(0)
+        partitions = []
+        
+        low_time  = start_time
+        high_time = low_time + interval
         while high_time <= end_time
-          counts.push count(:conditions => ['timestamp >= ? and timestamp < ?', low_time, high_time])
+          partitions.push [low_time, high_time]
           
           low_time   = high_time
           high_time += interval
@@ -92,9 +101,16 @@ class Report < ActiveRecord::Base
             high_time = end_time unless low_time == end_time
           end
         end
-        counts
+        
+        reports.each do |report|
+          partition = partitions.detect { |part|  (part.first...part.last).include?(report.timestamp) }
+          
+          partitioned_counts[partition] += 1
+        end
+        
+        partitioned_counts.values_at(*partitions)
       else
-        count(:conditions => ['timestamp >= ? and timestamp < ?', start_time, end_time])
+        reports.length
       end
     end
   end
