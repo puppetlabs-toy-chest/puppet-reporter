@@ -25,24 +25,26 @@ class Metric < ActiveRecord::Base
           find_options = {}
           find_options[:include] = :report unless ((scope(:find) || {})[:joins] || '').match(/reports\.id/)
           
+          metrics = find(:all, { :conditions => ['reports.timestamp >= ? and reports.timestamp < ? and category = ? and label = ?', start_time, end_time, '#{data[:category]}', '#{data[:label]}'] }.merge(find_options))
+          
           if interval = options[:interval]
-            metrics = []
-            low_time = start_time
-            high_time = low_time + interval
+            # getting rid of usec
+            start_time = Time.parse(start_time.to_s)
+            end_time   = Time.parse(end_time.to_s)
             
-            while high_time <= end_time
-              metrics.push find(:all, { :conditions => ['reports.timestamp >= ? and reports.timestamp < ? and category = ? and label = ?', low_time, high_time, '#{data[:category]}', '#{data[:label]}'] }.merge(find_options))
+            partitioned_metrics = Hash.new { |h, k| h[k] = [] }
+            partitions = (start_time..end_time).partitions(interval)
+            
+            metrics.each do |metric|
+              partition = partitions.detect { |part|  (part.first...part.last).include?(metric.report.timestamp) }
               
-              low_time   = high_time
-              high_time += interval
-              if high_time > end_time
-                high_time = end_time unless low_time == end_time
-              end
+              partitioned_metrics[partition].push metric
             end
             
-            metrics.collect { |met|  met.collect(&:value).inject(&:+) || 0 }
+            partitions.collect do |part|
+              partitioned_metrics[part].collect(&:value).inject(&:+) || 0
+            end
           else
-            metrics = find(:all, { :conditions => ['reports.timestamp >= ? and reports.timestamp < ? and category = ? and label = ?', start_time, end_time, '#{data[:category]}', '#{data[:label]}'] }.merge(find_options))
             metrics.collect(&:value).inject(&:+) || 0
           end
         end
