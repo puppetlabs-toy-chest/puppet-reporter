@@ -716,3 +716,17 @@ div.section h4 { text-transform: none; }
 				padding-left: 0px;
 				background-image: none;
 }
+.report_category_metrics {
+				float: left;
+				margin: 25px 40px;
+}
+.report_category_metrics h3 {
+				text-decoration: underline;
+}
+#report_changes_metrics li, #report_resources_metrics li, #report_time_metrics li {
+				background: none;
+				padding-left: 0px;
+}
+.report_logs {
+				clear: both;
+}

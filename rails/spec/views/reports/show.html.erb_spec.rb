@@ -58,6 +58,13 @@ describe "/reports/show" do
           end
         end
         
+        it 'should be classed with log level' do
+          do_render
+          response.should have_tag('ul[id=?]', 'report_logs') do
+            with_tag('li[class=?]', @log.level)
+          end
+        end
+        
         it 'should include log message' do
           do_render
           response.should have_tag('ul[id=?]', 'report_logs') do
@@ -145,14 +152,14 @@ describe "/reports/show" do
       it 'should include a section for each category' do
         do_render
         @categories.keys.each do |category|
-          response.should have_tag('div[class=?]', "report_#{category}_metrics")
+          response.should have_tag('div[class*=?]', "report_#{category}_metrics")
         end
       end
       
       it 'should show the label for each metric in the section for its category' do
         do_render
         @categories.keys.each do |category|
-          response.should have_tag('div[class=?]', "report_#{category}_metrics") do
+          response.should have_tag('div[class*=?]', "report_#{category}_metrics") do
             @categories[category].each do |metric|
               with_tag('li', Regexp.new(Regexp.escape(metric.label)))
             end
@@ -163,7 +170,7 @@ describe "/reports/show" do
       it 'should show the value for each metric in the section for its category' do
         do_render
         @categories.keys.each do |category|
-          response.should have_tag('div[class=?]', "report_#{category}_metrics") do
+          response.should have_tag('div[class*=?]', "report_#{category}_metrics") do
             @categories[category].each do |metric|
               with_tag('li', Regexp.new(Regexp.escape(metric.value.to_s)))
             end
