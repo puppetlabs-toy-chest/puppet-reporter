@@ -6,6 +6,16 @@ class Metric < ActiveRecord::Base
   validates_presence_of :label
   validates_presence_of :value
   
+  def value
+    if val = attributes['value']
+      if %w[changes resources].include?(category)
+        val.to_i
+      else
+        val.to_f
+      end
+    end
+  end
+  
   class << self
     def from_puppet_metrics(metrics)
       metrics.keys.each do |category|

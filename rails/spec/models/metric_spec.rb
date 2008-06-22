@@ -53,7 +53,58 @@ describe Metric do
       @metric.value.should be_nil
     end
   end
-
+  
+  describe 'value' do
+    describe "when category is 'changes'" do
+      before :each do
+        @metric.category = 'changes'
+      end
+      
+      it 'should return an int' do
+        @metric.value = 5
+        @metric.value.should eql(5)
+      end
+      
+      it 'should return nil if value truly is nil' do
+        @metric.value = nil
+        @metric.value.should be_nil
+      end
+    end
+    
+    describe "when category is 'resources'" do
+      before :each do
+        @metric.category = 'resources'
+      end
+      
+      it 'should return an int' do
+        @metric.value = 5
+        @metric.value.should eql(5)
+      end
+      
+      it 'should return nil if value truly is nil' do
+        @metric.value = nil
+        @metric.value.should be_nil
+      end
+    end
+    
+    describe "when category is 'time'" do
+      before :each do
+        @metric.category = 'time'
+      end
+      
+      it 'should return a float' do
+        @metric.value = 5
+        @metric.value.should eql(5.0)
+      end
+      
+      it 'should return nil if value truly is nil' do
+        @metric.value = nil
+        @metric.value.should be_nil
+      end
+    end
+    
+  end
+  
   describe 'associations' do
     it 'should have a report' do
       @metric.report.should be_nil
