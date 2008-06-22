@@ -235,21 +235,21 @@ td {
 			padding-right: 10px;
 			padding-bottom: 50px;
 			position: absolute;
-			right: 0;
+			right: 10;
 			top: 35px;
-			background: #fbf7c9; }
+			background: #d09000; }
 			
 #sidebar div { padding: 5px 0.5em; 
-		background: #fbf7c9;}
+		background: #d09000;}
 #sidebar div.first { padding-top: 0; }
 #sidebar li {   padding: 1px 0 3px 22px;
 		font: .9em Helvetica, Arial, sans-serif;
 		background: url(/images/diamond-gray.gif) 15px .33em no-repeat;}
 
 #sidebar li a:link, 
-	#sidebar li a:visited { color: #AA6E03; }
+	#sidebar li a:visited { color: #717; }
 
-#sidebar li a:hover { color: #717;}
+#sidebar li a:hover { color: #A2A;}
 			
 #sidebar h1 { font: italic bold .9em Helvetica, Arial, sans-serif; 
 			color: #000; 
