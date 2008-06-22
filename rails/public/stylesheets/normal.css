@@ -730,3 +730,28 @@ div.section h4 { text-transform: none; }
 .report_logs {
 				clear: both;
 }
+table.logs {
+				border-collapse: collapse;
+				border: thin solid black;
+}
+table.logs td {
+				border-bottom: thin solid black;
+}
+table.logs td {
+				vertical-align: top;
+}
+table.logs tr.debug {
+				background-color: bisque;
+}
+table.logs tr.info {
+				background-color: tan;
+}
+table.logs tr.notice {
+				background-color: lightblue;
+}
+table.logs tr.warning {
+				background-color: khaki;
+}
+table.logs tr.err {
+				background-color: pink;
+}
