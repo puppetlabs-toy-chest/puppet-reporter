@@ -65,9 +65,7 @@ describe ReportsController do
         end
         
         it 'should not have created any new reports' do
-          @reports = Report.count
-          do_post('report' => @yaml)
-          Report.count.should == @reports
+          lambda { do_post('report' => @yaml) }.should_not change(Report, :count)
         end
       end
       
@@ -78,9 +76,7 @@ describe ReportsController do
         end
         
         it 'should have created a new report' do
-          @reports = Report.count
-          do_post('report' => @yaml)
-          Report.count.should_not == @reports          
+          lambda { do_post('report' => @yaml) }.should change(Report, :count)
         end
       end
     end
