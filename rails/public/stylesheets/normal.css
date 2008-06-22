@@ -73,7 +73,7 @@ caption {padding: 0.75em; font: 1.5em Helvetica, Arial, sans-serif;
 			background: #EEE;}
 
 th {
-	background: #d0b16e;
+	background: #d09000;
 }
 td {
 	padding: 10px;
@@ -472,7 +472,7 @@ td {
 #content tr { border: none; }
 #content tr.odd { background: #fff; }
 #content tr td.report { text-align: center; }
-#content tr.even { background: #d0b16e; }
+#content tr.even { background: #d09000; }
 
 #content em { color: #850; 
 			border-bottom: none; }
