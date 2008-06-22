@@ -1,10 +1,21 @@
 require 'puppet/reports'
 
-def submit_yaml_report_to_puppetshow(yaml)
-  lookup_connection_settings
+def submit_yaml_report_to_puppetshow(report)
+  network.post report.to_yaml
 end
 
-def lookup_connection_settings
+# TODO:  untested -- derived from main Puppet REST code
+def network_post(data)
+  network {|conn| conn.post("/nodes/create", data).body }
+end
+
+# TODO:  untested -- derived from main Puppet REST code
+def network(&block)
+  Net::HTTP.start(connection_settings[:host], connection_settings[:port]) {|conn| yield(conn) }
+end
+
+def connection_settings
+  { :host => 'localhost', :port => 80 }
 end
 
 Puppet::Reports.register_report(:puppet_show) do
@@ -12,7 +23,7 @@ Puppet::Reports.register_report(:puppet_show) do
   desc "Send report information to PuppetShow"
 
   def process
-    # do a net/htpp post to URL with data of self.to_yaml
+    submit_yaml_report_to_puppetshow(self)
   end
 end
 

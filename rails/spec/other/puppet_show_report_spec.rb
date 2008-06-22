@@ -40,28 +40,59 @@ describe "running the puppet_show Puppet report" do
   describe 'when submitting YAML data' do
     before :each do
       @yaml = report_yaml
-      self.stubs(:to_yaml).returns(@yaml)
+      @report = stub('report', :to_yaml => @yaml)
       run_report
     end
 
-    it 'should require YAML data' do
+    it 'should require the report instance' do
       lambda { submit_yaml_report_to_puppetshow }.should raise_error(ArgumentError)
     end
     
-    it 'should look up the endpoint for submitting report data' do
-      self.expects(:lookup_connection_settings)
-      submit_yaml_report_to_puppetshow(@yaml)
+    it 'should convert the report instance to yaml' do
+      @report.expects(:to_yaml).returns(@yaml)
+      submit_yaml_report_to_puppetshow(@report)
+    end
+
+    it 'should submit the yaml data to puppetshow' do
+      self.expects(:network_post).with(@yaml)
+      submit_yaml_report_to_puppetshow(@report)
+    end
+  end
+
+  describe 'when posting data' do
+    before :each do
+      @yaml = report_yaml
+      run_report
+    end
+
+    it 'should post the data to the endpoint' do
     end
     
-    it 'should submit the YAML representation to the submission endpoint'
-    
+    # it 'should look up the endpoint for submitting report data' do
+    #   self.expects(:connection_settings)
+    #   send_yaml_data(@yaml)
+    # end
+        
     describe 'if the submission fails' do
       it 'should log the failure'
     end
   end
   
   describe 'when looking up data for the submission endpoint' do
-    it 'should not accept any arguments'
-    it 'should return a host string'
+    before :each do
+      run_report
+    end
+
+    it 'should not accept any arguments' do
+      lambda { connection_settings('foo') }.should raise_error(ArgumentError)
+    end
+    
+    it 'should return a host' do
+      connection_settings.should have_key(:host)
+    end
+    
+    it 'should return a port' do
+      connection_settings.should have_key(:port)
+    end
   end
 end
