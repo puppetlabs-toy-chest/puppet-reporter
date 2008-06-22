@@ -5,9 +5,27 @@ describe "running the puppet_show Puppet report" do
     eval File.read(File.join(RAILS_ROOT, 'puppet', 'report', 'puppet_show.rb'))
   end
   
-  it "should register the report under the name 'puppet_show'"
-  it 'should use the puppet reporting settings'
-  it 'should provide a description for the report'
+  before :each do
+    Puppet::Reports.stubs(:register_report).yields
+    @puppet_settings = stub('puppet settings', :use => true)
+    self.stubs(:desc)
+    Puppet.stubs(:settings).returns(@puppet_settings)
+  end
+  
+  it "should register the report under the name 'puppet_show'" do
+    Puppet::Reports.expects(:register_report).with(:puppet_show)
+    run_report
+  end
+  
+  it 'should use the puppet reporting settings' do
+    @puppet_settings.expects(:use).with(:reporting)
+    run_report
+  end
+  
+  it 'should provide a description for the report' do
+    self.expects(:desc)
+    run_report
+  end
 
   describe 'when processing the report' do
     before :each do
@@ -15,7 +33,11 @@ describe "running the puppet_show Puppet report" do
       self.stubs(:to_yaml).returns(@yaml)
     end
 
-    it 'should not accept any arguments'
+    it 'should not accept any arguments' do
+      run_report
+      lambda { process('foo') }.should raise_error(ArgumentError)
+    end
+    
     it 'should generate a YAML representation of the report'
   end
   
@@ -25,16 +47,12 @@ describe "running the puppet_show Puppet report" do
     it 'should submit the YAML representation to the submission endpoint'
 
     describe 'if the submission fails' do
-      
-    end
-    
-    describe 'if the submission succeeds' do
-      
+      it 'should log the failure'
     end
   end
   
   describe 'when looking up data for the submission endpoint' do
     it 'should not accept any arguments'
-    it 'should return a '
+    it 'should return a host string'
   end
 end
