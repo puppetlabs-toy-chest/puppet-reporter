@@ -5,4 +5,12 @@ class ReportsController < ApplicationController
     flash[:notice] = 'Could not find information for that report.'
     return redirect_to(reports_path)
   end
+  
+  def create
+    return render(:text => 'report YAML is required', :status => 500) unless params[:report]
+    Report.from_yaml(params[:report])
+    render(:text => "Report successfully created at #{Time.zone.now}")
+  rescue Exception => e
+    render(:text => "Error processing request: [#{e}]", :status => 500)
+  end
 end

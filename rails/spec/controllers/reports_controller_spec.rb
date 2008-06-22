@@ -25,4 +25,64 @@ describe ReportsController do
       end
     end
   end
+  
+  describe 'when receiving a new report from Puppet' do
+    def do_post(params = {})
+      post :create, {}.merge(params)
+    end
+    
+    describe 'and no report data is received' do
+      it 'should return an error' do
+        do_post
+        response.should be_error
+      end
+      
+      it 'should not have created any new reports' do
+        Report.expects(:from_yaml).never
+      end
+    end
+    
+    # TODO:  if we wish to deal with authentication on creating Reports, this is where it would happen
+    
+    describe 'and report data is received' do
+      before :each do
+        @yaml = report_yaml
+      end
+      
+      it 'should attempt to create a report using the data' do
+        Report.expects(:from_yaml).with(@yaml)
+        do_post('report' => @yaml)
+      end
+      
+      describe 'but report creation fails' do
+        before :each do
+          Report.stubs(:from_yaml).raises(Exception)          
+        end
+        
+        it 'should return an error' do
+          do_post('report' => @yaml)
+          response.should be_error
+        end
+        
+        it 'should not have created any new reports' do
+          @reports = Report.count
+          do_post('report' => @yaml)
+          Report.count.should == @reports
+        end
+      end
+      
+      describe 'and report creation succeeds' do
+        it 'should return success' do
+          do_post('report' => @yaml)
+          response.should be_success
+        end
+        
+        it 'should have created a new report' do
+          @reports = Report.count
+          do_post('report' => @yaml)
+          Report.count.should_not == @reports          
+        end
+      end
+    end
+  end
 end
