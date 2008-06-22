@@ -119,12 +119,9 @@ td {
    -------------------------------------------------------------------------------- */
 
 #navbar { 		z-index: 2;
-			padding: 2px 0 0 210px;
-			background: transparent url(/images/top-background-amber.png) 0px 0px repeat-x;
 			overflow: hidden;
-			position: relative
-			display: block;
-			clear: both;
+			position: absolute;
+            left: 200px;
 			font: 16px Helvetica, Arial, sans-serif; }
 			
 #navbar ul {text-align: center;
@@ -136,7 +133,7 @@ td {
 #navbar li a {display: block; 
 			padding: 9px 7px 11px 7px;			
 			background: none; 
-			color: #960;
+			color: #717;
 			}
 	
 #navbar #feed {background: none;}
@@ -146,15 +143,13 @@ td {
 	.support #navbar #support a,
 	.download #navbar #download a,
 	.feed #navbar #feed a {
-			color: #000;
+			color: #A2A;
 			padding: 9px 7px 10px 7px;		
-			background: #fff url(reductivelabs.com/images/top-background-white.gif) 0px -4px repeat-x;
 			}
 
 #navbar li a.selected {
-			color: #000;
+			color: #313;
 			padding: 9px 7px 10px 7px;
-			background: #fff url(/images/top-background-white.gif) 0px -4px repeat-x;
 			}
 	
 
@@ -301,7 +296,6 @@ td {
 			position: absolute;
 			bottom: 0px;
 			left: 0px;
-			background: transparent url(/images/bottom-background-amber.gif) 0px -3px repeat-x;
 			padding: none;
 			margin: none;
 			display: block;
@@ -309,21 +303,17 @@ td {
 			}
 		
 #foot a {	font: 10pt Helvetica, Arial, sans-serif;
-			color: #850;
+			color: #717;
 			padding: none;
 			margin: none;
 			border: none;}
 
-#foot a:hover { color: #fee; 
+#foot a:hover { color: #A2A; 
 			background: none;
 			padding: none;
 			margin: none;
 			border:none; }
 
-#foot p {	font: 10pt Helvetica, Arial, sans-serif; 
-			padding: 9px 5px 13px 180px;
-			letter-spacing: 2px;
-			}
 
 /* --------------------------------------------------------------------------------
 			Special stuff added EXCLUSIVELY for TRAC
