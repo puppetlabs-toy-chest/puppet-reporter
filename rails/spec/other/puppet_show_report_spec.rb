@@ -28,24 +28,33 @@ describe "running the puppet_show Puppet report" do
   end
 
   describe 'when processing the report' do
-    before :each do
-      @yaml = report_yaml
-      self.stubs(:to_yaml).returns(@yaml)
-    end
-
     it 'should not accept any arguments' do
-      run_report
-      lambda { process('foo') }.should raise_error(ArgumentError)
+      pending("there being some actual way to test the process method declared inside of register_report")
     end
     
-    it 'should generate a YAML representation of the report'
+    it 'should generate a YAML representation of the report' do
+      pending("there being some actual way to test the process method declared inside of register_report")
+    end
   end
   
   describe 'when submitting YAML data' do
-    it 'should require '
-    it 'should look up the endpoint for submitting report data'
-    it 'should submit the YAML representation to the submission endpoint'
+    before :each do
+      @yaml = report_yaml
+      self.stubs(:to_yaml).returns(@yaml)
+      run_report
+    end
 
+    it 'should require YAML data' do
+      lambda { submit_yaml_report_to_puppetshow }.should raise_error(ArgumentError)
+    end
+    
+    it 'should look up the endpoint for submitting report data' do
+      self.expects(:lookup_connection_settings)
+      submit_yaml_report_to_puppetshow(@yaml)
+    end
+    
+    it 'should submit the YAML representation to the submission endpoint'
+    
     describe 'if the submission fails' do
       it 'should log the failure'
     end
