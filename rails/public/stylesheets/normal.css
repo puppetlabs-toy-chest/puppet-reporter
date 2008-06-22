@@ -167,6 +167,7 @@ td {
 #content {		background: transparent;
 	 		float: none;
 			position: relative;
+            top: 40px;
 }
 
 
