@@ -1,7 +1,7 @@
 require 'puppet/reports'
 
 def submit_yaml_report_to_puppetshow(report)
-  network.post report.to_yaml
+  network_post report.to_yaml
 end
 
 # TODO:  untested -- derived from main Puppet REST code

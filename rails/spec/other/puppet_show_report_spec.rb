@@ -32,7 +32,7 @@ describe "running the puppet_show Puppet report" do
       pending("there being some actual way to test the process method declared inside of register_report")
     end
     
-    it 'should generate a YAML representation of the report' do
+    it 'should pass the report to the submitter' do
       pending("there being some actual way to test the process method declared inside of register_report")
     end
   end
@@ -41,6 +41,7 @@ describe "running the puppet_show Puppet report" do
     before :each do
       @yaml = report_yaml
       @report = stub('report', :to_yaml => @yaml)
+      self.stubs(:network_post)
       run_report
     end
 
@@ -62,17 +63,34 @@ describe "running the puppet_show Puppet report" do
   describe 'when posting data' do
     before :each do
       @yaml = report_yaml
+      @details = { :host => '127.0.0.1', :port => 34343 }
+      Net::HTTP.stubs(:start).returns('result')
+      self.stubs(:connection_settings).returns(@details)
       run_report
     end
 
-    it 'should post the data to the endpoint' do
+    it "should look up connection details" do
+      self.expects(:connection_settings).returns(@details)
+      network_post @yaml
     end
-    
-    # it 'should look up the endpoint for submitting report data' do
-    #   self.expects(:connection_settings)
-    #   send_yaml_data(@yaml)
-    # end
-        
+
+    it "should use the appropriate remote server" do
+      Net::HTTP.expects(:start).with {|host, port| host == @details[:host] }
+      network_post @yaml
+    end
+
+    it "should use the appropriate remote port" do
+      Net::HTTP.expects(:start).with {|host, port| port == @details[:port] }
+      network_post @yaml
+    end
+
+    it "should use the POST http method" do
+      @mock_result = stub('mock result', :body => 'result')
+      @mock_connection = mock('mock http connection', :post => @mock_result)
+      self.stubs(:network).yields(@mock_connection)
+      network_post @yaml
+    end
+
     describe 'if the submission fails' do
       it 'should log the failure'
     end
