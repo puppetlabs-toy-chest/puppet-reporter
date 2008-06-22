@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe ReportsController, "when running integrations" do
   integrate_views
 
-  describe 'show' do
+  describe 'when showing a report' do
     before :all do
       Report.delete_all
     end
@@ -38,6 +38,55 @@ describe ReportsController, "when running integrations" do
         do_request('id' => @report.id)
         response.should render_template('show')
       end      
+    end
+  end
+  
+  describe 'when receiving reports via create' do
+    def do_request(params = {})
+      post :create, {}.merge(params)
+    end
+    
+    describe 'and no report data is received' do
+      it 'should fail' do
+        do_request
+        response.should be_error
+      end
+      
+      it 'should not create any reports' do
+        do_request
+        lambda { do_request 'report' => @yaml }.should_not change(Report, :count)
+      end      
+    end
+    
+    describe 'and invalid report data is received' do
+      before :each do
+        @yaml = 'this is not a valid report, yo.'
+      end
+
+      it 'should fail' do
+        do_request 'report' => @yaml
+        response.should be_error
+      end
+      
+      it 'should not create any reports' do
+        do_request 'report' => @yaml
+        lambda { do_request 'report' => @yaml }.should_not change(Report, :count)
+      end
+    end
+    
+    describe 'and valid report data is received' do
+      before :each do
+        @yaml = report_yaml
+      end
+
+      it 'should succeed' do
+        do_request 'report' => @yaml
+        response.should be_success
+      end
+      
+      it 'should result in reports being created' do
+        lambda { do_request 'report' => @yaml }.should change(Report, :count)
+      end
     end
   end
 end
