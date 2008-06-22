@@ -90,6 +90,12 @@ describe Report do
       @report.metrics.stubs(:failures).returns(failures)
       @report.failures.should == failures
     end
+    
+    it 'should pass on arguments when getting failures' do
+      arg = stub('arg')
+      @report.metrics.expects(:failures).with(arg)
+      @report.failures(arg)
+    end
   end
   
   describe 'as a class' do

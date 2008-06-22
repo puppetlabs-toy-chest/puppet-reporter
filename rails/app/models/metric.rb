@@ -69,8 +69,10 @@ class Metric < ActiveRecord::Base
       define_time_interval_method(type, data)
     end
     
-    def failures
-      find(:all, :conditions => [ 'category = ? and label = ? and value > 0', 'resources', 'Failed'])
+    def failures(include_zero = false)
+      conditions = ['category = ? and label = ?', 'resources', 'Failed']
+      conditions[0] += ' and value > 0' unless include_zero 
+      find(:all, :conditions => conditions)
     end
   end
 end

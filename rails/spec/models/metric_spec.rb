@@ -490,6 +490,16 @@ describe Metric do
         metric = Metric.generate!(:category => 'resources', :label => 'Failed', :value => 0)
         Metric.failures.should_not include(metric)
       end
+      
+      it 'should have an option to include failure metrics with a value of 0' do
+        metric = Metric.generate!(:category => 'resources', :label => 'Failed', :value => 0)
+        Metric.failures(true).should include(metric)
+      end
+      
+      it 'should not include failure metrics with a value of 0 if given a false value' do
+        metric = Metric.generate!(:category => 'resources', :label => 'Failed', :value => 0)
+        Metric.failures(false).should_not include(metric)
+      end
     end
   end
 end

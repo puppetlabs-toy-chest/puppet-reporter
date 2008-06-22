@@ -106,6 +106,36 @@ describe Node do
       
       @node.failures.should == failures
     end
+    
+    it 'should have an option to include failures with a value of 0' do
+      @node = Node.generate!
+      rep = nil
+      2.times do |i|
+        rep = @node.reports.generate!(:timestamp => Time.zone.now + i)
+        3.times do |j|
+          rep.metrics.generate!(:category => 'resources', :label => 'Failed', :value => 5.0 * (i+1))
+        end
+      end
+      failure = rep.metrics.generate!(:category => 'resources', :label => 'Failed', :value => 0)
+      @node.reload
+      
+      @node.failures(true).should include(failure)
+    end
+    
+    it 'should not include failures with a value of 0 if given a false value' do
+      @node = Node.generate!
+      rep = nil
+      2.times do |i|
+        rep = @node.reports.generate!(:timestamp => Time.zone.now + i)
+        3.times do |j|
+          rep.metrics.generate!(:category => 'resources', :label => 'Failed', :value => 5.0 * (i+1))
+        end
+      end
+      failure = rep.metrics.generate!(:category => 'resources', :label => 'Failed', :value => 0)
+      @node.reload
+      
+      @node.failures(false).should_not include(failure)
+    end
   end
   
   describe 'attributes' do
