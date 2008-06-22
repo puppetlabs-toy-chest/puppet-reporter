@@ -73,7 +73,7 @@ caption {padding: 0.75em; font: 1.5em Helvetica, Arial, sans-serif;
 			background: #EEE;}
 
 th {
-	background: #fbf7c9;
+	background: #d0b16e;
 }
 td {
 	padding: 10px;
@@ -235,7 +235,7 @@ td {
 			padding-right: 10px;
 			padding-bottom: 50px;
 			position: absolute;
-			right: 10;
+			right: 10px;
 			top: 35px;
 			background: #d09000; }
 			
@@ -472,7 +472,7 @@ td {
 #content tr { border: none; }
 #content tr.odd { background: #fff; }
 #content tr td.report { text-align: center; }
-#content tr.even { background: #fbf7c9; }
+#content tr.even { background: #d0b16e; }
 
 #content em { color: #850; 
 			border-bottom: none; }
