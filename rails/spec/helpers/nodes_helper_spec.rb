@@ -224,8 +224,8 @@ describe NodesHelper do
       helper.node_total_change_graph(@node)
     end
 
-    it 'should create a discrete sparkline' do
-      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'discrete'))
+    it 'should create a smooth sparkline' do
+      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'smooth'))
       helper.node_total_change_graph(@node)
     end
 
@@ -341,8 +341,8 @@ describe NodesHelper do
       helper.node_total_failure_graph(@node)
     end
 
-    it 'should create a discrete sparkline' do
-      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'discrete'))
+    it 'should create a smooth sparkline' do
+      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'smooth'))
       helper.node_total_failure_graph(@node)
     end
 
@@ -458,8 +458,8 @@ describe NodesHelper do
       helper.node_total_resource_graph(@node)
     end
 
-    it 'should create a discrete sparkline' do
-      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'discrete'))
+    it 'should create a smooth sparkline' do
+      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'smooth'))
       helper.node_total_resource_graph(@node)
     end
 
