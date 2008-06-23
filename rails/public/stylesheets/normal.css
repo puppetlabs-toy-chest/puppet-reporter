@@ -755,3 +755,9 @@ table.logs tr.warning {
 table.logs tr.err {
 				background-color: pink;
 }
+img.sparkline, #content img.sparkline {
+	border: none;
+}
+table#node_graphs {
+	border-collapse: collapse;
+}
