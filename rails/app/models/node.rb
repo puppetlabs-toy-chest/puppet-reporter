@@ -15,7 +15,7 @@ class Node < ActiveRecord::Base
   # get a hash of Node details, via Facts
   def details(timestamp = Time.zone.now)
     facts = most_recent_facts_on(timestamp)
-    facts ? facts.values : {}
+    facts ? facts.values.values : {}
   end
   
   # find the most recent Fact instance at the specified timestamp

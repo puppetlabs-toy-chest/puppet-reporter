@@ -166,7 +166,7 @@ describe Node do
       end
       
       it 'should return the hash of values from the looked up Facts' do
-        @node.details(Time.zone.now).should == @fact.values
+        @node.details(Time.zone.now).should == @fact.values.values
       end
       
       describe 'when there are no facts to be found' do
@@ -187,7 +187,7 @@ describe Node do
       end
       
       it 'should return the hash of values from the looked up Facts' do
-        @node.details.should == @fact.values
+        @node.details.should == @fact.values.values
       end
       
       describe 'when there are no facts to be found' do
