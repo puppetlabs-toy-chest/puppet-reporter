@@ -1,3 +1,4 @@
+<% now = Time.zone.now %>
 <h1>Node <%= link_to @node.name, node_path(@node) %></h1>
 <h3>Last report: 
 	<% if @most_recent_report %>
@@ -6,12 +7,36 @@
 	  Never reported in.
 	<% end %>
 </h3>
+
+<table id="node_graphs">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Day</th>
+      <th>Week</th>
+      <th>Month</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Reports</th>
+      <td><%= node_day_report_graph(@node, now) %></td>
+      <td><%= node_week_report_graph(@node, now) %></td>
+      <td><%= node_month_report_graph(@node, now) %></td>
+    </tr>
+    <tr>
+      <th>Failures</th>
+      <td><%= node_day_failure_graph(@node, now) %></td>
+      <td><%= node_week_failure_graph(@node, now) %></td>
+      <td><%= node_month_failure_graph(@node, now) %></td>
+    </tr>
+    <tr>
+      <th>Resources</th>
+      <td><%= node_day_resource_graph(@node, now) %></td>
+      <td><%= node_week_resource_graph(@node, now) %></td>
+      <td><%= node_month_resource_graph(@node, now) %></td>
+    </tr>
+  </tbody>
+</table>
+
 <%= render :partial => 'facts', :locals => { :facts => @node.details } %>
-<% unless @node.failures.empty? %>
-Failures:
-<ul id="failure_list">
-  <% @node.failures.each do |failure| %>
-    <li><%= failure.value %> &mdash; <%= link_to distance_of_time_in_words_to_now(failure.report.timestamp) + ' ago', report_path(failure.report) %> (<%= failure.report.timestamp %>)</li>
-  <% end %>
-</ul>
-<% end %>

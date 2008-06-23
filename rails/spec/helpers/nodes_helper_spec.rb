@@ -224,8 +224,8 @@ describe NodesHelper do
       helper.node_total_change_graph(@node)
     end
 
-    it 'should create a discrete sparkline' do
-      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'discrete'))
+    it 'should create a smooth sparkline' do
+      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'smooth'))
       helper.node_total_change_graph(@node)
     end
 
@@ -341,8 +341,8 @@ describe NodesHelper do
       helper.node_total_failure_graph(@node)
     end
 
-    it 'should create a discrete sparkline' do
-      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'discrete'))
+    it 'should create a smooth sparkline' do
+      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'smooth'))
       helper.node_total_failure_graph(@node)
     end
 
@@ -458,8 +458,8 @@ describe NodesHelper do
       helper.node_total_resource_graph(@node)
     end
 
-    it 'should create a discrete sparkline' do
-      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'discrete'))
+    it 'should create a smooth sparkline' do
+      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'smooth'))
       helper.node_total_resource_graph(@node)
     end
 
@@ -469,4 +469,572 @@ describe NodesHelper do
       helper.node_total_resource_graph(@node).should == sparkline
     end
   end
+  
+  it 'should create a node day report graph' do
+    helper.should respond_to(:node_day_report_graph)
+  end
+
+  describe 'creating a node day report graph' do
+    before :each do
+      @node = Node.generate!
+      helper.stubs(:sparkline_tag)
+      @node.reports.stubs(:count_between)
+    end
+    
+    it 'should require a node' do
+      lambda { helper.node_day_report_graph }.should raise_error(ArgumentError)
+    end
+    
+    it 'should accept a node' do
+      lambda { helper.node_day_report_graph(@node) }.should_not raise_error(ArgumentError)
+    end
+
+    it 'should create a sparkline' do
+      helper.expects(:sparkline_tag)
+      helper.node_day_report_graph(@node)
+    end
+
+    it 'should get total report data for the node' do
+      @node.reports.expects(:count_between)
+      helper.node_day_report_graph(@node)
+    end
+
+    it 'should get total report data for the node for 30 minute intervals over the past day' do
+      now = Time.zone.now
+      Time.zone.stubs(:now).returns(now)
+
+      @node.reports.expects(:count_between).with(now - 1.day, now, :interval => 30.minutes)
+      helper.node_day_report_graph(@node)
+    end
+    
+    it 'should use a passed-in time' do
+      time = Time.zone.now - 1234
+      
+      @node.reports.expects(:count_between).with(time - 1.day, time, :interval => 30.minutes)
+      helper.node_day_report_graph(@node, time)
+    end
+
+    it 'should create a sparkline using the total report data' do
+      data_points = stub('data points')
+      @node.reports.stubs(:count_between).returns(data_points)
+      helper.expects(:sparkline_tag).with(data_points, anything)
+      helper.node_day_report_graph(@node)
+    end
+
+    it 'should create a smooth sparkline' do
+      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'smooth'))
+      helper.node_day_report_graph(@node)
+    end
+
+    it 'should return the sparkline tag' do
+      sparkline = stub('sparkline')
+      helper.stubs(:sparkline_tag).returns(sparkline)
+      helper.node_day_report_graph(@node).should == sparkline
+    end
+  end
+  
+  it 'should create a node week report graph' do
+    helper.should respond_to(:node_week_report_graph)
+  end
+
+  describe 'creating a node week report graph' do
+    before :each do
+      @node = Node.generate!
+      helper.stubs(:sparkline_tag)
+      @node.reports.stubs(:count_between)
+    end
+    
+    it 'should require a node' do
+      lambda { helper.node_week_report_graph }.should raise_error(ArgumentError)
+    end
+    
+    it 'should accept a node' do
+      lambda { helper.node_week_report_graph(@node) }.should_not raise_error(ArgumentError)
+    end
+
+    it 'should create a sparkline' do
+      helper.expects(:sparkline_tag)
+      helper.node_week_report_graph(@node)
+    end
+
+    it 'should get total report data for the node' do
+      @node.reports.expects(:count_between)
+      helper.node_week_report_graph(@node)
+    end
+
+    it 'should get total report data for the node for one-day intervals over the past seven day' do
+      now = Time.zone.now
+      Time.zone.stubs(:now).returns(now)
+
+      @node.reports.expects(:count_between).with(now - 7.days, now, :interval => 1.day)
+      helper.node_week_report_graph(@node)
+    end
+    
+    it 'should use a passed-in time' do
+      time = Time.zone.now - 1234
+      
+      @node.reports.expects(:count_between).with(time - 7.days, time, :interval => 1.day)
+      helper.node_week_report_graph(@node, time)
+    end
+
+    it 'should create a sparkline using the total report data' do
+      data_points = stub('data points')
+      @node.reports.stubs(:count_between).returns(data_points)
+      helper.expects(:sparkline_tag).with(data_points, anything)
+      helper.node_week_report_graph(@node)
+    end
+
+    it 'should create a smooth sparkline' do
+      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'smooth'))
+      helper.node_week_report_graph(@node)
+    end
+
+    it 'should return the sparkline tag' do
+      sparkline = stub('sparkline')
+      helper.stubs(:sparkline_tag).returns(sparkline)
+      helper.node_week_report_graph(@node).should == sparkline
+    end
+  end
+  
+  it 'should create a node month report graph' do
+    helper.should respond_to(:node_month_report_graph)
+  end
+
+  describe 'creating a node month report graph' do
+    before :each do
+      @node = Node.generate!
+      helper.stubs(:sparkline_tag)
+      @node.reports.stubs(:count_between)
+    end
+    
+    it 'should require a node' do
+      lambda { helper.node_month_report_graph }.should raise_error(ArgumentError)
+    end
+    
+    it 'should accept a node' do
+      lambda { helper.node_month_report_graph(@node) }.should_not raise_error(ArgumentError)
+    end
+
+    it 'should create a sparkline' do
+      helper.expects(:sparkline_tag)
+      helper.node_month_report_graph(@node)
+    end
+
+    it 'should get total report data for the node' do
+      @node.reports.expects(:count_between)
+      helper.node_month_report_graph(@node)
+    end
+
+    it 'should get total report data for the node for one-day intervals over the past 30 days' do
+      now = Time.zone.now
+      Time.zone.stubs(:now).returns(now)
+
+      @node.reports.expects(:count_between).with(now - 30.days, now, :interval => 1.day)
+      helper.node_month_report_graph(@node)
+    end
+    
+    it 'should use a passed-in time' do
+      time = Time.zone.now - 1234
+      
+      @node.reports.expects(:count_between).with(time - 30.days, time, :interval => 1.day)
+      helper.node_month_report_graph(@node, time)
+    end
+
+    it 'should create a sparkline using the total report data' do
+      data_points = stub('data points')
+      @node.reports.stubs(:count_between).returns(data_points)
+      helper.expects(:sparkline_tag).with(data_points, anything)
+      helper.node_month_report_graph(@node)
+    end
+
+    it 'should create a smooth sparkline' do
+      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'smooth'))
+      helper.node_month_report_graph(@node)
+    end
+
+    it 'should return the sparkline tag' do
+      sparkline = stub('sparkline')
+      helper.stubs(:sparkline_tag).returns(sparkline)
+      helper.node_month_report_graph(@node).should == sparkline
+    end
+  end
+  
+  it 'should create a node day failure graph' do
+    helper.should respond_to(:node_day_failure_graph)
+  end
+
+  describe 'creating a node day failure graph' do
+    before :each do
+      @node = Node.generate!
+      helper.stubs(:sparkline_tag)
+      @node.metrics.stubs(:total_failures_between)
+    end
+    
+    it 'should require a node' do
+      lambda { helper.node_day_failure_graph }.should raise_error(ArgumentError)
+    end
+    
+    it 'should accept a node' do
+      lambda { helper.node_day_failure_graph(@node) }.should_not raise_error(ArgumentError)
+    end
+
+    it 'should create a sparkline' do
+      helper.expects(:sparkline_tag)
+      helper.node_day_failure_graph(@node)
+    end
+
+    it 'should get total failure data for the node' do
+      @node.metrics.expects(:total_failures_between)
+      helper.node_day_failure_graph(@node)
+    end
+
+    it 'should get total failure data for the node for 30 minute intervals over the past day' do
+      now = Time.zone.now
+      Time.zone.stubs(:now).returns(now)
+
+      @node.metrics.expects(:total_failures_between).with(now - 1.day, now, :interval => 30.minutes)
+      helper.node_day_failure_graph(@node)
+    end
+    
+    it 'should use a passed-in time' do
+      time = Time.zone.now - 1234
+      
+      @node.metrics.expects(:total_failures_between).with(time - 1.day, time, :interval => 30.minutes)
+      helper.node_day_failure_graph(@node, time)
+    end
+
+    it 'should create a sparkline using the total failure data' do
+      data_points = stub('data points')
+      @node.metrics.stubs(:total_failures_between).returns(data_points)
+      helper.expects(:sparkline_tag).with(data_points, anything)
+      helper.node_day_failure_graph(@node)
+    end
+
+    it 'should create a smooth sparkline' do
+      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'smooth'))
+      helper.node_day_failure_graph(@node)
+    end
+
+    it 'should return the sparkline tag' do
+      sparkline = stub('sparkline')
+      helper.stubs(:sparkline_tag).returns(sparkline)
+      helper.node_day_failure_graph(@node).should == sparkline
+    end
+  end
+  
+  it 'should create a node week failure graph' do
+    helper.should respond_to(:node_week_failure_graph)
+  end
+
+  describe 'creating a node week failure graph' do
+    before :each do
+      @node = Node.generate!
+      helper.stubs(:sparkline_tag)
+      @node.metrics.stubs(:total_failures_between)
+    end
+    
+    it 'should require a node' do
+      lambda { helper.node_week_failure_graph }.should raise_error(ArgumentError)
+    end
+    
+    it 'should accept a node' do
+      lambda { helper.node_week_failure_graph(@node) }.should_not raise_error(ArgumentError)
+    end
+
+    it 'should create a sparkline' do
+      helper.expects(:sparkline_tag)
+      helper.node_week_failure_graph(@node)
+    end
+
+    it 'should get total failure data for the node' do
+      @node.metrics.expects(:total_failures_between)
+      helper.node_week_failure_graph(@node)
+    end
+
+    it 'should get total failure data for the node for one-day intervals over the past seven day' do
+      now = Time.zone.now
+      Time.zone.stubs(:now).returns(now)
+
+      @node.metrics.expects(:total_failures_between).with(now - 7.days, now, :interval => 1.day)
+      helper.node_week_failure_graph(@node)
+    end
+    
+    it 'should use a passed-in time' do
+      time = Time.zone.now - 1234
+      
+      @node.metrics.expects(:total_failures_between).with(time - 7.days, time, :interval => 1.day)
+      helper.node_week_failure_graph(@node, time)
+    end
+
+    it 'should create a sparkline using the total failure data' do
+      data_points = stub('data points')
+      @node.metrics.stubs(:total_failures_between).returns(data_points)
+      helper.expects(:sparkline_tag).with(data_points, anything)
+      helper.node_week_failure_graph(@node)
+    end
+
+    it 'should create a smooth sparkline' do
+      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'smooth'))
+      helper.node_week_failure_graph(@node)
+    end
+
+    it 'should return the sparkline tag' do
+      sparkline = stub('sparkline')
+      helper.stubs(:sparkline_tag).returns(sparkline)
+      helper.node_week_failure_graph(@node).should == sparkline
+    end
+  end
+  
+  it 'should create a node month failure graph' do
+    helper.should respond_to(:node_month_failure_graph)
+  end
+
+  describe 'creating a node month failure graph' do
+    before :each do
+      @node = Node.generate!
+      helper.stubs(:sparkline_tag)
+      @node.metrics.stubs(:total_failures_between)
+    end
+    
+    it 'should require a node' do
+      lambda { helper.node_month_failure_graph }.should raise_error(ArgumentError)
+    end
+    
+    it 'should accept a node' do
+      lambda { helper.node_month_failure_graph(@node) }.should_not raise_error(ArgumentError)
+    end
+
+    it 'should create a sparkline' do
+      helper.expects(:sparkline_tag)
+      helper.node_month_failure_graph(@node)
+    end
+
+    it 'should get total failure data for the node' do
+      @node.metrics.expects(:total_failures_between)
+      helper.node_month_failure_graph(@node)
+    end
+
+    it 'should get total failure data for the node for one-day intervals over the past 30 days' do
+      now = Time.zone.now
+      Time.zone.stubs(:now).returns(now)
+
+      @node.metrics.expects(:total_failures_between).with(now - 30.days, now, :interval => 1.day)
+      helper.node_month_failure_graph(@node)
+    end
+    
+    it 'should use a passed-in time' do
+      time = Time.zone.now - 1234
+      
+      @node.metrics.expects(:total_failures_between).with(time - 30.days, time, :interval => 1.day)
+      helper.node_month_failure_graph(@node, time)
+    end
+
+    it 'should create a sparkline using the total failure data' do
+      data_points = stub('data points')
+      @node.metrics.stubs(:total_failures_between).returns(data_points)
+      helper.expects(:sparkline_tag).with(data_points, anything)
+      helper.node_month_failure_graph(@node)
+    end
+
+    it 'should create a smooth sparkline' do
+      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'smooth'))
+      helper.node_month_failure_graph(@node)
+    end
+
+    it 'should return the sparkline tag' do
+      sparkline = stub('sparkline')
+      helper.stubs(:sparkline_tag).returns(sparkline)
+      helper.node_month_failure_graph(@node).should == sparkline
+    end
+  end
+  
+  it 'should create a node day resource graph' do
+    helper.should respond_to(:node_day_resource_graph)
+  end
+
+  describe 'creating a node day resource graph' do
+    before :each do
+      @node = Node.generate!
+      helper.stubs(:sparkline_tag)
+      @node.metrics.stubs(:total_resources_between)
+    end
+    
+    it 'should require a node' do
+      lambda { helper.node_day_resource_graph }.should raise_error(ArgumentError)
+    end
+    
+    it 'should accept a node' do
+      lambda { helper.node_day_resource_graph(@node) }.should_not raise_error(ArgumentError)
+    end
+
+    it 'should create a sparkline' do
+      helper.expects(:sparkline_tag)
+      helper.node_day_resource_graph(@node)
+    end
+
+    it 'should get total resource data for the node' do
+      @node.metrics.expects(:total_resources_between)
+      helper.node_day_resource_graph(@node)
+    end
+
+    it 'should get total resource data for the node for 30 minute intervals over the past day' do
+      now = Time.zone.now
+      Time.zone.stubs(:now).returns(now)
+
+      @node.metrics.expects(:total_resources_between).with(now - 1.day, now, :interval => 30.minutes)
+      helper.node_day_resource_graph(@node)
+    end
+    
+    it 'should use a passed-in time' do
+      time = Time.zone.now - 1234
+      
+      @node.metrics.expects(:total_resources_between).with(time - 1.day, time, :interval => 30.minutes)
+      helper.node_day_resource_graph(@node, time)
+    end
+
+    it 'should create a sparkline using the total resource data' do
+      data_points = stub('data points')
+      @node.metrics.stubs(:total_resources_between).returns(data_points)
+      helper.expects(:sparkline_tag).with(data_points, anything)
+      helper.node_day_resource_graph(@node)
+    end
+
+    it 'should create a smooth sparkline' do
+      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'smooth'))
+      helper.node_day_resource_graph(@node)
+    end
+
+    it 'should return the sparkline tag' do
+      sparkline = stub('sparkline')
+      helper.stubs(:sparkline_tag).returns(sparkline)
+      helper.node_day_resource_graph(@node).should == sparkline
+    end
+  end
+  
+  it 'should create a node week resource graph' do
+    helper.should respond_to(:node_week_resource_graph)
+  end
+
+  describe 'creating a node week resource graph' do
+    before :each do
+      @node = Node.generate!
+      helper.stubs(:sparkline_tag)
+      @node.metrics.stubs(:total_resources_between)
+    end
+    
+    it 'should require a node' do
+      lambda { helper.node_week_resource_graph }.should raise_error(ArgumentError)
+    end
+    
+    it 'should accept a node' do
+      lambda { helper.node_week_resource_graph(@node) }.should_not raise_error(ArgumentError)
+    end
+
+    it 'should create a sparkline' do
+      helper.expects(:sparkline_tag)
+      helper.node_week_resource_graph(@node)
+    end
+
+    it 'should get total resource data for the node' do
+      @node.metrics.expects(:total_resources_between)
+      helper.node_week_resource_graph(@node)
+    end
+
+    it 'should get total resource data for the node for one-day intervals over the past seven day' do
+      now = Time.zone.now
+      Time.zone.stubs(:now).returns(now)
+
+      @node.metrics.expects(:total_resources_between).with(now - 7.days, now, :interval => 1.day)
+      helper.node_week_resource_graph(@node)
+    end
+    
+    it 'should use a passed-in time' do
+      time = Time.zone.now - 1234
+      
+      @node.metrics.expects(:total_resources_between).with(time - 7.days, time, :interval => 1.day)
+      helper.node_week_resource_graph(@node, time)
+    end
+
+    it 'should create a sparkline using the total resource data' do
+      data_points = stub('data points')
+      @node.metrics.stubs(:total_resources_between).returns(data_points)
+      helper.expects(:sparkline_tag).with(data_points, anything)
+      helper.node_week_resource_graph(@node)
+    end
+
+    it 'should create a smooth sparkline' do
+      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'smooth'))
+      helper.node_week_resource_graph(@node)
+    end
+
+    it 'should return the sparkline tag' do
+      sparkline = stub('sparkline')
+      helper.stubs(:sparkline_tag).returns(sparkline)
+      helper.node_week_resource_graph(@node).should == sparkline
+    end
+  end
+  
+  it 'should create a node month resource graph' do
+    helper.should respond_to(:node_month_resource_graph)
+  end
+
+  describe 'creating a node month resource graph' do
+    before :each do
+      @node = Node.generate!
+      helper.stubs(:sparkline_tag)
+      @node.metrics.stubs(:total_resources_between)
+    end
+    
+    it 'should require a node' do
+      lambda { helper.node_month_resource_graph }.should raise_error(ArgumentError)
+    end
+    
+    it 'should accept a node' do
+      lambda { helper.node_month_resource_graph(@node) }.should_not raise_error(ArgumentError)
+    end
+
+    it 'should create a sparkline' do
+      helper.expects(:sparkline_tag)
+      helper.node_month_resource_graph(@node)
+    end
+
+    it 'should get total resource data for the node' do
+      @node.metrics.expects(:total_resources_between)
+      helper.node_month_resource_graph(@node)
+    end
+
+    it 'should get total resource data for the node for one-day intervals over the past 30 days' do
+      now = Time.zone.now
+      Time.zone.stubs(:now).returns(now)
+
+      @node.metrics.expects(:total_resources_between).with(now - 30.days, now, :interval => 1.day)
+      helper.node_month_resource_graph(@node)
+    end
+    
+    it 'should use a passed-in time' do
+      time = Time.zone.now - 1234
+      
+      @node.metrics.expects(:total_resources_between).with(time - 30.days, time, :interval => 1.day)
+      helper.node_month_resource_graph(@node, time)
+    end
+
+    it 'should create a sparkline using the total resource data' do
+      data_points = stub('data points')
+      @node.metrics.stubs(:total_resources_between).returns(data_points)
+      helper.expects(:sparkline_tag).with(data_points, anything)
+      helper.node_month_resource_graph(@node)
+    end
+
+    it 'should create a smooth sparkline' do
+      helper.expects(:sparkline_tag).with(anything, has_entry(:type => 'smooth'))
+      helper.node_month_resource_graph(@node)
+    end
+
+    it 'should return the sparkline tag' do
+      sparkline = stub('sparkline')
+      helper.stubs(:sparkline_tag).returns(sparkline)
+      helper.node_month_resource_graph(@node).should == sparkline
+    end
+  end
+  
 end

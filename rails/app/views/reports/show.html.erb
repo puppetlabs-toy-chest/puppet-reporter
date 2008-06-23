@@ -1,33 +1,10 @@
-<h1>Report</h1>
-
-Node: <%= link_to @report.node.name, node_path(@report.node) %>
-<br />
-Time: <%= @report.timestamp %>
+<h1>Report for <%= link_to @report.node.name, node_path(@report.node) %> at <%= @report.timestamp %></h1>
 
 <div id="report_details" class="details">
-  Logs:
-  <ul id="report_logs" class="logs">
-    <% @report.logs.each do |log| %>
-      <li>
-        level: <%= log.level %>
-        <br />
-        message: <%= log.message %>
-        <br />
-        source: <%= log.source %>
-        <br />
-        time: <%= log.timestamp %>
-        <br />
-        <% unless log.tags.blank? -%>
-        tags: <%= log.tags %>
-        <br />
-        <% end -%>
-      </li>
-    <% end %>
-  </ul>
-  Metrics:
+  <div class="report_metrics">
   <% categorized = Metric.categorize(@report.metrics) %>
   <% categorized.keys.sort.each do |category| %>
-  <div class="report_<%= category %>_metrics">
+  <div class="report_<%= category %>_metrics report_category_metrics">
 		<h3><%= category.titleize %></h3>
     <div class="metrics">
 	    <ul id="report_<%= category %>_metrics">
@@ -38,5 +15,28 @@ Time: <%= @report.timestamp %>
     </div>
 	</div>
   <% end -%>
+  </div>
+  <% unless @report.logs.blank? %>
+  <div class="report_logs">
+    <h3>Logs</h3>
+    <table id="report_logs" class="logs">
+      <% @report.logs.each do |log| %>
+        <tr class="<%= log.level %>">
+          <td><%= log.level %></td>
+          <td><%= log.message %>
+          <br /><br />
+          <%= log.source %>
+          <br /><br />
+          <%= log.timestamp %>
+          <% unless log.tags.blank? -%>
+          <br /><br />
+          tags: <%= log.tags %>
+          <% end -%>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+  <% end %>
 </div>
 	

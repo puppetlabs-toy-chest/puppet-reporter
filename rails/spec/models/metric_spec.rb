@@ -53,7 +53,58 @@ describe Metric do
       @metric.value.should be_nil
     end
   end
-
+  
+  describe 'value' do
+    describe "when category is 'changes'" do
+      before :each do
+        @metric.category = 'changes'
+      end
+      
+      it 'should return an int' do
+        @metric.value = 5
+        @metric.value.should eql(5)
+      end
+      
+      it 'should return nil if value truly is nil' do
+        @metric.value = nil
+        @metric.value.should be_nil
+      end
+    end
+    
+    describe "when category is 'resources'" do
+      before :each do
+        @metric.category = 'resources'
+      end
+      
+      it 'should return an int' do
+        @metric.value = 5
+        @metric.value.should eql(5)
+      end
+      
+      it 'should return nil if value truly is nil' do
+        @metric.value = nil
+        @metric.value.should be_nil
+      end
+    end
+    
+    describe "when category is 'time'" do
+      before :each do
+        @metric.category = 'time'
+      end
+      
+      it 'should return a float' do
+        @metric.value = 5
+        @metric.value.should eql(5.0)
+      end
+      
+      it 'should return nil if value truly is nil' do
+        @metric.value = nil
+        @metric.value.should be_nil
+      end
+    end
+    
+  end
+  
   describe 'associations' do
     it 'should have a report' do
       @metric.report.should be_nil
@@ -438,6 +489,16 @@ describe Metric do
       it 'should not include failure metrics with a value of 0' do
         metric = Metric.generate!(:category => 'resources', :label => 'Failed', :value => 0)
         Metric.failures.should_not include(metric)
+      end
+      
+      it 'should have an option to include failure metrics with a value of 0' do
+        metric = Metric.generate!(:category => 'resources', :label => 'Failed', :value => 0)
+        Metric.failures(true).should include(metric)
+      end
+      
+      it 'should not include failure metrics with a value of 0 if given a false value' do
+        metric = Metric.generate!(:category => 'resources', :label => 'Failed', :value => 0)
+        Metric.failures(false).should_not include(metric)
       end
     end
   end

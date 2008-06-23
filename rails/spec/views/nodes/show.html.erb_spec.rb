@@ -4,6 +4,17 @@ describe '/nodes/show.html.erb' do
   before :each do
     @node = Node.generate!(:name => 'foo')
     assigns[:node] = @node
+    template.stubs(:node_day_report_graph).returns('node day report graph goes here')
+    template.stubs(:node_week_report_graph).returns('node week report graph goes here')
+    template.stubs(:node_month_report_graph).returns('node month report graph goes here')
+    template.stubs(:node_day_failure_graph).returns('node day failure graph goes here')
+    template.stubs(:node_week_failure_graph).returns('node week failure graph goes here')
+    template.stubs(:node_month_failure_graph).returns('node month failure graph goes here')
+    template.stubs(:node_day_resource_graph).returns('node day resource graph goes here')
+    template.stubs(:node_week_resource_graph).returns('node week resource graph goes here')
+    template.stubs(:node_month_resource_graph).returns('node month resource graph goes here')
+    @now = Time.zone.now
+    Time.zone.stubs(:now).returns(@now)
   end
 
   def do_render
@@ -54,72 +65,145 @@ describe '/nodes/show.html.erb' do
     end  
   end
 
-  describe 'if a node has failures' do
-    before :each do
-      @report  = @node.reports.generate!
-      @failure = @report.metrics.generate!(:category => 'resources', :label => 'Failed', :value => 3)
-      @node.reload
-    end
-    
-    it 'should include the node failures' do
-      do_render
-      response.should have_tag('ul[id=?]', 'failure_list')
-    end
-    
-    it 'should include a list item for the failure' do
-      do_render
-      response.should have_tag('ul[id=?]', 'failure_list') do
-        with_tag('li')
-      end
-    end
-    
-    it 'should include the failure count' do
-      do_render
-      response.should have_tag('ul[id=?]', 'failure_list') do
-        with_tag('li', :text => Regexp.new(Regexp.escape(@failure.value.to_s)))
-      end
-    end
-    
-    it 'should include a link to the report' do
-      do_render
-      response.should have_tag('ul[id=?]', 'failure_list') do
-        with_tag('li') do
-          with_tag('a[href=?]', report_path(@report))
-        end
-      end
-    end
-    
-    it 'should include the report time' do
-      do_render
-      response.should have_tag('ul[id=?]', 'failure_list') do
-        with_tag('li', :text => Regexp.new(Regexp.escape(@report.timestamp.to_s)))
-      end
-    end
-    
-    it 'should include an item for every failure' do
-      other_report  = @node.reports.generate!(:timestamp => Time.zone.now + 1235)
-      other_failure = other_report.metrics.generate!(:category => 'resources', :label => 'Failed', :value => 3)
-      @node.reload
-      
-      do_render
-      response.should have_tag('ul[id=?]', 'failure_list') do
-        [@report, other_report].each do |report|
-          with_tag('li') do
-            with_tag('a[href=?]', report_path(report))
-          end
-        end
-      end
-    end
+  it 'should include graphs' do
+    do_render
+    response.should have_tag('table[id=?]', 'node_graphs')
   end
-
-  describe 'if a node has no failures' do
-    before :each do
-      @node.stubs(:failures).returns([])
+  
+  describe 'node graphs' do
+    it 'should include a day report graph' do
+      do_render
+      response.should have_tag('table[id=?]', 'node_graphs', :text => Regexp.new(Regexp.escape('node day report graph goes here')))
     end
     
-    it 'should not include any failures' do
+    it 'should get a day report graph for the node' do
+      template.expects(:node_day_report_graph).with(@node, anything)
       do_render
-      response.should_not have_tag('ul[id=?]', 'failure_list')
+    end
+    
+    it 'should base the day report graph off now' do
+      template.expects(:node_day_report_graph).with(anything, @now)
+      do_render
+    end
+    
+    it 'should include a week report graph' do
+      do_render
+      response.should have_tag('table[id=?]', 'node_graphs', :text => Regexp.new(Regexp.escape('node week report graph goes here')))
+    end
+    
+    it 'should get a week report graph for the node' do
+      template.expects(:node_week_report_graph).with(@node, anything)
+      do_render
+    end
+    
+    it 'should base the week report graph off now' do
+      template.expects(:node_week_report_graph).with(anything, @now)
+      do_render
+    end
+    
+    it 'should include a month report graph' do
+      do_render
+      response.should have_tag('table[id=?]', 'node_graphs', :text => Regexp.new(Regexp.escape('node month report graph goes here')))
+    end
+    
+    it 'should get a month report graph for the node' do
+      template.expects(:node_month_report_graph).with(@node, anything)
+      do_render
+    end
+    
+    it 'should base the month report graph off now' do
+      template.expects(:node_month_report_graph).with(anything, @now)
+      do_render
+    end
+    
+    it 'should include a day failure graph' do
+      do_render
+      response.should have_tag('table[id=?]', 'node_graphs', :text => Regexp.new(Regexp.escape('node day failure graph goes here')))
+    end
+    
+    it 'should get a day failure graph for the node' do
+      template.expects(:node_day_failure_graph).with(@node, anything)
+      do_render
+    end
+    
+    it 'should base the day failure graph off now' do
+      template.expects(:node_day_failure_graph).with(anything, @now)
+      do_render
+    end
+    
+    it 'should include a week failure graph' do
+      do_render
+      response.should have_tag('table[id=?]', 'node_graphs', :text => Regexp.new(Regexp.escape('node week failure graph goes here')))
+    end
+    
+    it 'should get a week failure graph for the node' do
+      template.expects(:node_week_failure_graph).with(@node, anything)
+      do_render
+    end
+    
+    it 'should base the week failure graph off now' do
+      template.expects(:node_week_failure_graph).with(anything, @now)
+      do_render
+    end
+    
+    it 'should include a month failure graph' do
+      do_render
+      response.should have_tag('table[id=?]', 'node_graphs', :text => Regexp.new(Regexp.escape('node month failure graph goes here')))
+    end
+    
+    it 'should get a month failure graph for the node' do
+      template.expects(:node_month_failure_graph).with(@node, anything)
+      do_render
+    end
+    
+    it 'should base the month failure graph off now' do
+      template.expects(:node_month_failure_graph).with(anything, @now)
+      do_render
+    end
+    
+    it 'should include a day resource graph' do
+      do_render
+      response.should have_tag('table[id=?]', 'node_graphs', :text => Regexp.new(Regexp.escape('node day resource graph goes here')))
+    end
+    
+    it 'should get a day resource graph for the node' do
+      template.expects(:node_day_resource_graph).with(@node, anything)
+      do_render
+    end
+    
+    it 'should base the day resource graph off now' do
+      template.expects(:node_day_resource_graph).with(anything, @now)
+      do_render
+    end
+    
+    it 'should include a week resource graph' do
+      do_render
+      response.should have_tag('table[id=?]', 'node_graphs', :text => Regexp.new(Regexp.escape('node week resource graph goes here')))
+    end
+    
+    it 'should get a week resource graph for the node' do
+      template.expects(:node_week_resource_graph).with(@node, anything)
+      do_render
+    end
+    
+    it 'should base the week resource graph off now' do
+      template.expects(:node_week_resource_graph).with(anything, @now)
+      do_render
+    end
+    
+    it 'should include a month resource graph' do
+      do_render
+      response.should have_tag('table[id=?]', 'node_graphs', :text => Regexp.new(Regexp.escape('node month resource graph goes here')))
+    end
+    
+    it 'should get a month resource graph for the node' do
+      template.expects(:node_month_resource_graph).with(@node, anything)
+      do_render
+    end
+    
+    it 'should base the month resource graph off now' do
+      template.expects(:node_month_resource_graph).with(anything, @now)
+      do_render
     end
   end
 end

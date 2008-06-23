@@ -7,7 +7,7 @@ export PATH RUBYLIB
 cd ${SETUP_DIR}/puppet	  # wherever the puppet checkout is
 
 # install our custom report
-cp ${THIS_DIR}/report-scripts/inspect.rb ${SETUP_DIR}/puppet/lib/puppet/reports/
+cp ${THIS_DIR}/rails/puppet/report/puppet_show.rb ${SETUP_DIR}/puppet/lib/puppet/reports/
 
 # kill off any old processes
 ps auxwww | grep pup[p]etmaster | awk '{print $2}' | xargs sudo kill
@@ -18,6 +18,7 @@ ps auxwww | grep pup[p]etd | awk '{print $2}' | xargs sudo kill -9
 
 # clean up from any previous runs
 sudo rm -rf /tmp/puppet
+sudo rm -f /tmp/report_testing_output.txt
 
 # make confdir and vardir
 mkdir -p /tmp/puppet/var
@@ -27,7 +28,7 @@ mkdir -p /tmp/puppet/manifests
 echo "node default { }" > /tmp/puppet/manifests/site.pp
 
 # startup a puppetmasterd instance
-sudo puppetmasterd --vardir /tmp/puppet/var --confdir /tmp/puppet --user rick --group staff --debug --trace --reports=store,inspect
+sudo puppetmasterd --vardir /tmp/puppet/var --confdir /tmp/puppet --user rick --group staff --debug --trace --reports=store,puppet_show
 
 # initial start of puppetd for cert shit
 sudo puppetd --no-http_enable_post_connection_check --vardir /tmp/puppet/var --confdir /tmp/puppet/ --user rick --group staff --debug --trace -t --report --server localhost --waitforcert 60
@@ -42,4 +43,4 @@ sudo puppetd --no-http_enable_post_connection_check --vardir /tmp/puppet/var --c
 ls -altrR /tmp/puppet/var/reports/
 ls -tr /tmp/puppet/var/reports/*/ | tail -1 | sed 's:^:sudo cat /tmp/puppet/var/reports/*/:' | sh -s
 
-cat /tmp/bullshit.txt
+cat /tmp/report_testing_output.txt

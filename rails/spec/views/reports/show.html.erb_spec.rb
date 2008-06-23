@@ -38,44 +38,51 @@ describe "/reports/show" do
     it 'should include logs' do
       do_render
       response.should have_tag('div[id=?]', 'report_details') do
-        with_tag('ul[id=?]', 'report_logs')
+        with_tag('table[id=?]', 'report_logs')
       end
     end
     
     describe 'logs' do
       it 'should include a log item' do
         do_render
-        response.should have_tag('ul[id=?]', 'report_logs') do
-          with_tag('li')
+        response.should have_tag('table[id=?]', 'report_logs') do
+          with_tag('tr')
         end
       end
       
       describe 'log item' do
         it 'should include log level' do
           do_render
-          response.should have_tag('ul[id=?]', 'report_logs') do
-            with_tag('li', :text => Regexp.new(Regexp.escape(@log.level)))
+          response.should have_tag('table[id=?]', 'report_logs') do
+            with_tag('tr', :text => Regexp.new(Regexp.escape(@log.level)))
+          end
+        end
+        
+        it 'should be classed with log level' do
+          do_render
+          response.should have_tag('table[id=?]', 'report_logs') do
+            with_tag('tr[class=?]', @log.level)
           end
         end
         
         it 'should include log message' do
           do_render
-          response.should have_tag('ul[id=?]', 'report_logs') do
-            with_tag('li', :text => Regexp.new(Regexp.escape(@log.message)))
+          response.should have_tag('table[id=?]', 'report_logs') do
+            with_tag('tr', :text => Regexp.new(Regexp.escape(@log.message)))
           end
         end
         
         it 'should include log source' do
           do_render
-          response.should have_tag('ul[id=?]', 'report_logs') do
-            with_tag('li', :text => Regexp.new(Regexp.escape(@log.source)))
+          response.should have_tag('table[id=?]', 'report_logs') do
+            with_tag('tr', :text => Regexp.new(Regexp.escape(@log.source)))
           end
         end
         
         it 'should include log time' do
           do_render
-          response.should have_tag('ul[id=?]', 'report_logs') do
-            with_tag('li', :text => Regexp.new(Regexp.escape(@log.timestamp.to_s)))
+          response.should have_tag('table[id=?]', 'report_logs') do
+            with_tag('tr', :text => Regexp.new(Regexp.escape(@log.timestamp.to_s)))
           end
         end
 
@@ -87,8 +94,8 @@ describe "/reports/show" do
           
           it 'should include the log tags' do
             do_render
-            response.should have_tag('ul[id=?]', 'report_logs') do
-              with_tag('li', :text => Regexp.new(Regexp.escape(@tags)))
+            response.should have_tag('table[id=?]', 'report_logs') do
+              with_tag('tr', :text => Regexp.new(Regexp.escape(@tags)))
             end
           end
         end
@@ -100,8 +107,8 @@ describe "/reports/show" do
           
           it 'should not include any tag information for the log' do
             do_render
-            response.should have_tag('ul[id=?]', 'report_logs') do
-              without_tag('li', :text => Regexp.new(/tags:/))
+            response.should have_tag('table[id=?]', 'report_logs') do
+              without_tag('tr', :text => Regexp.new(/tags:/))
             end            
           end
         end
@@ -113,19 +120,19 @@ describe "/reports/show" do
         @report.stubs(:logs).returns(logs)
         
         do_render
-        response.should have_tag('ul[id=?]', 'report_logs') do
+        response.should have_tag('table[id=?]', 'report_logs') do
           logs.each do |log|
-            with_tag('li', :text => Regexp.new(Regexp.escape(log.message)))
+            with_tag('tr', :text => Regexp.new(Regexp.escape(log.message)))
           end
         end
       end
-      
-      it 'should include no items if there are no logs' do
-        @report.stubs(:logs).returns([])
-        do_render
-        response.should have_tag('ul[id=?]', 'report_logs') do
-          without_tag('li')
-        end
+    end
+    
+    it 'should not include logs if there are no logs' do
+      @report.stubs(:logs).returns([])
+      do_render
+      response.should have_tag('div[id=?]', 'report_details') do
+        without_tag('table[id=?]', 'report_logs')
       end
     end
     
@@ -145,14 +152,14 @@ describe "/reports/show" do
       it 'should include a section for each category' do
         do_render
         @categories.keys.each do |category|
-          response.should have_tag('div[class=?]', "report_#{category}_metrics")
+          response.should have_tag('div[class*=?]', "report_#{category}_metrics")
         end
       end
       
       it 'should show the label for each metric in the section for its category' do
         do_render
         @categories.keys.each do |category|
-          response.should have_tag('div[class=?]', "report_#{category}_metrics") do
+          response.should have_tag('div[class*=?]', "report_#{category}_metrics") do
             @categories[category].each do |metric|
               with_tag('li', Regexp.new(Regexp.escape(metric.label)))
             end
@@ -163,7 +170,7 @@ describe "/reports/show" do
       it 'should show the value for each metric in the section for its category' do
         do_render
         @categories.keys.each do |category|
-          response.should have_tag('div[class=?]', "report_#{category}_metrics") do
+          response.should have_tag('div[class*=?]', "report_#{category}_metrics") do
             @categories[category].each do |metric|
               with_tag('li', Regexp.new(Regexp.escape(metric.value.to_s)))
             end

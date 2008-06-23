@@ -15,7 +15,7 @@ class Node < ActiveRecord::Base
   # get a hash of Node details, via Facts
   def details(timestamp = Time.zone.now)
     facts = most_recent_facts_on(timestamp)
-    facts ? facts.values : {}
+    facts ? facts.values.values : {}
   end
   
   # find the most recent Fact instance at the specified timestamp
@@ -35,7 +35,7 @@ class Node < ActiveRecord::Base
     fact
   end
   
-  def failures
-    reports.collect(&:failures).flatten.sort_by { |f|  f.report.timestamp }.reverse
+  def failures(include_zero = false)
+    reports.collect { |rep| rep.failures(include_zero) }.flatten.sort_by { |f|  f.report.timestamp }.reverse
   end
 end

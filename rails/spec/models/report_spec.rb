@@ -2,7 +2,8 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Report do
   before :each do
-  @yaml = report_yaml
+    @yaml = report_yaml
+    
   end
   
   before :each do
@@ -89,6 +90,28 @@ describe Report do
       failures = stub('failures')
       @report.metrics.stubs(:failures).returns(failures)
       @report.failures.should == failures
+    end
+    
+    it 'should pass on arguments when getting failures' do
+      arg = stub('arg')
+      @report.metrics.expects(:failures).with(arg)
+      @report.failures(arg)
+    end
+  end
+  
+  describe 'when creating' do
+    before :each do
+      @node = Node.generate!
+    end
+    
+    it 'should freshen the facts for its associated node' do
+      @node.expects(:refresh_facts)
+      Report.generate!(:node => @node)
+    end
+    
+    it 'should not raise an error if refreshing facts fails' do
+      @node.stubs(:refresh_facts).raises(Exception)
+      lambda { Report.generate!(:node => @node) }.should_not raise_error
     end
   end
   

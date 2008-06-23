@@ -13,6 +13,16 @@ class Report < ActiveRecord::Base
   
   has_many :logs
   
+  after_create  :freshen_node_facts
+  
+  def freshen_node_facts
+    node.refresh_facts
+  rescue Exception => e
+    true
+  end
+  private :freshen_node_facts
+  
+  
   class << self
 
     # create Report instances from files containing Puppet YAML reports
