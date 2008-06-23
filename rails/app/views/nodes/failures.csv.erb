@@ -1,0 +1,3 @@
+<% @failures.each do |failure| -%>
+<%= failure.report.timestamp -%>,<%= failure.value %>
+<% end -%>

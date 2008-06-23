@@ -40,3 +40,13 @@
 </table>
 
 <%= render :partial => 'facts', :locals => { :facts => @node.details } %>
+<% unless @node.failures.empty? %>
+Failures:
+<ul id="failure_list">
+  <% @node.failures.each do |failure| %>
+    <li><%= failure.value %> &mdash; <%= link_to distance_of_time_in_words_to_now(failure.report.timestamp) + ' ago', report_path(failure.report) %> (<%= failure.report.timestamp %>)</li>
+  <% end %>
+</ul>
+<% end %>
+
+<%= render :partial => 'failure_timeplot', :locals => { :node => @node } %>
