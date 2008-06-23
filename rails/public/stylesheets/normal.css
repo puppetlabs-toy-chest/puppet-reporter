@@ -314,10 +314,10 @@ td {
 #flask {
     background: transparent url(/images/puppetflask.png) bottom left no-repeat;
     position: absolute;
-    bottom: 15px;
+    bottom: 0px;
     left: 15px;
-    width: 171px;
-    height: 298px;
+    width: 296px;
+    height: 210px;
 }
 
 #lotus {
