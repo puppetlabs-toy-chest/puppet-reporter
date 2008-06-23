@@ -18,10 +18,14 @@ SETUP:
    - untar puppetshow/reports.tgz to puppetshow/reports/
    - time find ../reports -type f -name '*.yaml' | xargs ruby script/runner script/import_yaml_reports.rb    (and go get lunch :-)
 
+
+ - if you want to load data from a running Puppet instance
+   -  update the connection settings in rails/puppet/report/puppet_show.rb to point to where your PuppetShow instance can be reached.
+   - review and update the environment variable settings at the top of the 'go' script
+   - 'sh -x go' and see what happens
+
 ----------
 
 Notes to sel(f|ves):
 
- - read 'go' and set environment variables according to your system
- - you should be able to then run 'sh -x go' and have it exercise the puppet/puppetmasterd tools and generate a single (store) report and a single (inspect) report
  - a (fully pending) spec is in place describing the data available in the Puppet report objects. 
