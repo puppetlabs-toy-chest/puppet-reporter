@@ -36,6 +36,6 @@ class Node < ActiveRecord::Base
   end
   
   def failures(include_zero = false)
-    reports.collect { |rep| rep.failures(include_zero) }.flatten.sort_by { |f|  f.report.timestamp }.reverse
+    reports.find(:all, :limit => 200, :order => 'timestamp desc').collect { |rep| rep.failures(include_zero) }.flatten.sort_by { |f|  f.report.timestamp }.reverse
   end
 end
