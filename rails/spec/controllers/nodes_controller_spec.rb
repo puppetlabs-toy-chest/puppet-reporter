@@ -319,10 +319,10 @@ describe NodesController do
           response.content_type.should == 'application/xml'
         end
         
-        it 'should make the most recent node report available to the view' do
+        it 'should make the most recent node report available to the view in increasing chronological order' do
           @node.stubs(:reports).returns(@reports)
           do_get('id' => 'foo')
-          assigns[:reports].should == @reports
+          assigns[:reports].should == @reports.sort_by(&:timestamp)
         end
       end
     end

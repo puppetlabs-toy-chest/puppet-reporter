@@ -33,4 +33,20 @@ class NodesController < ApplicationController
     @failures = @node.failures
     render :layout => false, :content_type => 'text/plain'
   end
+
+  
+  def reports
+    if params[:id] =~ /^\d+$/
+      @node = Node.find(params[:id]) rescue nil
+    else
+      @node = Node.find_by_name(CGI.unescape(params[:id])) unless params[:id].blank?
+    end
+    
+    unless @node
+      flash[:notice] = 'Could not find information for that node.'
+      return redirect_to(nodes_path)
+    end
+    
+    @reports = @node.reports.find(:all, :limit => 100, :order => 'timestamp desc').sort_by(&:timestamp)
+  end
 end
