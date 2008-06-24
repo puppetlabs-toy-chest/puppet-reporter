@@ -1,19 +1,33 @@
 <script>
   var timeplot;
-  
+
   function onLoad() {
     var eventSource = new Timeplot.DefaultEventSource();
+	  var reportEventSource = new Timeplot.DefaultEventSource();
+	  var timeGeometry = new Timeplot.DefaultTimeGeometry({ gridColor: "#000000", axisLabelsPlacement: "bottom" });
+    var valueGeometry = new Timeplot.DefaultValueGeometry({ min: 0, gridColor: "#000000",	axisLabelsPlacement: "left"	});
+
     var plotInfo = [
       Timeplot.createPlotInfo({
         id: 'failures',
         dataSource: new Timeplot.ColumnSource(eventSource,1),
         showValues: true,
-        valueGeometry: new Timeplot.DefaultValueGeometry({ min: 0 })
-      })
+        valueGeometry: valueGeometry,
+      	      timeGeometry: timeGeometry,
+      	      lineColor: "#ff0000",
+      	      fillColor: "#cc8080"
+      }),
+	    Timeplot.createPlotInfo({
+	      id: 'reports',
+	      timeGeometry: timeGeometry,
+	      eventSource: reportEventSource,
+	      lineColor: "#00ff00"
+			})
     ];
-    
+
     timeplot = Timeplot.create(document.getElementById('failure-timeplot'), plotInfo);
     timeplot.loadText('<%= node.id %>/failures.csv', ',', eventSource);
+    timeplot.loadXML('<%= node.id %>/reports.xml', reportEventSource);
   }
   
   var resizeTimerID = null;
