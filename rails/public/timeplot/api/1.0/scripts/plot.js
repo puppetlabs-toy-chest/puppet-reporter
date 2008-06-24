@@ -82,13 +82,7 @@ Timeplot.Plot.prototype = {
                     plot._valueFlag.innerHTML = new String(v);
                     var d = new Date(t);
                     var p = plot._timeGeometry.getPeriod(); 
-                    if (p < day) {
-                        plot._timeFlag.innerHTML = d.toLocaleTimeString();
-                    } else if (p > month) {
-                        plot._timeFlag.innerHTML = d.toLocaleDateString();
-                    } else {
-                        plot._timeFlag.innerHTML = d.toLocaleString();
-                    }
+                    plot._timeFlag.innerHTML = d.toLocaleString();
 
                     var tw = plot._timeFlag.clientWidth;
                     var th = plot._timeFlag.clientHeight;
