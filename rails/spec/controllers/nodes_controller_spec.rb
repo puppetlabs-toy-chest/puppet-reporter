@@ -245,7 +245,10 @@ describe NodesController do
   
   describe 'reports' do
     before :each do
-      @reports = stub('reports')
+      @node.reports.generate(:timestamp => 1.day.ago)
+      @node.reports.generate(:timestamp => 2.days.ago)
+      @node.reports.generate(:timestamp => 3.days.ago)
+      @reports = @node.reports
     end
     
     def do_get(params = {})
@@ -296,7 +299,7 @@ describe NodesController do
       
       describe 'and the node can be found' do
         before :each do
-          Node.stubs(:find_by_name).returns(@node)   
+          Node.stubs(:find_by_name).returns(@node)
         end
 
         it 'should make the node available to the view' do
@@ -314,15 +317,9 @@ describe NodesController do
           response.should render_template('reports')
         end
         
-        it 'should render reports as xml' do
+        it 'should make the most recent node reports available to the view in increasing chronological order' do
           do_get('id' => 'foo')
-          response.content_type.should == 'application/xml'
-        end
-        
-        it 'should make the most recent node report available to the view in increasing chronological order' do
-          @node.stubs(:reports).returns(@reports)
-          do_get('id' => 'foo')
-          assigns[:reports].should == @reports.sort_by(&:timestamp)
+          assigns[:reports].should == @node.reports.sort_by(&:timestamp)
         end
       end
     end
