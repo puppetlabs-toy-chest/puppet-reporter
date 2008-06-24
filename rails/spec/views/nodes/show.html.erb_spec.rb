@@ -13,6 +13,7 @@ describe '/nodes/show.html.erb' do
     template.stubs(:node_day_resource_graph).returns('node day resource graph goes here')
     template.stubs(:node_week_resource_graph).returns('node week resource graph goes here')
     template.stubs(:node_month_resource_graph).returns('node month resource graph goes here')
+    template.stubs(:render)
     @now = Time.zone.now
     Time.zone.stubs(:now).returns(@now)
   end
