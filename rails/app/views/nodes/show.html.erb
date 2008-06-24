@@ -39,6 +39,8 @@
   </tbody>
 </table>
 
+<%= render :partial => 'failure_timeplot', :locals => { :node => @node } %>
+
 <%= render :partial => 'facts', :locals => { :facts => @node.details } %>
 <% unless @node.failures.empty? %>
 Failures:
@@ -48,5 +50,3 @@ Failures:
   <% end %>
 </ul>
 <% end %>
-
-<%= render :partial => 'failure_timeplot', :locals => { :node => @node } %>
