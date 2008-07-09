@@ -4,7 +4,7 @@ describe "/reports/show" do
   before(:each) do
     @node = Node.generate!
     @report = @node.reports.generate!
-    @log = stub('log', :level => 'log level', :message => 'log message', :source => 'log source', :timestamp => Time.zone.now, :tags => '')
+    @log = stub('log', :level => 'log level', :message => 'log message', :source => 'log source', :timestamp => Time.zone.now, :tag_names => '')
     @report.stubs(:logs).returns([@log])
     @metrics = { }
     assigns[:report] = @report
@@ -89,7 +89,7 @@ describe "/reports/show" do
         describe 'when log has tags' do
           before :each do
             @tags = 'basenode, main, os::darwin'
-            @log.stubs(:tags).returns(@tags)
+            @log.stubs(:tag_names).returns(@tags)
           end
           
           it 'should include the log tags' do
@@ -102,7 +102,7 @@ describe "/reports/show" do
         
         describe 'when log has no tags' do
           before :each do
-            @log.stubs(:tags).returns('')
+            @log.stubs(:tag_names).returns('')
           end
           
           it 'should not include any tag information for the log' do
@@ -115,7 +115,7 @@ describe "/reports/show" do
       end
       
       it 'should include a log item for each log' do
-        other_log = stub('log', :level => 'log level 2', :message => 'log message 2', :source => 'log source 2', :tags => '', :timestamp => Time.zone.now - 3456)
+        other_log = stub('log', :level => 'log level 2', :message => 'log message 2', :source => 'log source 2', :tag_names => '', :timestamp => Time.zone.now - 3456)
         logs = [@log, other_log]
         @report.stubs(:logs).returns(logs)
         

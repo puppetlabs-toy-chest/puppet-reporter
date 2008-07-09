@@ -28,9 +28,9 @@
           <%= log.source %>
           <br /><br />
           <%= log.timestamp %>
-          <% unless log.tags.blank? -%>
+          <% unless log.tag_names.blank? -%>
           <br /><br />
-          tags: <%= log.tags %>
+          tags: <%= log.tag_names %>
           <% end -%>
           </td>
         </tr>
