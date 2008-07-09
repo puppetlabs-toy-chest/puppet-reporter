@@ -23,8 +23,8 @@ class Log < ActiveRecord::Base
   class << self
     def from_puppet_logs(logs)
       logs.each do |log|
-        tags = (log.tags || []).collect(&:to_s).sort.join(', ')
-        Log.create(:level => log.level.to_s, :message => log.message, :source => log.source, :timestamp => log.time, :tags => tags)
+        tag_names = (log.tags || []).collect(&:to_s).sort.join(', ')
+        Log.create(:level => log.level.to_s, :message => log.message, :source => log.source, :timestamp => log.time, :tag_names => tag_names)
       end
     end
   end

@@ -203,29 +203,29 @@ describe Log do
       Log.from_puppet_logs(@logs)
     end
     
-    it 'should set the tags to be a sorted, comma-separated list of the tags' do
+    it 'should set the tag names to be a sorted, comma-separated list of the tags' do
       @log.stubs(:tags).returns(%w[file main osx darwin source])
       expected_tags = 'darwin, file, main, osx, source'
-      Log.expects(:create).with(has_entry(:tags => expected_tags))
+      Log.expects(:create).with(has_entry(:tag_names => expected_tags))
       Log.from_puppet_logs(@logs)
     end
     
     it 'should handle symbol tags' do
       @log.stubs(:tags).returns([:file, :main, :osx, :darwin, :source])
       expected_tags = 'darwin, file, main, osx, source'
-      Log.expects(:create).with(has_entry(:tags => expected_tags))
+      Log.expects(:create).with(has_entry(:tag_names => expected_tags))
       Log.from_puppet_logs(@logs)
     end
     
-    it 'should set the tags to the empty string if there are no tags' do
+    it 'should set the tag names to the empty string if there are no tags' do
       @log.stubs(:tags).returns([])
-      Log.expects(:create).with(has_entry(:tags => ''))
+      Log.expects(:create).with(has_entry(:tag_names => ''))
       Log.from_puppet_logs(@logs)
     end
     
-    it 'should set the tags to the empty string if there are nil tags' do
+    it 'should set the tag names to the empty string if there are nil tags' do
       @log.stubs(:tags).returns(nil)
-      Log.expects(:create).with(has_entry(:tags => ''))
+      Log.expects(:create).with(has_entry(:tag_names => ''))
       Log.from_puppet_logs(@logs)
     end
     
