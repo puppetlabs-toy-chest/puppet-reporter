@@ -5,6 +5,17 @@ PuppetShow tool for viewing and manipulating Puppet Report data
 SETUP:
 
  - install rmagick gem, sqlite3-ruby gem (what else did we miss?), imagemagick and imagemagick-dev
+ - install rrdtool and Ruby RRD bindings.  On OS X this looks like:
+    % sudo port install rrdtool    # purely for getting the dependencies installed
+    % sudo port uninstall rrdtool
+    % wget http://oss.oetiker.ch/rrdtool/pub/rrdtool-1.2.27.tar.gz
+    % tar xfz rrdtool-1.2.27.tar.gz
+    % cd rrdtool-1.2.27/
+    % ./configure --prefix=/opt/local && make && sudo make install
+    % cd bindings/ruby
+    % ruby extconf.rb --with-rrd-lib=/opt/local/lib
+    % make clean && make && sudo make install
+    % ruby test.rb  # with any luck this will run successfully and you'll get a test.png in the directory
  - git clone Facter from reductive labs and install it
  - git clone Puppet (0.24.x branch) from reductive labs
  - copy puppetshow/rails/config/puppet_lib.rb.sample to puppetshow/rails/config/puppet_lib.rb and edit the PUPPET_LIB setting to reflect the location of your cloned puppet repo
