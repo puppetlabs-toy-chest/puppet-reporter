@@ -29,6 +29,69 @@ describe Log do
     @log.should respond_to(:tags)
   end
   
+  it 'should return tag names' do
+    @log.should respond_to(:tag_names)
+  end
+  
+  describe 'tag names' do
+    it 'should be a sorted, comma-separated list of tag names' do
+      tags = []
+      %w[file main osx darwin source].each do |tag_name|
+        tags.push stub('tag', :name => tag_name)
+      end
+      @log.stubs(:tags).returns(tags)
+      expected_tags = 'darwin, file, main, osx, source'
+      @log.tag_names.should == expected_tags
+    end
+    
+    it 'should be the empty string if there are no tags' do
+      @log.stubs(:tags).returns([])
+      @log.tag_names.should == ''
+    end
+  end
+  
+  it 'should allow setting tag names' do
+    @log.should respond_to(:tag_names=)
+  end
+  
+  describe 'setting tag names' do
+    it 'should create tags for the given names' do
+      @log.tag_names = 'one, two, three'
+      %w[one two three].each do |tag_name|
+        Tag.find_by_name(tag_name).should be_kind_of(Tag)
+      end
+    end
+    
+    it 'should set the taggings for the log' do
+      @log.tag_names = 'four, five, six'
+      @log.taggings.collect { |t|  t.tag.name }.sort.should == %w[four five six].sort
+    end
+    
+    it 'should save the tags when the log is saved' do
+      @log = Log.spawn
+      @log.tag_names = 'four, five, six'
+      @log.save!
+      @log.tag_names.should == 'five, four, six'
+    end
+    
+    it 'should not create already-present tags' do
+      Tag.create!(:name => 'seven')
+      @log.tag_names = 'seven, eight, nine'
+      Tag.count(:conditions => { :name => 'seven' } ).should == 1
+    end
+    
+    it 'should link to already-present tags' do
+      tag = Tag.create!(:name => 'seven')
+      @log = Log.spawn
+      @log.tag_names = 'seven, eight, nine'
+      @log.save!
+      @log.tags.should include(tag)
+    end
+    
+    it 'should remove no-longer-needed taggings'
+    it 'should not remove tags'
+  end
+  
   it 'should belong to report' do
     @log.should respond_to(:report)
   end

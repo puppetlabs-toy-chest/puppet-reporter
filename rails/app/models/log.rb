@@ -10,6 +10,16 @@ class Log < ActiveRecord::Base
   has_many :taggings
   has_many :tags, :through => :taggings
   
+  def tag_names
+    tags.collect(&:name).sort.join(', ')
+  end
+  
+  def tag_names=(val)
+    val.split(', ').each do |name|
+      taggings.build(:tag => Tag.find_or_create_by_name(name))
+    end
+  end
+  
   class << self
     def from_puppet_logs(logs)
       logs.each do |log|
