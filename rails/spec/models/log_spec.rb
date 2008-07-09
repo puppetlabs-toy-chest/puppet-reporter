@@ -21,7 +21,11 @@ describe Log do
     @log.should respond_to(:timestamp)
   end
   
-  it 'should have tags' do
+  it 'should have many taggings' do
+    @log.should respond_to(:taggings)
+  end
+  
+  it 'should have many tags' do
     @log.should respond_to(:tags)
   end
   

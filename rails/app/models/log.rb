@@ -7,6 +7,9 @@ class Log < ActiveRecord::Base
   validates_presence_of :message
   validates_presence_of :timestamp
   
+  has_many :taggings
+  has_many :tags, :through => :taggings
+  
   class << self
     def from_puppet_logs(logs)
       logs.each do |log|
