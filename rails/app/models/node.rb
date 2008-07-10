@@ -38,4 +38,16 @@ class Node < ActiveRecord::Base
   def failures(include_zero = false)
     reports.find(:all, :limit => 200, :order => 'timestamp desc').collect { |rep| rep.failures(include_zero) }.flatten.sort_by { |f|  f.report.timestamp }.reverse
   end
+  
+  class << self
+    def failed
+      now = Time.zone.now
+      nodes = find(:all)
+      
+      nodes.reject do |node|
+        rep = node.most_recent_report_on(now)
+        rep ? rep.failures.blank? : true
+      end
+    end
+  end
 end

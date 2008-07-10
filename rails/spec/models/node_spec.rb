@@ -297,4 +297,67 @@ describe Node do
       end
     end
   end
+
+  describe 'as a class' do
+    it 'should get failed nodes' do
+      Node.should respond_to(:failed)
+    end
+    
+    describe 'getting failed nodes' do
+      before :each do
+        @failed_node     = Node.generate!
+        Metric.generate!(:category => 'resources', :label => 'Failed', :value => 3, :report => Report.generate!(:node => @failed_node, :timestamp => Time.zone.now - 15))
+        
+        @okay_node       = Node.generate!
+        Metric.generate!(:category => 'resources', :label => 'Failed', :value => 0, :report => Report.generate!(:node => @okay_node))
+        
+        @great_node      = Node.generate!
+        Metric.generate!(:category => 'resources', :label => 'Failed', :value => 0, :report => Report.generate!(:node => @great_node, :timestamp => Time.zone.now - 25))
+        Metric.generate!(:category => 'resources', :label => 'Failed', :value => 0, :report => Report.generate!(:node => @great_node, :timestamp => Time.zone.now - 57))
+        Metric.generate!(:category => 'resources', :label => 'Failed', :value => 0, :report => Report.generate!(:node => @great_node, :timestamp => Time.zone.now - 500))
+        
+        @bigfail_node    = Node.generate!
+        Metric.generate!(:category => 'resources', :label => 'Failed', :value => 35, :report => Report.generate!(:node => @bigfail_node, :timestamp => Time.zone.now - 5))
+        Metric.generate!(:category => 'resources', :label => 'Failed', :value => 32, :report => Report.generate!(:node => @bigfail_node, :timestamp => Time.zone.now - 30))
+        
+        @fixed_node      = Node.generate!
+        Metric.generate!(:category => 'resources', :label => 'Failed', :value => 0, :report => Report.generate!(:node => @fixed_node, :timestamp => Time.zone.now - 5))
+        Metric.generate!(:category => 'resources', :label => 'Failed', :value => 3, :report => Report.generate!(:node => @fixed_node, :timestamp => Time.zone.now - 15))
+        
+        @reportless_node = Node.generate!
+      end
+      
+      it 'should return nodes which have failures in the most recent report' do
+        failed = Node.failed
+        [@failed_node, @bigfail_node].each do |node|
+          failed.should include(node)
+        end
+      end
+      
+      it 'should not return nodes which have no failures in any reports' do
+        failed = Node.failed
+        [@okay_node, @great_node].each do |node|
+          failed.should_not include(node)
+        end
+      end
+      
+      it 'should not return nodes which have no reports' do
+        Node.failed.should_not include(@reportless_node)
+      end
+      
+      it 'should not return nodes which have no failures in the most recent report' do
+        Node.failed.should_not include(@fixed_node)
+      end
+      
+      it 'should return the empty list if there are no matching nodes' do
+        [@failed_node, @bigfail_node].each(&:destroy)
+        Node.failed.should == []
+      end
+      
+      it 'should return the empty list if there are no nodes' do
+        Node.delete_all
+        Node.failed.should == []
+      end
+    end
+  end
 end

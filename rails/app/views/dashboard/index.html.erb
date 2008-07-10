@@ -1,2 +1,22 @@
-<div id="content">  
+<div id="content">
+  
+  <div id="node_status">
+    <h2>Node Status</h2>
+    
+    <div id="failed_nodes">
+      <h3>Failed</h3>
+      
+      <ul>
+        <% @failed_nodes.each do |node| %>
+          <li><%= link_to node.name, node %></li>
+        <% end %>
+      </ul>
+    </div>
+    
+    <div id="silent_nodes">
+      <h3>Not Checked In</h3>
+    </div>
+    
+  </div>
+  
 </div>
