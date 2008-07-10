@@ -15,6 +15,12 @@
     
     <div id="silent_nodes">
       <h3>Not Checked In</h3>
+      
+      <ul>
+        <% @silent_nodes.each do |node| %>
+          <li><%= link_to node.name, node %></li>
+        <% end %>
+      </ul>
     </div>
     
   </div>

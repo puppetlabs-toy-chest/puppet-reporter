@@ -5,6 +5,9 @@ describe DashboardController do
     before :each do
       @failed = stub('failed nodes')
       Node.stubs(:failed).returns(@failed)
+      
+      @silent = stub('silent nodes')
+      Node.stubs(:silent).returns(@silent)
     end
     
     def do_get
@@ -24,6 +27,16 @@ describe DashboardController do
     it 'should assign failed nodes for the view' do
       do_get
       assigns[:failed_nodes].should == @failed
+    end
+    
+    it 'should get nodes not checked in' do
+      Node.expects(:silent)
+      do_get
+    end
+    
+    it 'should assign nodes not checked in for the view' do
+      do_get
+      assigns[:silent_nodes].should == @silent
     end
   end
 end

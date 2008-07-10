@@ -20,12 +20,12 @@ class Node < ActiveRecord::Base
   
   # find the most recent Fact instance at the specified timestamp
   def most_recent_facts_on(timestamp)
-    facts.find(:first, :conditions => ['timestamp < ?', timestamp], :order => 'timestamp desc')
+    facts.find(:first, :conditions => ['timestamp <= ?', timestamp], :order => 'timestamp desc')
   end
   
   # find the most recent Report instance at the specified timestamp
   def most_recent_report_on(timestamp)
-    reports.find(:first, :conditions => ['timestamp < ?', timestamp], :order => 'timestamp desc')
+    reports.find(:first, :conditions => ['timestamp <= ?', timestamp], :order => 'timestamp desc')
   end
   
   # pull new Facts for this node from the source
@@ -46,7 +46,23 @@ class Node < ActiveRecord::Base
       
       nodes.reject do |node|
         rep = node.most_recent_report_on(now)
-        rep ? rep.failures.blank? : true
+        if rep
+          rep.failures.blank?
+        else
+          true
+        end
+      end
+    end
+    
+    def silent
+      now = Time.zone.now
+      nodes = find(:all)
+      
+      nodes.reject do |node|
+        rep = node.most_recent_report_on(now)
+        if rep
+          now - rep.timestamp <= 30.minutes
+        end
       end
     end
   end

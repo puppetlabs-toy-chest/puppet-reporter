@@ -217,6 +217,10 @@ describe Node do
       @node.most_recent_facts_on(1.hour.from_now(@time)).values[:name].should == 'now'
     end
     
+    it 'should return Facts on the time specified' do
+      @node.most_recent_facts_on(@time).values[:name].should == 'now'
+    end
+    
     it 'should return nil if there are no facts at the time specified' do
       @node.most_recent_facts_on(3.days.ago(@time)).should be_nil
     end
@@ -241,6 +245,10 @@ describe Node do
     
     it 'should return the most recent report for this Node at the time specified' do
       @node.most_recent_report_on(1.hour.from_now(@time)).details.should == 'now'
+    end
+    
+    it 'should return a report on the time specified' do
+      @node.most_recent_report_on(@time).details.should == 'now'
     end
     
     it 'should return nil if there are no reports at the time specified' do
@@ -357,6 +365,63 @@ describe Node do
       it 'should return the empty list if there are no nodes' do
         Node.delete_all
         Node.failed.should == []
+      end
+    end
+    
+    it 'should get silent nodes' do
+      Node.should respond_to(:silent)
+    end
+    
+    describe 'getting silent nodes' do
+      before :each do
+        @recent_node     = Node.generate!
+        @recent_node.reports.generate!(:timestamp => Time.zone.now - 5)
+        
+        @now_node        = Node.generate!
+        @now_node.reports.generate!(:timestamp => Time.zone.now)
+        
+        @while_ago_node  = Node.generate!
+        @while_ago_node.reports.generate!(:timestamp => Time.zone.now - 29.5.minutes)
+        
+        @talky_node      = Node.generate!
+        @talky_node.reports.generate!(:timestamp => Time.zone.now - 10)
+        @talky_node.reports.generate!(:timestamp => Time.zone.now - 50)
+        @talky_node.reports.generate!(:timestamp => Time.zone.now - 10.minutes)
+        @talky_node.reports.generate!(:timestamp => Time.zone.now - 20.minutes)
+        @talky_node.reports.generate!(:timestamp => Time.zone.now - 40.minutes)
+        
+        @long_ago_node    = Node.generate!
+        @long_ago_node.reports.generate!(:timestamp => Time.zone.now - 40.minutes)
+        
+        @reportless_node = Node.generate!
+      end
+      
+      it 'should return nodes with no reports in the past 30 minutes' do
+        silent = Node.silent
+          [@long_ago_node].each do |node|
+          silent.should include(node)
+        end
+      end
+      
+      it 'should not return nodes with reports in the past 30 minutes' do
+        silent = Node.silent
+          [@recent_node, @now_node, @while_ago_node, @talky_node].each do |node|
+          silent.should_not include(node)
+        end
+      end
+      
+      it 'should return nodes with have no reports' do
+        Node.silent.should include(@reportless_node)
+      end
+      
+      it 'should return the empty list if there are no matching nodes' do
+        [@long_ago_node, @reportless_node].each(&:destroy)
+        Node.silent.should == []
+      end
+      
+      it 'should return the empty list if there are no nodes' do
+        Node.delete_all
+        Node.silent.should == []
       end
     end
   end
