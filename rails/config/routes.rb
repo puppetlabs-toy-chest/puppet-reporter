@@ -41,7 +41,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # See how all your routes lay out with "rake routes"
 
-  map.root :controller => 'nodes', :action => 'index'
+  map.root :controller => 'dashboard', :action => 'index'
 
   # Install the default routes as the lowest priority.
   map.connect ':controller/:action/:id'
