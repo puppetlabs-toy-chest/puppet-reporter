@@ -761,3 +761,7 @@ img.sparkline, #content img.sparkline {
 table#node_graphs {
 	border-collapse: collapse;
 }
+div#node_status div {
+	float: left;
+	margin: 25px 40px;
+}
