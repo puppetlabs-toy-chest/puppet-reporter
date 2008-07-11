@@ -27,5 +27,9 @@ class Log < ActiveRecord::Base
         Log.create(:level => log.level.to_s, :message => log.message, :source => log.source, :timestamp => log.time, :tag_names => tag_names)
       end
     end
+    
+    def recent
+      find(:all, :conditions => ['timestamp >= ?', Time.zone.now - 30.minutes], :limit => 5, :order => 'timestamp desc')
+    end
   end
 end

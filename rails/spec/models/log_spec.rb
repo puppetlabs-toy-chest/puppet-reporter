@@ -244,4 +244,61 @@ describe Log do
       Log.from_puppet_logs(@logs)
     end
   end
+  
+  describe 'as a class' do
+    it 'should get recent logs' do
+      Log.should respond_to(:recent)
+    end
+    
+    describe 'getting recent logs' do
+      before :each do
+        @now_log       = Log.generate!(:timestamp => Time.zone.now)
+        @recent_log    = Log.generate!(:timestamp => Time.zone.now - 5)
+        @while_ago_log = Log.generate!(:timestamp => Time.zone.now - 29.5.minutes)
+        @old_log       = Log.generate!(:timestamp => Time.zone.now - 40.minutes)
+      end
+      
+      it 'should return logs within the past 30 minutes' do
+        recent = Log.recent
+        
+        [@now_log, @recent_log, @while_ago_log].each do |log|
+          recent.should include(log)
+        end
+      end
+      
+      it 'should not return logs from more than 30 minutes ago' do
+        Log.recent.should_not include(@old_log)
+      end
+      
+      it 'should order the logs by timestamp, most recent first' do
+        Log.generate!(:timestamp => Time.zone.now - 10.minutes)
+        recent = Log.recent
+        recent.should == recent.sort_by(&:timestamp).reverse
+      end
+      
+      it 'should return at most 5 results' do
+        10.times { |i| Log.generate!(:timestamp => Time.zone.now - i) }
+        Log.recent.length.should == 5
+      end
+      
+      it 'should return fewer results if fewer match' do
+        Log.recent.length.should == 3
+      end
+      
+      it 'should return the most recent results' do
+        10.times { |i| Log.generate!(:timestamp => Time.zone.now - i) }
+        Log.recent.should_not include(@while_ago_log)
+      end
+      
+      it 'should return the empty list if there are no matching logs' do
+        [@now_log, @recent_log, @while_ago_log].each(&:destroy)
+        Log.recent.should == []
+      end
+      
+      it 'should return the empty list if there are no logs' do
+        Log.delete_all
+        Log.recent.should == []
+      end
+    end
+  end
 end

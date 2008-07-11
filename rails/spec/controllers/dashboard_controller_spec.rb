@@ -8,6 +8,9 @@ describe DashboardController do
       
       @silent = stub('silent nodes')
       Node.stubs(:silent).returns(@silent)
+      
+      @logs = stub('recent logs')
+      Log.stubs(:recent).returns(@logs)
     end
     
     def do_get
@@ -37,6 +40,16 @@ describe DashboardController do
     it 'should assign nodes not checked in for the view' do
       do_get
       assigns[:silent_nodes].should == @silent
+    end
+    
+    it 'should get recent logs' do
+      Log.expects(:recent)
+      do_get
+    end
+    
+    it 'should assign recent logs for the view' do
+      do_get
+      assigns[:logs].should == @logs
     end
   end
 end
