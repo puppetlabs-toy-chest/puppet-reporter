@@ -765,3 +765,10 @@ div#node_status div {
 	float: left;
 	margin: 25px 40px;
 }
+div#node_status {
+	float: left;
+	clear: both;
+}
+div#logs {
+	clear: both;
+}
