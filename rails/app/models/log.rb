@@ -31,5 +31,9 @@ class Log < ActiveRecord::Base
     def recent
       find(:all, :conditions => ['timestamp >= ?', Time.zone.now - 30.minutes], :limit => 5, :order => 'timestamp desc')
     end
+    
+    def latest
+      find(:all, :order => 'timestamp desc', :limit => 5)
+    end
   end
 end

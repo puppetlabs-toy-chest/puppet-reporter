@@ -3,6 +3,6 @@ class DashboardController < ApplicationController
     @failed_nodes = Node.failed
     @silent_nodes = Node.silent
     
-    @logs = Log.recent
+    @logs = Log.latest
   end
 end
