@@ -31,6 +31,7 @@
     <table id="dashboard_logs" class="logs">
       <%= render :partial => 'logs/log', :collection => @logs %>
     </table>
+    <%= periodically_call_remote :url => '/logs/recent', :update => 'dashboard_logs', :frequency => 5 %>
     
   </div>
   

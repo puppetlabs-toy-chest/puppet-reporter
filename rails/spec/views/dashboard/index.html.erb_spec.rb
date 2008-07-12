@@ -275,6 +275,16 @@ describe '/dashboard/index.html.erb' do
         end
       end
     end
+  
+    it 'should periodically update' do
+      template.expects(:periodically_call_remote).with(has_entry(:url => '/logs/recent'))
+      do_render
+    end
+    
+    it 'should update the log table' do
+      template.expects(:periodically_call_remote).with(has_entry(:update => 'dashboard_logs'))
+      do_render
+    end
   end
     
   it 'should include a log tag cloud'
