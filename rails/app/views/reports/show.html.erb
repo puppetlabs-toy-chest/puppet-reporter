@@ -20,21 +20,7 @@
   <div class="report_logs">
     <h3>Logs</h3>
     <table id="report_logs" class="logs">
-      <% @report.logs.each do |log| %>
-        <tr class="<%= log.level %>">
-          <td><%= log.level %></td>
-          <td><%= log.message %>
-          <br /><br />
-          <%= log.source %>
-          <br /><br />
-          <%= log.timestamp %>
-          <% unless log.tag_names.blank? -%>
-          <br /><br />
-          tags: <%= log.tag_names %>
-          <% end -%>
-          </td>
-        </tr>
-      <% end %>
+      <%= render :partial => 'logs/log', :collection => @report.logs %>
     </table>
   </div>
   <% end %>
