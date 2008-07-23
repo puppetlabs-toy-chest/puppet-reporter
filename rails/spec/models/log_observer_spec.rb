@@ -1,6 +1,12 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe LogObserver do
+  
+  class LogObserver
+    def initialize
+    end
+  end
+  
   before :each do
     @observer = LogObserver.instance
   end
