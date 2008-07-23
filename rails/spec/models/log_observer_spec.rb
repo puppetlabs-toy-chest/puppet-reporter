@@ -5,6 +5,10 @@ describe LogObserver do
     @observer = LogObserver.instance
   end
   
+  it 'should observe Log' do
+    LogObserver.observed_class.should == Log
+  end
+  
   it 'should have an after-create callback' do
     @observer.should respond_to(:after_create)
   end
