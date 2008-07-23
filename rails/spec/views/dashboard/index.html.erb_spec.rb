@@ -182,10 +182,17 @@ describe '/dashboard/index.html.erb' do
     end
     
     describe 'log table' do
+      it 'should include a top marker' do
+        do_render
+        response.should have_tag('table[id=?]', 'dashboard_logs') do
+          with_tag('tr[id=?]', 'dashboard_logs_top')
+        end
+      end
+      
       it 'should include a log item' do
         do_render
         response.should have_tag('table[id=?]', 'dashboard_logs') do
-          with_tag('tr')
+          with_tag('tr:not([id=?])', 'dashboard_logs_top')
         end
       end
       
@@ -271,7 +278,7 @@ describe '/dashboard/index.html.erb' do
         
         do_render
         response.should have_tag('table[id=?]', 'dashboard_logs') do
-          without_tag('tr')
+          without_tag('tr:not([id=?])', 'dashboard_logs_top')
         end
       end
     end
