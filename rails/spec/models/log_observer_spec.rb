@@ -55,6 +55,12 @@ describe LogObserver do
       @observer.controller.instance_variable_get('@template').should be_kind_of(ActionView::Base)
     end
     
+    it 'should set the view paths for the template' do
+      template = ActionView::Base.new
+      ActionView::Base.expects(:new).with(ActionController::Base.view_paths)
+      @observer.controller
+    end
+    
     it 'should return a controller with assigns set' do
       @observer.controller.instance_variable_get('@assigns').should == {}
     end

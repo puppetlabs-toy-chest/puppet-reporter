@@ -1,7 +1,7 @@
 class LogObserver < ActiveRecord::Observer
   def controller
     returning ActionController::Base.new do |controller|
-      controller.instance_variable_set('@template', ActionView::Base.new)
+      controller.instance_variable_set('@template', ActionView::Base.new(ActionController::Base.view_paths))
       controller.instance_variable_set('@assigns', {})
     end
   end
