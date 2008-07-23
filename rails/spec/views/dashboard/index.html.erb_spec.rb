@@ -14,6 +14,11 @@ describe '/dashboard/index.html.erb' do
     render '/dashboard/index.html.erb'
   end
   
+  it 'should create a juggernaut object' do
+    do_render
+    response.should have_text(/new Juggernaut/)
+  end
+  
   it 'should include content' do
     do_render
     response.should have_tag('div[id=?]', 'content')
