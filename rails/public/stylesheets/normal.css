@@ -772,3 +772,7 @@ div#node_status {
 div#logs {
 	clear: both;
 }
+div#dashboard_log_list {
+	height: 500px;
+	overflow: auto;
+}
