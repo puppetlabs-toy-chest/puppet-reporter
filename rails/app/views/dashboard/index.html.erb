@@ -39,3 +39,22 @@
   </div>
   
 </div>
+
+<script type="text/javascript">
+  var LOG_MESSAGE_LIMIT = 100;
+  var LOG_CHECK_INTERVAL = 2;  // in seconds
+
+  function limit_log_messages() {
+    var table = $('dashboard_logs');
+    var rows = table.rows;
+  
+    if (rows.length > LOG_MESSAGE_LIMIT) {
+      var overflow_rows = $A(rows).slice(LOG_MESSAGE_LIMIT);
+      overflow_rows.each(function(row){
+        row.remove();
+      });
+    }
+  }
+
+  new PeriodicalExecuter(limit_log_messages, LOG_CHECK_INTERVAL);
+</script>
