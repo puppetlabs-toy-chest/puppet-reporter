@@ -5,6 +5,7 @@ PuppetShow tool for viewing and manipulating Puppet Report data
 SETUP:
 
  - install rmagick gem, sqlite3-ruby gem (what else did we miss?), imagemagick and imagemagick-dev
+ - install juggernaut gem. Since this is listed as a dependency in the environment, running `rake gems:install` will install it and its dependencies)
  - install rrdtool and Ruby RRD bindings.  On OS X this looks like:
     % sudo port install rrdtool    # purely for getting the dependencies installed
     % sudo port uninstall rrdtool
@@ -18,12 +19,13 @@ SETUP:
     % ruby test.rb  # with any luck this will run successfully and you'll get a test.png in the directory
  - git clone Facter from reductive labs and install it
  - git clone Puppet (0.24.x branch) from reductive labs
- - copy puppetshow/rails/config/puppet_lib.rb.sample to puppetshow/rails/config/puppet_lib.rb and edit the PUPPET_LIB setting to reflect the location of your cloned puppet repo
+ - copy puppetshow/rails/config/*.example to the non-example filenames (e.g. database.yml.example -> database.yml) and make any necessary changes
  - cd into puppetshow/rails
  - rake db:migrate
  - rake db:test:prepare
  - rake spec   (with any luck these should all pass)
- - ruby script/server
+ - ruby script/server 
+ - juggernaut -c config/juggernaut.yml
  - connect to http://localhost:3000/
  - load report data:
    - untar puppetshow/reports.tgz to puppetshow/reports/
