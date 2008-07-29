@@ -45,16 +45,8 @@
   var LOG_CHECK_INTERVAL = 2;  // in seconds
 
   function limit_log_messages() {
-    var table = $('dashboard_logs');
-    var rows = table.rows;
-  
-    if (rows.length > LOG_MESSAGE_LIMIT) {
-      var overflow_rows = $A(rows).slice(LOG_MESSAGE_LIMIT);
-      overflow_rows.each(function(row){
-        row.remove();
-      });
-    }
+    $('#dashboard_logs tr:gt(' + LOG_MESSAGE_LIMIT + ')').remove();
   }
 
-  new PeriodicalExecuter(limit_log_messages, LOG_CHECK_INTERVAL);
+  window.setInterval(limit_log_messages, LOG_CHECK_INTERVAL * 1000);
 </script>
