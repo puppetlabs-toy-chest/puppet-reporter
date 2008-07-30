@@ -16,7 +16,7 @@ describe '/dashboard/index.html.erb' do
   
   it 'should create a juggernaut object' do
     do_render
-    response.should have_text(/new Juggernaut/)
+    response.should have_text(/jQuery\.Juggernaut\.initialize/)
   end
   
   it 'should include content' do
