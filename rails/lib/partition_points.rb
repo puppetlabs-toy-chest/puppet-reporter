@@ -13,9 +13,6 @@ class Range
   end
   
   def partitions(interval)
-    points = partition_points(interval)
-    partitions = []
-    points.each_cons(2) { |points|  partitions.push(points) }
-    partitions
+    partition_points(interval).enum_for(:each_cons, 2).to_a
   end
 end
