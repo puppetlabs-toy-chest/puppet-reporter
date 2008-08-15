@@ -409,5 +409,42 @@ describe Report do
         Report.count_between(@start_time, @end_time, :interval => 300).should == [3, 3, 3, 1]
       end
     end
+    
+    it 'should check for a find scope' do
+      Report.expects(:scope).with(:find)
+      Report.count_between(@start_time, @end_time)
+    end
+    
+    describe 'when there is no find scope' do
+      before :each do
+        Report.stubs(:scope).returns(nil)
+      end
+      
+      it 'should return a count for all reports' do
+        Report.count_between(@start_time, @end_time).should == 10
+      end
+    end
+    
+    describe 'when there is a find scope' do
+      describe 'with conditions' do
+        before :each do
+          Report.stubs(:scope).returns({:conditions => %Q["reports".node_id = #{@reports[5].node.id}]})
+        end
+        
+        it 'should limit the count to reports matching the scope' do
+          Report.count_between(@start_time, @end_time).should == 1
+        end
+      end
+      
+      describe 'without conditions' do
+        before :each do
+          Report.stubs(:scope).returns({})
+        end
+        
+        it 'should return a count for all reports' do
+          Report.count_between(@start_time, @end_time).should == 10
+        end
+      end
+    end
   end
 end

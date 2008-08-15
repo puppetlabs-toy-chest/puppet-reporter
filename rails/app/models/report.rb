@@ -79,7 +79,8 @@ class Report < ActiveRecord::Base
     def count_between(start_time, end_time, options = {})
       quoted_start = connection.quote(start_time)
       quoted_end   = connection.quote(end_time)
-      reports = find_by_sql("select timestamp from reports where timestamp >= #{quoted_start} and timestamp < #{quoted_end}")
+      conditions   = [ (scope(:find) || {})[:conditions], "timestamp >= #{quoted_start} and timestamp < #{quoted_end}" ].compact.join(' and ')
+      reports = find_by_sql("select timestamp from reports where #{conditions}")
       
       if interval = options[:interval]
         # getting rid of usec
