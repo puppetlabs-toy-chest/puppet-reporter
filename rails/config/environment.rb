@@ -26,7 +26,6 @@ Rails::Initializer.run do |config|
   # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
   # config.gem "aws-s3", :lib => "aws/s3"
 
-  config.gem "sparklines"
   config.gem "hpricot"
   config.gem 'juggernaut'
 
@@ -75,8 +74,6 @@ begin
 rescue LoadError  # it's okay if the file doesn't exist, as it's only there to ensure the puppet lib is in the load path
 end
 require 'puppet'
-
-require 'sparklines'
 
 require 'partition_points'
 require 'flot_points'
