@@ -776,3 +776,8 @@ div#dashboard_log_list {
 	height: 500px;
 	overflow: auto;
 }
+
+div.month_graph_placeholder {
+  width: 60px;
+  height: 40px;
+}

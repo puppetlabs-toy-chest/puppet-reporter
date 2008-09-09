@@ -82,7 +82,30 @@ module NodesHelper
   
   def node_month_resource_graph(node, time = Time.zone.now)
     data_points = node.metrics.total_resources_between(time - 30.days, time, :interval => 1.day)
-    sparkline_tag(data_points, :type => 'smooth', :line_color => 'black', :height => 40)
+    div = '<div id="node_month_resource_graph" class="month_graph_placeholder"></div>'
+    script = %Q[<script type="text/javascript">
+      var graph_div = $('#node_month_resource_graph');
+      var points = [#{data_points.flot_points.inspect}];
+      var options = #{flot_sparkline_options}
+      var plot = $.plot(graph_div, points, options)
+    </script>]
+    div + script
+  end
+  
+  
+  private
+  
+  def flot_sparkline_options
+    %q[
+      {
+        lines: { lineWidth: 1 },
+        colors: ['black'],
+        shadowSize: 0,
+        grid: { borderWidth: 0 },
+        xaxis: { ticks: [] },
+        yaxis: { ticks: [] }
+      };
+    ]
   end
   
 end
