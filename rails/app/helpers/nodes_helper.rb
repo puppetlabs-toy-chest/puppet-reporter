@@ -52,7 +52,15 @@ module NodesHelper
   
   def node_month_report_graph(node, time = Time.zone.now)
     data_points = node.reports.count_between(time - 30.days, time, :interval => 1.day)
-    sparkline_tag(data_points, :type => 'smooth', :line_color => 'black', :height => 40)
+    div_id = 'node_month_report_graph'
+    div = %Q[<div id="#{div_id}" class="month_graph_placeholder"></div>]
+    script = %Q[<script type="text/javascript">
+      var graph_div = $('##{div_id}');
+      var points = [#{data_points.flot_points.inspect}];
+      var options = #{flot_sparkline_options}
+      var plot = $.plot(graph_div, points, options)
+    </script>]
+    div + script
   end
   
   def node_day_failure_graph(node, time = Time.zone.now)
@@ -67,7 +75,15 @@ module NodesHelper
   
   def node_month_failure_graph(node, time = Time.zone.now)
     data_points = node.metrics.total_failures_between(time - 30.days, time, :interval => 1.day)
-    sparkline_tag(data_points, :type => 'smooth', :line_color => 'black', :height => 40)
+    div_id = 'node_month_failure_graph'
+    div = %Q[<div id="#{div_id}" class="month_graph_placeholder"></div>]
+    script = %Q[<script type="text/javascript">
+      var graph_div = $('##{div_id}');
+      var points = [#{data_points.flot_points.inspect}];
+      var options = #{flot_sparkline_options}
+      var plot = $.plot(graph_div, points, options)
+    </script>]
+    div + script
   end
   
   def node_day_resource_graph(node, time = Time.zone.now)
@@ -82,9 +98,10 @@ module NodesHelper
   
   def node_month_resource_graph(node, time = Time.zone.now)
     data_points = node.metrics.total_resources_between(time - 30.days, time, :interval => 1.day)
-    div = '<div id="node_month_resource_graph" class="month_graph_placeholder"></div>'
+    div_id = 'node_month_resource_graph'
+    div = %Q[<div id="#{div_id}" class="month_graph_placeholder"></div>]
     script = %Q[<script type="text/javascript">
-      var graph_div = $('#node_month_resource_graph');
+      var graph_div = $('##{div_id}');
       var points = [#{data_points.flot_points.inspect}];
       var options = #{flot_sparkline_options}
       var plot = $.plot(graph_div, points, options)
