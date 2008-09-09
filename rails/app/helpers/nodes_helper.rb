@@ -42,7 +42,7 @@ module NodesHelper
   
   def node_day_report_graph(node, time = Time.zone.now)
     data_points = node.reports.count_between(time - 1.day, time, :interval => 30.minutes)
-    sparkline_tag(data_points, :type => 'smooth', :line_color => 'black', :height => 40)
+    flot_graph(data_points, 'node_day_report_graph', 'day')
   end
   
   def node_week_report_graph(node, time = Time.zone.now)
@@ -57,7 +57,7 @@ module NodesHelper
   
   def node_day_failure_graph(node, time = Time.zone.now)
     data_points = node.metrics.total_failures_between(time - 1.day, time, :interval => 30.minutes)
-    sparkline_tag(data_points, :type => 'smooth', :line_color => 'black', :height => 40)
+    flot_graph(data_points, 'node_day_failure_graph', 'day')
   end
   
   def node_week_failure_graph(node, time = Time.zone.now)
@@ -72,7 +72,7 @@ module NodesHelper
   
   def node_day_resource_graph(node, time = Time.zone.now)
     data_points = node.metrics.total_resources_between(time - 1.day, time, :interval => 30.minutes)
-    sparkline_tag(data_points, :type => 'smooth', :line_color => 'black', :height => 40)
+    flot_graph(data_points, 'node_day_resource_graph', 'day')
   end
   
   def node_week_resource_graph(node, time = Time.zone.now)

@@ -785,3 +785,7 @@ div.week_graph_placeholder {
   width: 60px;
   height: 40px;
 }
+div.day_graph_placeholder {
+  width: 100px;
+  height: 40px;
+}
