@@ -79,3 +79,4 @@ require 'puppet'
 require 'sparklines'
 
 require 'partition_points'
+require 'flot_points'
