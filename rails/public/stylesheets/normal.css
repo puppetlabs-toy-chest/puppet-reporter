@@ -789,3 +789,7 @@ div.day_graph_placeholder {
   width: 100px;
   height: 40px;
 }
+div.index_graph_placeholder {
+  width: 100px;
+  height: 20px;
+}
