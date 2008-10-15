@@ -237,6 +237,38 @@ describe '/dashboard/index.html.erb' do
           end
         end
         
+        it 'should include log node' do
+          do_render
+          response.should have_tag('table[id=?]', 'dashboard_logs') do
+            with_tag('tr', :text => Regexp.new(Regexp.escape(@log.node.name)))
+          end
+        end
+        
+        it 'should link to log node' do
+          do_render
+          response.should have_tag('table[id=?]', 'dashboard_logs') do
+            with_tag('tr') do
+              with_tag('a[href=?]', node_path(@log.node))
+            end
+          end
+        end
+        
+        it 'should include log report' do
+          do_render
+          response.should have_tag('table[id=?]', 'dashboard_logs') do
+            with_tag('tr', :text => Regexp.new(Regexp.escape(@log.report.timestamp.to_s)))
+          end
+        end
+        
+        it 'should link to log report' do
+          do_render
+          response.should have_tag('table[id=?]', 'dashboard_logs') do
+            with_tag('tr') do
+              with_tag('a[href=?]', report_path(@log.report))
+            end
+          end
+        end
+        
         describe 'when log has tags' do
           before :each do
             @tags = 'basenode, main, os::darwin'

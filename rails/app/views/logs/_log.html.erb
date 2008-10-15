@@ -9,5 +9,9 @@
   <br /><br />
   tags: <%= log.tag_names %>
   <% end -%>
+  <br /><br />
+  <%= link_to log.node.name, node_path(log.node) %>
+  <br /><br />
+  reported at <%= link_to log.report.timestamp, report_path(log.report) %>
   </td>
 </tr>
