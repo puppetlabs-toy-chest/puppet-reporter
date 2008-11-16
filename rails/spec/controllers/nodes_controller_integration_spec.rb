@@ -94,7 +94,7 @@ describe NodesController, "when running integrations" do
       end
       
       it 'should show the failures page' do
-        pending("rspec learning about alternative templates") do |variable|
+        pending("rspec learning about alternative templates") do
           do_request
           response.should render_template('failures.csv.erb')          
         end
@@ -136,7 +136,7 @@ describe NodesController, "when running integrations" do
       end
       
       it 'should show the reports page' do
-        pending("rspec learning about alternative templates") do |variable|
+        pending("rspec learning about alternative templates") do
           do_request
           response.should render_template('reports.xml.builder')          
         end
