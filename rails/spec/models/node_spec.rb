@@ -374,6 +374,8 @@ describe Node do
     
     describe 'getting silent nodes' do
       before :each do
+        Node.delete_all
+        
         @recent_node     = Node.generate!
         @recent_node.reports.generate!(:timestamp => Time.zone.now - 5)
         
