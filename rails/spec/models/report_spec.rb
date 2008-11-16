@@ -118,6 +118,8 @@ describe Report do
   describe 'as a class' do
     describe 'loading report data from YAML files' do
       before :each do
+        Report.stubs(:warn)
+        
         @files = [ '/tmp/1', '/tmp/2', '/tmp/3' ]
         @report = Report.new
         @files.each do |file| 
