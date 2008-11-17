@@ -1,0 +1,384 @@
+!dark = #000
+!light = #fff
+!plum = #717
+!amber = #da3
+!burnt = #850
+!accent = #fbf7c9
+!fonts = "Helvetica, Arial, sans-serif"
+
+=small-text
+  :padding 0 0 0 0
+  :font 
+    :size 10pt 
+    :family = !fonts
+
+*
+  :margin 0
+  :padding 0
+
+body
+  :font 
+    :size 0.8125em 
+    :family = !fonts
+  :line-height 1
+  :color !dark
+  :margin 0
+  :padding 0
+
+a
+  :text-decoration none
+
+  img
+    :border none
+
+  &.button
+    :border-bottom-width 0
+
+ul
+  :list-style none
+
+#masthead
+  :position absolute
+  :z-index 11
+  :top 0px
+  :left 28px
+  :padding-top 10px
+
+  img
+    :background transparent
+    :position absolute
+    :top 0px
+
+#navbar
+  :z-index 2
+  :overflow hidden
+  :position absolute
+  :left 200px
+  :padding 0px 15px 20px 15px
+  :font 
+    :size 16px 
+    :family = !fonts
+
+  a
+    :border-bottom-width 0
+
+    &:hover
+      :color #A2A
+      :padding 9px 7px 10px 7px
+
+  ul
+    :text-align center
+    :width 100%
+
+  li
+    :float left
+    :padding 0px 15px 0px 15px
+
+    a
+      :display block
+      :padding 9px 7px 11px 7px
+      :background none
+      :color !plum
+
+      &.selected
+        :color #313
+        :padding 9px 7px 10px 7px
+
+
+h1
+  :margin 0
+  :padding 0
+  :font 
+    :weight bold 
+    :size 18pt 
+    :familly = !fonts
+  :text-align left
+  :color !dark
+
+div
+  :margin 0
+  :padding 0
+
+  &.timeline
+    +small-text
+
+  &#node_status
+    :float left
+    :clear both
+
+    div
+      :float left
+      :margin 25px 40px
+
+  &#logs
+    :clear both
+
+  &#dashboard_log_list
+    :height 500px
+    :overflow auto
+
+  &.month_graph_placeholder
+    :width 60px
+    :height 40px
+
+  &.week_graph_placeholder
+    :width 60px
+    :height 40px
+
+  &.day_graph_placeholder
+    :width 100px
+    :height 40px
+
+  &.index_graph_placeholder
+    :width 100px
+    :height 20px
+
+
+h2
+  :font
+    :size 1.7em 
+    :family = !fonts
+  :text-align center
+  :color !dark
+  :background none
+
+  a
+    :color !dark
+
+    &:hover
+      :color !dark
+
+  em
+    :font-style normal
+
+
+h3
+  :font 
+    :size 1.3em 
+    :family = !fonts
+  :color !dark
+  :padding-bottom 3em
+  :text-align left
+
+
+h4
+  :font 
+    :weight bold 
+    :size 1.0em 
+    :family = !fonts
+  :color !plum
+  :text-transform uppercase
+
+
+th
+  :background #d09000
+
+
+td
+  :padding 10px
+
+
+.column
+  :float left
+
+
+#content
+  :background transparent
+  :float none
+  :position relative
+  :top 40px
+  :width 75%
+  :margin-right 0px
+  :padding-right 0px
+
+  a
+    &:link, &:visited
+      :text-decoration none
+      :color !plum
+      :border-bottom 1px solid !AMBER
+
+    &:hover
+      :text-decoration none
+      :color !amber
+      :border-bottom 1px solid !plum
+
+  img
+    :border-top thin solid #ddd
+    :border-left thin solid #ddd
+    :border-right thin solid #444
+    :border-bottom thin solid #444
+
+    &.float
+      &.left
+        :margin 15px 15px 15px 0px
+        :float left
+
+      &.right
+        :margin 15px 0px 15px 15px
+        :float right
+
+    &.sparkline
+      :border none
+
+  tr
+    :border none
+
+    &.odd
+      :background !light
+
+    td.report
+      :text-align center
+
+    &.even
+      :background #d09000
+
+  em
+    :color !burnt
+    :border-bottom none
+
+  &.column
+    :float left
+    :width 60%
+    :padding-left 220px
+    :margin-right 0px
+    :padding-right 0px
+
+  td.message
+    :background !accent
+    :margin 0px
+    :padding 5px
+
+  ol
+    :margin-left 50px
+
+    li
+      :margin-left 0px
+      :padding-left 0px
+      :background-image none
+
+
+#foot
+  :width 100%
+  :text-align center
+  :display block
+  :float left
+  :margin-top 5em
+  :margin-bottom 2em
+
+  a
+    :font 
+      :size 18pt 
+      :family = !fonts
+    :color !plum
+    :padding none
+    :margin none
+    :border none
+
+    &:hover
+      :color #A2A
+      :background none
+      :padding none
+      :margin none
+      :border none
+
+  p
+    :border none
+    :font 
+      :size 8pt 
+      :family = !fonts
+    :color !dark
+
+    &.left
+      :float left
+      :margin-left 1em
+      :padding 5px 1em
+      :border none
+      :font 
+        :size 7pt 
+        :family = !fonts
+
+      a
+        :font 
+          :size 7pt 
+          :family = !fonts
+        :color !plum
+
+    &.right
+      :float right
+      :margin-left 1em
+      :padding 5px 1em
+      :border none
+      :font 
+        :size 7pt 
+        :family = !fonts
+
+      a
+        :font 
+          :size 7pt 
+          :family = !fonts
+        :color !plum
+
+
+#info
+  :background !dark
+
+
+table
+  &.listing thead th
+    :font 
+      :size 10pt 
+      :family = !fonts
+    :border none
+    :font-size 11px
+    :color !light
+    :padding 2px .5em
+    :vertical-align bottom
+    :background-color #516
+
+  &.logs
+    :border-collapse collapse
+    :border thin solid black
+
+    td
+      :border-bottom thin solid black
+      :vertical-align top
+
+    tr
+      &.debug
+        :background-color bisque
+
+      &.info
+        :background-color tan
+
+      &.notice
+        :background-color lightblue
+
+      &.warning
+        :background-color khaki
+
+      &.err
+        :background-color pink
+
+  &#node_graphs
+    :border-collapse collapse
+
+
+.report_category_metrics
+  :float left
+  :margin 25px 40px
+
+  h3
+    :text-decoration underline
+
+
+#report_changes_metrics li, #report_resources_metrics li, #report_time_metrics li
+  :background none
+  :padding-left 0px
+
+
+.report_logs
+  :clear both
+
+
+img.sparkline
+  :border none
