@@ -1,13 +1,13 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-describe '/logs/recent.html.erb' do
+describe '/logs/recent' do
   before :each do
     @log = Log.generate!(:source => 'log source')
     assigns[:logs] = [@log]
   end
 
   def do_render
-    render '/logs/recent.html.erb'
+    render '/logs/recent'
   end
   
   it 'should include a log item' do

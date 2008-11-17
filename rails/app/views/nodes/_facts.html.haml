@@ -1,0 +1,7 @@
+.facts
+  %ul
+    - Fact.important_facts.each do |which|
+      %li
+        = which[:label]
+        \:
+        = facts[which[:key]]

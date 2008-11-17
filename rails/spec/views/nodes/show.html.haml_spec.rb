@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-describe '/nodes/show.html.erb' do
+describe '/nodes/show' do
   before :each do
     @node = Node.generate!(:name => 'foo')
     assigns[:node] = @node
@@ -19,7 +19,7 @@ describe '/nodes/show.html.erb' do
   end
 
   def do_render
-    render '/nodes/show.html.erb'
+    render '/nodes/show'
   end
 
   it 'should include the name of the Node' do

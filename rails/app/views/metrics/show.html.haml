@@ -1,0 +1,10 @@
+%h1
+  Metric from
+  = link_to "Report at #{@metric.report.timestamp.to_s}", report_path(@metric.report)
+  on Node
+  = link_to @metric.node.name, node_path(@metric.node)
+%ul
+  %li
+    = @metric.label
+    \:
+    = @metric.value.to_s

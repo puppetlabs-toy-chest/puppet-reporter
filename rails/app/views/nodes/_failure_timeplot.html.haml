@@ -1,0 +1,42 @@
+%script
+  var timeplot;
+  
+  function onLoad() {
+  var eventSource = new Timeplot.DefaultEventSource();
+  var reportEventSource = new Timeplot.DefaultEventSource();
+  var timeGeometry = new Timeplot.DefaultTimeGeometry({ gridColor: "#000000", axisLabelsPlacement: "bottom" });
+  var valueGeometry = new Timeplot.DefaultValueGeometry({ min: 0, gridColor: "#000000",	axisLabelsPlacement: "left"	});
+  
+  var plotInfo = [
+  Timeplot.createPlotInfo({
+  id: 'failures',
+  dataSource: new Timeplot.ColumnSource(eventSource,1),
+  showValues: true,
+  valueGeometry: valueGeometry,
+  timeGeometry: timeGeometry,
+  lineColor: "#ff0000",
+  fillColor: "#cc8080"
+  }),
+  Timeplot.createPlotInfo({
+  id: 'reports',
+  timeGeometry: timeGeometry,
+  eventSource: reportEventSource,
+  lineColor: "#00ff00"
+  })
+  ];
+  
+  timeplot = Timeplot.create(document.getElementById('failure-timeplot'), plotInfo);
+  timeplot.loadText('<haml:loud> node.id </haml:loud>/failures.csv', ',', eventSource);
+  timeplot.loadXML('<haml:loud> node.id </haml:loud>/reports.xml', reportEventSource);
+  }
+  
+  var resizeTimerID = null;
+  function onResize() {
+  if (resizeTimerID == null) {
+  resizeTimerID = window.setTimeout(function() {
+  resizeTimerID = null;
+  timeplot.repaint();
+  }, 100);
+  }
+  }
+#failure-timeplot{ :style => "height: 150px;" }/

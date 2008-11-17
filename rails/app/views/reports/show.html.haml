@@ -1,0 +1,25 @@
+%h1
+  Report for
+  = link_to @report.node.name, node_path(@report.node)
+  at
+  = @report.timestamp
+#report_details.details
+  .report_metrics
+    - categorized = Metric.categorize(@report.metrics)
+    - categorized.keys.sort.each do |category|
+      %div{ :class => "report_#{category}_metrics report_category_metrics" }
+        %h3
+          = category.titleize
+        .metrics
+          %ul{ :id => "report_#{category}_metrics" }
+            - categorized[category].each do |metric|
+              %li
+                = metric.label
+                \:
+                = metric.value
+  - unless @report.logs.blank?
+    .report_logs
+      %h3
+        Logs
+      %table#report_logs.logs
+        = render :partial => 'logs/log', :collection => @report.logs

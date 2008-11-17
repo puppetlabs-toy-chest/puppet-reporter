@@ -1,0 +1,39 @@
+- now = Time.zone.now
+%h1
+  Nodes
+%table#node_list.node_list
+  %thead
+    %tr
+      %th
+        Name
+      %th
+        Reports
+      %th
+        Changes
+      %th
+        Failures
+      %th
+        Resources
+    %tr
+      %th/
+      %th
+        = report_count_graph(now)
+      %th
+        = total_change_graph(now)
+      %th
+        = total_failure_graph(now)
+      %th
+        = total_resource_graph(now)
+  %tbody
+    - @nodes.each do |node|
+      %tr{ :id => "node-#{node.id}" }
+        %td
+          = link_to node.name, node_path(node)
+        %td
+          = node_report_count_graph(node, now)
+        %td
+          = node_total_change_graph(node, now)
+        %td
+          = node_total_failure_graph(node, now)
+        %td
+          = node_total_resource_graph(node, now)

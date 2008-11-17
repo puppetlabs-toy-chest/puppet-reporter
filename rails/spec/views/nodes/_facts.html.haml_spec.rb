@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-describe '/nodes/_facts.html.erb' do
+describe '/nodes/_facts' do
   before :each do
     @node = Node.new(:name => 'foo')
     @facts = { :operatingsystem => 'Darwin' }

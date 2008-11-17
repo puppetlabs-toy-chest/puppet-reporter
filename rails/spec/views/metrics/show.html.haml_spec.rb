@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
-describe "/metrics/show.html.erb" do
+describe "/metrics/show" do
   before :each do
     @report = Report.generate
     @metric = Metric.new(:report => @report, :label => 'test', :value => 42)
@@ -8,7 +8,7 @@ describe "/metrics/show.html.erb" do
   end
 
   def do_render
-    render '/metrics/show.html.erb'
+    render '/metrics/show'
   end
 
   it 'should include the metric label' do

@@ -1,0 +1,64 @@
+- now = Time.zone.now
+%h1
+  Node
+  = link_to @node.name, node_path(@node)
+%h3
+  Last report:
+  - if @most_recent_report
+    = link_to distance_of_time_in_words_to_now(@most_recent_report.timestamp) + " ago", report_path(@most_recent_report)
+    (
+    = @most_recent_report.timestamp
+    )
+  - else
+    Never reported in.
+%table#node_graphs
+  %thead
+    %tr
+      %th/
+      %th
+        Day
+      %th
+        Week
+      %th
+        Month
+  %tbody
+    %tr
+      %th
+        Reports
+      %td
+        = node_day_report_graph(@node, now)
+      %td
+        = node_week_report_graph(@node, now)
+      %td
+        = node_month_report_graph(@node, now)
+    %tr
+      %th
+        Failures
+      %td
+        = node_day_failure_graph(@node, now)
+      %td
+        = node_week_failure_graph(@node, now)
+      %td
+        = node_month_failure_graph(@node, now)
+    %tr
+      %th
+        Resources
+      %td
+        = node_day_resource_graph(@node, now)
+      %td
+        = node_week_resource_graph(@node, now)
+      %td
+        = node_month_resource_graph(@node, now)
+= render :partial => 'failure_timeplot', :locals => { :node => @node }
+= render :partial => 'facts', :locals => { :facts => @node.details }
+- unless @node.failures.empty?
+  Failures:
+  %ul#failure_list
+    - @node.failures.each do |failure|
+      %li
+        = failure.value
+        \&mdash;
+        = link_to distance_of_time_in_words_to_now(failure.report.timestamp) + ' ago', report_path(failure.report)
+        (
+        = failure.report.timestamp
+        )

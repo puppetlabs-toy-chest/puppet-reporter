@@ -1,0 +1,23 @@
+%tr{ :class => log.level }
+  %td
+    = log.level
+  %td
+    = log.message
+    %br/
+    %br/
+    = log.source
+    %br/
+    %br/
+    = log.timestamp
+    - unless log.tag_names.blank?
+      %br/
+      %br/
+      tags:
+      = log.tag_names
+    %br/
+    %br/
+    = link_to log.node.name, node_path(log.node)
+    %br/
+    %br/
+    reported at
+    = link_to log.report.timestamp, report_path(log.report)

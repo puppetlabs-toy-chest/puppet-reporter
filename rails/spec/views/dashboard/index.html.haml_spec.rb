@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-describe '/dashboard/index.html.erb' do
+describe '/dashboard/index' do
   before :each do
     @failed = Node.generate!
     assigns[:failed_nodes] = [@failed]
@@ -11,7 +11,7 @@ describe '/dashboard/index.html.erb' do
   end
   
   def do_render
-    render '/dashboard/index.html.erb'
+    render '/dashboard/index'
   end
   
   it 'should create a juggernaut object' do
