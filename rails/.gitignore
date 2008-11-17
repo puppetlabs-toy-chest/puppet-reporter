@@ -10,4 +10,4 @@ log/*.log
 /coverage
 vendor/facter
 vendor/puppet
-public/stylesheets/normal.css
+public/stylesheets/puppetshow.css
