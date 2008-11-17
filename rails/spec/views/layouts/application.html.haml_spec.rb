@@ -1,8 +1,8 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-describe '/layouts/application.rhtml' do
+describe '/layouts/application' do
   def do_render
-    render '/layouts/application.rhtml'
+    render '/layouts/application'
   end
   
   it 'should include juggernaut JS' do
