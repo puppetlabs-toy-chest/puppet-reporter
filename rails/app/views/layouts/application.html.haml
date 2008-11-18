@@ -16,16 +16,18 @@
       function onLoad() { }
       function onResize() { }
   %body{ :onresize => "onResize();", :onload => "onLoad();" }
-    %ul#navbar
-      %li
-        = link_to 'Nodes', nodes_path
-    %h1#masthead
-      %a{ :href => "/" }
-        %img{ :src => "/images/puppet-short.png", :alt => "Reductive Labs" }/
-    #content.column
-      = yield :layout
-    #foot
-      Copyright &copy
-      %span.years
-        2008
-      %img{ :src => "/images/Reductive-100.png", :alt => "Reductive Labs, LLC." }/
+    .container
+      #masthead
+        %a{ :href => "/" }
+          %img{ :src => "/images/puppet-short.png", :alt => "PuppetShow" }/
+      .large
+        %ul#navbar
+          %li
+            = link_to 'Nodes', nodes_path
+      #content.column
+        = yield :layout
+      #foot
+        Copyright &copy
+        %span.years
+          2008
+        %img{ :src => "/images/Reductive-100.png", :alt => "Reductive Labs, LLC." }/
