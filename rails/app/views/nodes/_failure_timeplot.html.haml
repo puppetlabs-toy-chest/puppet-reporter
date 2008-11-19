@@ -26,8 +26,8 @@
   ];
   
   timeplot = Timeplot.create(document.getElementById('failure-timeplot'), plotInfo);
-  timeplot.loadText('<haml:loud> node.id </haml:loud>/failures.csv', ',', eventSource);
-  timeplot.loadXML('<haml:loud> node.id </haml:loud>/reports.xml', reportEventSource);
+  = "timeplot.loadText('#{node.id}/failures.csv', ',', eventSource);"
+  = "timeplot.loadXML('#{node.id}/reports.xml', reportEventSource);"
   }
   
   var resizeTimerID = null;
