@@ -23,6 +23,11 @@ describe "running the import_yaml_reports.rb script via script/runner" do
       ARGV = [ @filename ]
     end
 
+    it 'should disable the observers on the Log model' do
+      Log.expects(:delete_observers)
+      run_script
+    end
+    
     it 'should import Reports from the specified files' do
       Report.expects(:import_from_yaml_files).with(ARGV)
       run_script
