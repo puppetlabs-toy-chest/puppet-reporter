@@ -20,16 +20,15 @@ table
     .report
       :text-align center
     .message
-      :background !accent
+      :background = !accent
 
-table
-  .logs
-    :border-collapse collapse
-    :border thin solid black
+table.logs
+  :border-collapse collapse
+  :border thin solid black
 
-    td
-      :border-bottom thin solid black
-      :vertical-align top
+  td
+    :border-bottom thin solid black
+    :vertical-align top
 
 img.sparkline
   :border none
@@ -91,7 +90,7 @@ img.sparkline
   :left 5px
 
 #info
-  :background !dark
+  :background = !dark
 
 #dashboard_log_list
   :height 500px
@@ -115,7 +114,7 @@ img.sparkline
   a
     :font 
       :size 18pt 
-    :color !plum
+    :color = !plum
     :padding none
     :margin none
     :border none
@@ -131,10 +130,10 @@ img.sparkline
     :border none
     :font 
       :size 8pt 
-    :color !dark
+    :color = !dark
 
     a
       :font 
         :size 7pt 
-      :color !plum
+      :color = !plum
 
