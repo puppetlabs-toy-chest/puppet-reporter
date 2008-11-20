@@ -18,9 +18,11 @@ describe "running the import_yaml_reports.rb script via script/runner" do
   
   describe 'when files are specified on the command-line' do
     before :each do
-      @filename = '/path/to/some/fictional/claims/file'
+      @filename = '/path/to/some/fictional/report/file'
       Object.send(:remove_const, :ARGV)
       ARGV = [ @filename ]
+
+      Report.stubs(:import_from_yaml_files).with(ARGV)
     end
 
     it 'should disable the observers on the Log model' do
