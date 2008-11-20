@@ -9,6 +9,10 @@ describe Node do
     it 'should be searchable' do
       Node.should respond_to(:search)
     end
+
+    it 'should allow searching by node name' do
+      Node.should have_index(:name)
+    end
   end
 
   describe 'when validating' do

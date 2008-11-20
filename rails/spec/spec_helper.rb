@@ -45,6 +45,12 @@ end.each do |file|
   require file
 end
 
+require File.expand_path(File.dirname(__FILE__) + '/custom_matchers')
+
+Spec::Runner.configure do |config|
+  config.include ThinkingSphinxIndexMatcher
+end
+
 def report_yaml
   '--- !ruby/object:Puppet::Transaction::Report 
     host: phage.madstop.com

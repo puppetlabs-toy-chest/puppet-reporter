@@ -6,6 +6,10 @@ class Node < ActiveRecord::Base
   
   validates_presence_of :name
   validates_uniqueness_of :name
+
+  define_index do
+    indexes name
+  end
   
   # allow controllers to look up and link to Nodes by name
   def to_param
