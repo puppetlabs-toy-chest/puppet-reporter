@@ -5,7 +5,7 @@ PuppetShow tool for viewing and manipulating Puppet Report data
 SETUP:
 
  - download Sphinx search engine 0.9.8-rc2 (http://sphinxsearch.com/downloads/sphinx-0.9.8-rc2.tar.gz), build and install
- - install sqlite3-ruby gem.
+ - install mysql gem.
  - install juggernaut gem. Since this is listed as a dependency in the environment, running `rake gems:install` will install it and its dependencies)
 
  Method 1:
@@ -17,6 +17,9 @@ SETUP:
 
  - copy puppetshow/rails/config/*.example to the non-example filenames (e.g. database.yml.example -> database.yml) and make any necessary changes
  - cd into puppetshow/rails
+ - RAILS_ENV=development rake db:create
+ - RAILS_ENV=test rake db:create
+ - RAILS_ENV=production rake db:create
  - rake db:migrate
  - rake db:test:prepare
  - rake spec   (with any luck these should all pass)
