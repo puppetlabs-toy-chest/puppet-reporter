@@ -40,7 +40,7 @@ Spec::Runner.configure do |config|
 end
 
 # disable model observers
-Dir.glob File.join(RAILS_ROOT, 'app', 'observers', '*.rb') do |file|
+Dir.glob File.join(RAILS_ROOT, 'app', 'models', '*_observer.rb') do |file|
   File.basename(file, '_observer.rb').camelize.constantize.delete_observers  
 end
 
