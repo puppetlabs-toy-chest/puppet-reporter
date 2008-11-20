@@ -430,7 +430,7 @@ describe Report do
     describe 'when there is a find scope' do
       describe 'with conditions' do
         before :each do
-          Report.stubs(:scope).returns({:conditions => %Q["reports".node_id = #{@reports[5].node.id}]})
+          Report.stubs(:scope).returns({:conditions => %Q[reports.node_id = #{@reports[5].node.id}]})
         end
         
         it 'should limit the count to reports matching the scope' do
