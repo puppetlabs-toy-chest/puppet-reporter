@@ -7,7 +7,9 @@ config/*.sphinx.conf
 db/schema.rb
 db/*.sqlite3
 db/*.db
+db/sphinx
 log/*.log
+log/searchd.*.pid
 /coverage
 vendor/facter
 vendor/puppet
