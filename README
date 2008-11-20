@@ -23,13 +23,14 @@ SETUP:
  - rake db:migrate
  - rake db:test:prepare
  - rake spec   (with any luck these should all pass)
- - ruby script/server 
- - juggernaut -c config/juggernaut.yml
- - connect to http://localhost:3000/
  - load report data:
    - untar puppetshow/reports.tgz to puppetshow/reports/
    - time find ../reports -type f -name '*.yaml' | xargs ruby script/runner script/import_yaml_reports.rb    (and go get lunch :-)
-
+ - rake ts:index (index the database for searching)
+ - rake ts:start (start the search daemon)
+ - ruby script/server 
+ - juggernaut -c config/juggernaut.yml
+ - connect to http://localhost:3000/
  - if you want to load data from a running Puppet instance
    -  update the connection settings in rails/puppet/report/puppet_show.rb to point to where your PuppetShow instance can be reached.
    - review and update the environment variable settings at the top of the 'go' script
