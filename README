@@ -4,6 +4,7 @@ PuppetShow tool for viewing and manipulating Puppet Report data
 
 SETUP:
 
+ - download Sphinx search engine 0.9.8-rc2 (http://sphinxsearch.com/downloads/sphinx-0.9.8-rc2.tar.gz), build and install
  - install sqlite3-ruby gem.
  - install juggernaut gem. Since this is listed as a dependency in the environment, running `rake gems:install` will install it and its dependencies)
 
