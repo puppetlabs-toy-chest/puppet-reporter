@@ -39,6 +39,11 @@ Spec::Runner.configure do |config|
   # config.mock_with :rr
 end
 
+# disable model observers
+Dir.glob File.join(RAILS_ROOT, 'app', 'observers', '*.rb') do |file|
+  File.basename(file, '_observer.rb').camelize.constantize.delete_observers  
+end
+
 Dir[File.dirname(__FILE__) + '/shared_behaviors/*_behavior.rb'].collect do |f|
   File.expand_path(f)
 end.each do |file|
