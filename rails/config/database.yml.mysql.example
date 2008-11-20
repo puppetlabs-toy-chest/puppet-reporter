@@ -1,0 +1,20 @@
+development:
+  adapter: mysql
+  database: puppetshow_development
+  username: root
+  password:
+  host: localhost
+
+test:
+  adapter: mysql
+  database: puppetshow_test
+  username: root
+  password:
+  host: localhost
+
+production:
+  adapter: mysql
+  database: puppetshow_production
+  username: root
+  password: 
+  host: localhost
