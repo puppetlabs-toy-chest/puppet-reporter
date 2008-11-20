@@ -5,6 +5,12 @@ describe Node do
     @node = Node.new(:name => 'foo')
   end
 
+  describe 'as a class' do
+    it 'should be searchable' do
+      Node.should respond_to(:search)
+    end
+  end
+
   describe 'when validating' do
     before :each do
       @params = { :name => 'foo' }
