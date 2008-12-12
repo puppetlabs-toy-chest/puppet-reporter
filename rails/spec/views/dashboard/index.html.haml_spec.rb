@@ -60,6 +60,10 @@ describe '/dashboard/index' do
     end
   end
 
+  it 'should include a region for displaying search results' do
+    do_render
+    response.should have_tag('div[id=?]', 'search_results_container')
+  end
   
   describe 'node status' do
     it 'should include failed nodes' do

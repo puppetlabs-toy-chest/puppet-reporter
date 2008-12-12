@@ -1,10 +1,14 @@
 = javascript_include_tag "logs.js"
 = juggernaut
 #content
+
+  = javascript_include_tag "search.js"
   #search
     - form_tag(search_path, {:id => 'search_form', :method => 'get' }) do
       = text_field_tag 'q'
       = submit_tag('Search')
+  #search_results_container
+
   #node_status
     %h2
       Node Status
