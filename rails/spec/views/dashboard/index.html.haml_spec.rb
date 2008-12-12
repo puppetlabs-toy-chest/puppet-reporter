@@ -320,6 +320,4 @@ describe '/dashboard/index' do
       end
     end
   end
-    
-  it 'should include a log tag cloud'
 end
