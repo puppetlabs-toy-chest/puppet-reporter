@@ -52,4 +52,36 @@ describe DashboardController do
       assigns[:logs].should == @logs
     end
   end
+
+  describe 'search' do
+    before :each do
+      @query = 'match'
+      @matches = 'matches'
+      Node.stubs(:search).returns(@matches)
+    end
+    
+    def do_get
+      get :search, { :q => @query }
+    end
+
+    it 'should be successful' do
+      do_get
+      response.should be_success
+    end
+    
+    it 'should search nodes for the query string' do
+      Node.expects(:search).with(@query)
+      do_get
+    end
+    
+    it 'should make search results available to the view' do
+      do_get
+      assigns[:results].should == @matches
+    end
+    
+    it 'should render the search results page' do
+      do_get
+      response.should render_template('search')
+    end
+  end
 end

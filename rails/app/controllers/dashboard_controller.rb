@@ -5,4 +5,8 @@ class DashboardController < ApplicationController
     
     @logs = Log.latest
   end
+
+  def search
+    @results = Node.search(params[:q])
+  end
 end
