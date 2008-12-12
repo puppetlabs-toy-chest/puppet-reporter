@@ -41,6 +41,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # See how all your routes lay out with "rake routes"
 
+  map.search '/search', :controller => 'dashboard', :action => 'search'
   map.root :controller => 'dashboard', :action => 'index'
 
   # Install the default routes as the lowest priority.
