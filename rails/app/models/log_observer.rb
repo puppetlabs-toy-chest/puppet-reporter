@@ -11,7 +11,7 @@ class LogObserver < ActiveRecord::Observer
   
   def after_create(log)
     controller.render :juggernaut do |page|
-      page.insert_html :after, 'dashboard_logs_top', :partial => 'logs/log', :locals => { :log => log }
+      page.insert_html :after, 'scrolling_logs_top', :partial => 'logs/log', :locals => { :log => log }
     end
   end
 end

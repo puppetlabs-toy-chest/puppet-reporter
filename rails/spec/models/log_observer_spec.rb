@@ -47,7 +47,7 @@ describe LogObserver do
     end
     
     it 'should insert the log on the page' do
-      @page.expects(:insert_html).with(:after, 'dashboard_logs_top', :partial => 'logs/log', :locals => { :log => @log })
+      @page.expects(:insert_html).with(:after, 'scrolling_logs_top', :partial => 'logs/log', :locals => { :log => @log })
       @observer.after_create(@log)
     end
   end

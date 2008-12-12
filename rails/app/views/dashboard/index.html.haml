@@ -1,3 +1,4 @@
+= javascript_include_tag "logs.js"
 = juggernaut
 #content
   #node_status
@@ -21,15 +22,6 @@
     %h2
       Logs
     #dashboard_log_list
-      %table#dashboard_logs.logs
-        %tr#dashboard_logs_top/
+      %table#scrolling_logs.logs
+        %tr#scrolling_logs_top/
         = render :partial => 'logs/log', :collection => @logs
-%script{ :type => "text/javascript" }
-  var LOG_MESSAGE_LIMIT = 100;
-  var LOG_CHECK_INTERVAL = 2;  // in seconds
-  
-  function limit_log_messages() {
-  $('#dashboard_logs tr:gt(' + LOG_MESSAGE_LIMIT + ')').remove();
-  }
-  
-  window.setInterval(limit_log_messages, LOG_CHECK_INTERVAL * 1000);
