@@ -66,13 +66,33 @@ describe LogObserver do
     end
     
     it 'should set the view paths for the template' do
-      template = ActionView::Base.new
-      ActionView::Base.expects(:new).with(ActionController::Base.view_paths)
+      ActionView::Base.expects(:new).with(ActionController::Base.view_paths, anything, anything)
       @observer.controller
+    end
+    
+    it 'should set the controller for the template' do
+      controller = @observer.controller
+      controller.instance_variable_get('@template').controller.should == controller
     end
     
     it 'should return a controller with assigns set' do
       @observer.controller.instance_variable_get('@assigns').should == {}
+    end
+    
+    it 'should return a controller with the request set' do
+      @observer.controller.request.should be_kind_of(ActionController::CgiRequest)
+    end
+    
+    it 'should set the CGI for the request' do
+      @observer.controller.request.cgi.should be_kind_of(CGI)
+    end
+    
+    it 'should return a controller with the params set' do
+      @observer.controller.params.should == {}
+    end
+    
+    it 'should return a controller with the URL rewriter set' do
+      @observer.controller.instance_variable_get('@url').should be_kind_of(ActionController::UrlRewriter)
     end
   end
 end
