@@ -73,6 +73,11 @@ describe DashboardController do
       Node.expects(:search).with(@query)
       do_get
     end
+
+    it 'should make the query string available to the view' do
+      do_get
+      assigns[:q].should == @query
+    end
     
     it 'should make search results available to the view' do
       do_get

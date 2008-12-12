@@ -7,6 +7,7 @@ class DashboardController < ApplicationController
   end
 
   def search
-    @results = Node.search(params[:q])
+    @q = params[:q]
+    @results = Node.search(@q)
   end
 end

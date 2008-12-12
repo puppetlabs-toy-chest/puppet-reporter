@@ -1,0 +1,8 @@
+#search_results
+  - if @results.blank?
+    == No matches found for '#{h(@q)}'
+  - else
+    == Results for '#{h(@q)}'
+    - @results.each_with_index do |node, i|
+      %div{:id => "result-#{i}" }
+      = link_to node.name, node_path(node)
