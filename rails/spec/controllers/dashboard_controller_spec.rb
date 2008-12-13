@@ -76,8 +76,8 @@ describe DashboardController do
       do_get
     end
 
-    it 'should search nodes with the parsed query string' do
-      Node.expects(:search).with(@parsed)
+    it 'should search nodes with conditions from the parsed query string' do
+      Node.expects(:search).with({ :conditions => @parsed })
       do_get
     end
 

@@ -8,6 +8,6 @@ class DashboardController < ApplicationController
 
   def search
     @q = params[:q]
-    @results = Node.search(SearchParser.parse(@q))
+    @results = Node.search(:conditions => SearchParser.parse(@q))
   end
 end
