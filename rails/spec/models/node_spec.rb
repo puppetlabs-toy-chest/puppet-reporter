@@ -14,8 +14,8 @@ describe Node do
       Node.should have_index(:name)
     end
 
-    it 'should allow searching by facts' do
-      Node.should have_index(:facts)
+    it 'should allow searching by fact values' do
+      Node.sphinx_indexes.collect(&:fields).flatten.collect(&:columns).flatten.detect { |index| index.__stack == [:facts] and index.__name == :values }
     end
   end
 
