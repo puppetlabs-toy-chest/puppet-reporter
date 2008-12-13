@@ -9,6 +9,7 @@ class Node < ActiveRecord::Base
 
   define_index do
     indexes name
+    indexes facts.values, :as => :facts
   end
   
   # allow controllers to look up and link to Nodes by name

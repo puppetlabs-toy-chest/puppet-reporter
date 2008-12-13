@@ -13,6 +13,10 @@ describe Node do
     it 'should allow searching by node name' do
       Node.should have_index(:name)
     end
+
+    it 'should allow searching by facts' do
+      Node.should have_index(:facts)
+    end
   end
 
   describe 'when validating' do
