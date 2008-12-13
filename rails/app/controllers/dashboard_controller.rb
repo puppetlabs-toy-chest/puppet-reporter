@@ -8,10 +8,6 @@ class DashboardController < ApplicationController
 
   def search
     @q = params[:q]
-    @results = Node.search(parse_query_string(@q))
-  end
-
-  def parse_query_string(query)
-    query
+    @results = Node.search(SearchParser.parse(@q))
   end
 end

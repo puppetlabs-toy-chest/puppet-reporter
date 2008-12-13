@@ -59,7 +59,7 @@ describe DashboardController do
       @matches = 'matches'
       @parsed = 'parsed'
       Node.stubs(:search).returns(@matches)
-      controller.stubs(:parse_query_string).returns(@parsed)
+      SearchParser.stubs(:parse).returns(@parsed)
     end
     
     def do_get
@@ -72,7 +72,7 @@ describe DashboardController do
     end
 
     it 'should parse the query string' do
-      controller.expects(:parse_query_string).with(@query).returns(@parsed)
+      SearchParser.expects(:parse).with(@query).returns(@parsed)
       do_get
     end
 
@@ -94,20 +94,6 @@ describe DashboardController do
     it 'should render the search results page' do
       do_get
       response.should render_template('search')
-    end
-  end
-
-  describe 'search parser' do
-    it 'should accept a search string' do
-      lambda { controller.parse_query_string('query') }.should_not raise_error(ArgumentError)
-    end
-    
-    it 'should require a search string' do
-      lambda { controller.parse_query_string }.should raise_error(ArgumentError)
-    end
-    
-    it 'should return the search string' do
-      controller.parse_query_string('query').should == 'query'
     end
   end
 end
