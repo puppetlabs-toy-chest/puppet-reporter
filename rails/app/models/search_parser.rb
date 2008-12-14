@@ -10,7 +10,7 @@ class SearchParser
           name << match
         end
       end
-      result[:name] = name.join(' ') unless name.empty?
+      result[:name] = (name << result[:name]).compact.join(' ') unless name.empty?
       result
     end
   end

@@ -45,6 +45,11 @@ describe SearchParser do
         result = SearchParser.parse("key:'foo bar' something else")
         result[:key].should == 'foo bar'
       end
+
+      it 'should merge any explicit name with non-keyworded terms' do
+        result = SearchParser.parse("key:'foo bar' something else name:xyzzy")
+        result[:name].should == 'something else xyzzy'
+      end
     end
   end
 end
