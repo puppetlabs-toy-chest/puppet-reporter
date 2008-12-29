@@ -3,6 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 describe "/dashboard/search" do
   before :each do
     @query = assigns[:q] = 'query'
+    template.stubs(:will_paginate)
   end
 
   def do_render
@@ -71,6 +72,11 @@ describe "/dashboard/search" do
           with_tag('div a[href=?]', node_path(node))
         end
       end      
+    end
+
+    it 'should paginate results' do
+      template.expects(:will_paginate)
+      do_render
     end
   end
 end
