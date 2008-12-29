@@ -14,3 +14,10 @@ $(document).ready(function() {
         return false;
     });
 });
+
+$(document).ready(function() {
+    $('div.pagination a').livequery('click', function(event) {
+        $('#search_results_container').load(this.href);
+        return false;
+    })
+})
