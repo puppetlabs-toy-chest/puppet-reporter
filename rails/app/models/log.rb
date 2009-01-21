@@ -10,6 +10,13 @@ class Log < ActiveRecord::Base
   has_many :taggings
   has_many :tags, :through => :taggings
   
+  define_index do
+    indexes report.node.name, :as => :name
+    indexes report.node.facts.values, :as => :facts
+    set_property :enable_star => true
+    set_property :min_infix_len => 3
+  end
+  
   def tag_names
     tags.collect(&:name).sort.join(', ')
   end

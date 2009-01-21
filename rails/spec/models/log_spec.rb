@@ -5,6 +5,28 @@ describe Log do
     @log = Log.new
   end
   
+  describe 'as a class' do
+    it 'should be searchable' do
+      Log.should respond_to(:search)
+    end
+
+    it 'should allow searching by node name' do
+      Log.sphinx_indexes.collect(&:fields).flatten.collect(&:columns).flatten.detect { |index| index.__stack == [:node] and index.__name == :name }
+    end
+
+    it 'should allow searching by fact values' do
+      Log.sphinx_indexes.collect(&:fields).flatten.collect(&:columns).flatten.detect { |index| index.__stack == [:facts] and index.__name == :values }
+    end
+    
+    it 'should enable wildcard searching' do
+      Log.sphinx_index_options[:enable_star].should == true
+    end
+    
+    it 'should require at least 3 characters for a wildcard match' do
+      Log.sphinx_index_options[:min_infix_len].should == 3
+    end
+  end
+  
   it 'should have a level' do
     @log.should respond_to(:level)
   end
