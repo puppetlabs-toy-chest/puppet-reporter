@@ -38,11 +38,25 @@ describe '/dashboard/index' do
       end
     end
     
+    it 'should include a choice to search for nodes' do
+      do_render
+      response.should have_tag('form[id=?]', 'search_form') do
+        with_tag('input[type=?][name=?][value=?]', 'radio', 'context', 'node')
+      end
+    end
+    
+    it 'should include a choice to search for logs' do
+      do_render
+      response.should have_tag('form[id=?]', 'search_form') do
+        with_tag('input[type=?][name=?][value=?]', 'radio', 'context', 'log')
+      end
+    end
+    
     it 'should include a submit button' do
       do_render
       response.should have_tag('form[id=?]', 'search_form') do
         with_tag('input[type=?]', 'submit')
-      end      
+      end
     end
   end
 
