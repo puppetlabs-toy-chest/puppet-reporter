@@ -14,7 +14,7 @@ describe "/dashboard/search" do
     do_render
     response.should have_tag('div[id=?]', 'search_results')
   end
-
+  
   describe 'when there are no results' do
     before :each do
       @results = assigns[:results] = []
@@ -22,56 +22,65 @@ describe "/dashboard/search" do
 
     it 'should show a no search results message' do
       do_render
-      response.should have_tag('div[id=?]', 'search_results') do
-        with_tag('div', /No.*found/)
-      end
+      response.should have_tag('div[id=?]', 'search_results', /No.*found/)
     end
 
     it 'should include the original query string' do
       do_render
-      response.should have_tag('div[id=?]', 'search_results') do
-        with_tag('div', Regexp.new(@query))
-      end
+      response.should have_tag('div[id=?]', 'search_results', Regexp.new(Regexp.escape(@query)))
     end
   end
 
   describe 'when there are results' do
     before :each do
-      @results = assigns[:results] = Array.new(3) { Node.generate! }
+      @result = Node.generate!
+      assigns[:results] = [@result]
     end
 
     it 'should restate the original query string' do
       do_render
-      response.should have_tag('div[id=?]', 'search_results') do
-        with_tag('div', Regexp.new(@query))
-      end
+      response.should have_tag('div[id=?]', 'search_results', Regexp.new(Regexp.escape(@query)))
     end
 
-    it 'should show each search result' do
+    it 'should have a container for the search result' do
       do_render
       response.should have_tag('div[id=?]', 'search_results') do
-        @results.each_with_index do |node,i|
-          with_tag('div[id=?]', "result-#{i}")
-        end
+        with_tag('div')
       end
     end
-
-    it 'should include each node name' do
+    
+    it 'should have give the result container an ID' do
       do_render
       response.should have_tag('div[id=?]', 'search_results') do
-        @results.each do |node|
-          with_tag('div', Regexp.new(node.name))
+        with_tag('div[id=?]', 'result-0')
+      end
+    end
+    
+    it 'should include the node name in the result container' do
+      do_render
+      response.should have_tag('div[id=?]', 'search_results') do
+        with_tag('div[id=?]', 'result-0', Regexp.new(Regexp.escape(@result.name)))
+      end
+    end
+    
+    it 'should link to the node name in the result container' do
+      do_render
+      response.should have_tag('div[id=?]', 'search_results') do
+        with_tag('div[id=?]', 'result-0') do
+          with_tag('a[href=?]', node_path(@result))
         end
       end
     end
     
-    it 'should include a link to each node' do
+    it 'should have a container for each result' do
+      other_result = Node.generate!
+      results = assigns[:results] = [@result, other_result]
       do_render
       response.should have_tag('div[id=?]', 'search_results') do
-        @results.each do |node|
-          with_tag('div a[href=?]', node_path(node))
+        results.each_with_index do |result, i|
+          with_tag('div[id=?]', "result-#{i}", Regexp.new(Regexp.escape(result.name)))
         end
-      end      
+      end
     end
 
     it 'should paginate results' do

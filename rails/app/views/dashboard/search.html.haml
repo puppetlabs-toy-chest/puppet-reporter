@@ -4,6 +4,5 @@
   - else
     == Results for '#{h(@q)}'
     - @results.each_with_index do |node, i|
-      %div{:id => "result-#{i}" }
-      = link_to node.name, node_path(node)
+      %div{:id => "result-#{i}" }= link_to node.name, node_path(node)
   = will_paginate @results
