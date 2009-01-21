@@ -22,12 +22,39 @@ describe SearchParser do
       it 'should treat the search string as a name' do
         SearchParser.parse(@query).should == { :name => @query }
       end
+      
+      it 'should keep wildcard markers intact' do
+        SearchParser.parse('*blah*').should == { :name => '*blah*' }
+      end
+      
+      it 'should handle a wildcard marker only at the start' do
+        SearchParser.parse('*blah').should == { :name => '*blah' }
+      end
+      
+      it 'should handle a wildcard marker only at the end' do
+        SearchParser.parse('blah*').should == { :name => 'blah*' }
+      end
     end
 
     describe 'when keywords are present' do
       it 'should associate non-keyworded terms with the name keyword' do
         result = SearchParser.parse('key:foo something else bar:baz')
         result[:name].should == 'something else'
+      end
+      
+      it 'should keep wildcard markers intact with a non-keyworded term' do
+        result = SearchParser.parse('key:foo *something* bar:baz')
+        result[:name].should == '*something*'
+      end
+      
+      it 'should handle a wildcard marker only at the start of a non-keyworded term' do
+        result = SearchParser.parse('key:foo *something bar:baz')
+        result[:name].should == '*something'
+      end
+      
+      it 'should handle a wildcard marker only at the end of a non-keyworded term' do
+        result = SearchParser.parse('key:foo something* bar:baz')
+        result[:name].should == 'something*'
       end
 
       it 'should associated keyworded terms with their keywords' do
@@ -40,10 +67,60 @@ describe SearchParser do
         result = SearchParser.parse('key:"foo bar" something else')
         result[:key].should == 'foo bar'
       end
+      
+      it 'should keep wildcard markers intact with a double-quoted keyworded term' do
+        result = SearchParser.parse('key:*"foo bar"* something else bar:baz')
+        result[:key].should == '*foo bar*'
+      end
+      
+      it 'should handle a wildcard marker only at the start of a double-quoted keyworded term' do
+        result = SearchParser.parse('key:*"foo bar" something else bar:baz')
+        result[:key].should == '*foo bar'
+      end
+      
+      it 'should handle a wildcard marker only at the end of a double-quoted keyworded term' do
+        result = SearchParser.parse('key:"foo bar"* something else bar:baz')
+        result[:key].should == 'foo bar*'
+      end
 
       it 'should keep single-quoted keyworded strings intact' do
         result = SearchParser.parse("key:'foo bar' something else")
         result[:key].should == 'foo bar'
+      end
+      
+      it 'should keep wildcard markers intact with a single-quoted keyworded term' do
+        result = SearchParser.parse("key:*'foo bar'* something else bar:baz")
+        result[:key].should == '*foo bar*'
+      end
+      
+      it 'should handle a wildcard marker only at the start of a single-quoted keyworded term' do
+        result = SearchParser.parse("key:*'foo bar' something else bar:baz")
+        result[:key].should == '*foo bar'
+      end
+      
+      it 'should handle a wildcard marker only at the end of a single-quoted keyworded term' do
+        result = SearchParser.parse("key:'foo bar'* something else bar:baz")
+        result[:key].should == 'foo bar*'
+      end
+      
+      it 'should keep wildcard markers intact with a keyworded term' do
+        result = SearchParser.parse('key:*foo* something else bar:baz')
+        result[:key].should == '*foo*'
+      end
+      
+      it 'should keep wildcard markers intact with a keyworded term' do
+        result = SearchParser.parse('key:*foo* something else bar:baz')
+        result[:key].should == '*foo*'
+      end
+      
+      it 'should handle a wildcard marker only at the start of a keyworded term' do
+        result = SearchParser.parse('key:*foo something else bar:baz')
+        result[:key].should == '*foo'
+      end
+      
+      it 'should handle a wildcard marker only at the end of a keyworded term' do
+        result = SearchParser.parse('key:foo* something else bar:baz')
+        result[:key].should == 'foo*'
       end
 
       it 'should merge any explicit name with non-keyworded terms' do

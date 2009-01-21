@@ -3,9 +3,10 @@ class SearchParser
     def parse(query)
       return { :name => query } unless query =~ /:/
       result, name = { }, []
-      query.scan(/[a-z]+:"[a-z ]+"|[a-z]+:'[a-z ]+'|[a-z]+:[a-z]+|[a-z]+/).each do |match|
-        if match =~ /(.*):["']?([^'"]*)["']?/
-          result[$1.to_sym] = $2
+      query.scan(/[a-z]+:\*?"[a-z ]+"\*?|[a-z]+:\*?'[a-z ]+'\*?|[a-z]+:\*?[a-z]+\*?|\*?[a-z]+\*?/) do |match|
+        if match.match(/:/)
+          key, str = match.split(/:/)
+          result[key.to_sym] = str.gsub(/['"]/, '')
         else
           name << match
         end
