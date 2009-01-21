@@ -17,6 +17,14 @@ describe Node do
     it 'should allow searching by fact values' do
       Node.sphinx_indexes.collect(&:fields).flatten.collect(&:columns).flatten.detect { |index| index.__stack == [:facts] and index.__name == :values }
     end
+    
+    it 'should enable wildcard searching' do
+      Node.sphinx_index_options[:enable_star].should == true
+    end
+    
+    it 'should require at least 3 characters for a wildcard match' do
+      Node.sphinx_index_options[:min_infix_len].should == 3
+    end
   end
 
   describe 'when validating' do

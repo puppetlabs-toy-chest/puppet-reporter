@@ -10,6 +10,8 @@ class Node < ActiveRecord::Base
   define_index do
     indexes name
     indexes facts.values, :as => :facts
+    set_property :enable_star => true
+    set_property :min_infix_len => 3
   end
   
   # allow controllers to look up and link to Nodes by name
