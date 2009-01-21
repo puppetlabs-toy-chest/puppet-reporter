@@ -1,7 +1,5 @@
 config/database.yml
 config/puppet_lib.rb
-config/juggernaut.yml
-config/juggernaut_hosts.yml
 config/*.sphinx.conf
 /spec/spec.opts
 db/schema.rb
