@@ -22,26 +22,6 @@ describe DashboardController do
       response.should be_success
     end
 
-    it 'should get failed nodes' do
-      Node.expects(:failed)
-      do_get
-    end
-
-    it 'should assign failed nodes for the view' do
-      do_get
-      assigns[:failed_nodes].should == @failed
-    end
-
-    it 'should get nodes not checked in' do
-      Node.expects(:silent)
-      do_get
-    end
-
-    it 'should assign nodes not checked in for the view' do
-      do_get
-      assigns[:silent_nodes].should == @silent
-    end
-
     it 'should get latest logs' do
       Log.expects(:latest)
       do_get

@@ -9,23 +9,6 @@
       = submit_tag('Search')
   #search_results_container
 
-  #node_status
-    %h2
-      Node Status
-    #failed_nodes
-      %h3
-        Failed
-      %ul
-        - @failed_nodes.each do |node|
-          %li
-            = link_to node.name, node
-    #silent_nodes
-      %h3
-        Not Checked In
-      %ul
-        - @silent_nodes.each do |node|
-          %li
-            = link_to node.name, node
   #logs
     %h2
       Logs
