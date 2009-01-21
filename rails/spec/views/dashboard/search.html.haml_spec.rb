@@ -31,7 +31,7 @@ describe "/dashboard/search" do
     end
   end
 
-  describe 'when there are results' do
+  describe 'when there are node results' do
     before :each do
       @result = Node.generate!
       assigns[:results] = [@result]
@@ -83,6 +83,45 @@ describe "/dashboard/search" do
       end
     end
 
+    it 'should paginate results' do
+      template.expects(:will_paginate)
+      do_render
+    end
+  end
+  
+  describe 'when there are log results' do
+    before :each do
+      @result = Log.generate!
+      assigns[:results] = @results = [@result]
+      template.stubs(:render)
+    end
+
+    it 'should restate the original query string' do
+      do_render
+      response.should have_tag('div[id=?]', 'search_results', Regexp.new(Regexp.escape(@query)))
+    end
+    
+    it 'should have a table for the logs' do
+      do_render
+      response.should have_tag('div[id=?]', 'search_results') do
+        with_tag('table[class=?]', 'logs')
+      end
+    end
+    
+    it 'should render the log partial upon the results collection' do
+      template.expects(:render).with(:partial => '/logs/log', :collection => @results)
+      do_render
+    end
+    
+    it 'should include the render results in the log table' do
+      render_result = 'log render stuff'
+      template.stubs(:render).returns(render_result)
+      do_render
+      response.should have_tag('div[id=?]', 'search_results') do
+        with_tag('table[class=?]', 'logs', Regexp.new(Regexp.escape(render_result)))
+      end
+    end
+    
     it 'should paginate results' do
       template.expects(:will_paginate)
       do_render
