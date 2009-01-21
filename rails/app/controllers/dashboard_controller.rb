@@ -4,9 +4,9 @@ class DashboardController < ApplicationController
 
   def search
     @q = params[:q]
-    @results = Node.search(:conditions => SearchParser.parse(@q),
-                           :page => params[:page],
-                           :per_page => 2)
+    search_model = params[:context] == 'log' ? Log : Node
+    @results = search_model.search(:conditions => SearchParser.parse(@q), :page => params[:page], :per_page => 2)
+    
     respond_to do |format|
       format.html
       format.js {  render :template => 'dashboard/search.html.haml', :layout => nil }
