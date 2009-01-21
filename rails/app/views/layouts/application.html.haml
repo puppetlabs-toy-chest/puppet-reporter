@@ -20,10 +20,6 @@
       #masthead
         %a{ :href => "/" }
           %img{ :src => "/images/puppet-short.png", :alt => "PuppetShow" }/
-      .large
-        %ul#navbar
-          %li
-            = link_to 'Nodes', nodes_path
       #content.column
         = yield :layout
       #foot
