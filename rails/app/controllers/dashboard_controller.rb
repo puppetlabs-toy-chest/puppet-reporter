@@ -1,6 +1,5 @@
 class DashboardController < ApplicationController
   def index
-    @logs = Log.latest
   end
 
   def search

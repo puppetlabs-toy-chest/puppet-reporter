@@ -21,16 +21,6 @@ describe DashboardController do
       do_get
       response.should be_success
     end
-
-    it 'should get latest logs' do
-      Log.expects(:latest)
-      do_get
-    end
-
-    it 'should assign latest logs for the view' do
-      do_get
-      assigns[:logs].should == @logs
-    end
   end
 
   describe 'search' do

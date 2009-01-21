@@ -1,5 +1,3 @@
-= javascript_include_tag "logs.js"
-= juggernaut
 #content
 
   = javascript_include_tag "search.js"
@@ -9,10 +7,3 @@
       = submit_tag('Search')
   #search_results_container
 
-  #logs
-    %h2
-      Logs
-    #scrolling_log_list
-      %table#scrolling_logs.logs
-        %tr#scrolling_logs_top/
-        = render :partial => 'logs/log', :collection => @logs
