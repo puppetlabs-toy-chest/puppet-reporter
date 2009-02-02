@@ -19,7 +19,7 @@
     .container
       #header
         #masthead= link_to image_tag('puppet-short.png', :alt => 'PuppetShow'), '/'
-        = render :partial => '/search/form'
+        = render :partial => '/search/form', :locals => { :q => params[:q], :context => params[:context] }
       #content.column= yield
       #footer
         Copyright &copy;

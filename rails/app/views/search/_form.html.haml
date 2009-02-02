@@ -1,9 +1,10 @@
+- log_search = context == 'log'
 #search_form_container
   - form_tag(search_path, {:id => 'search_form', :method => 'get' }) do
-    = radio_button_tag 'context', 'node', true, :id => 'node_context'
+    = radio_button_tag 'context', 'node', !log_search, :id => 'node_context'
     %label{ :for => 'node_context' } Nodes
-    = radio_button_tag 'context', 'log', false, :id => 'log_context'
+    = radio_button_tag 'context', 'log', log_search, :id => 'log_context'
     %label{ :for => 'log_context' } Logs
     %br
-    = text_field_tag 'q'
+    = text_field_tag 'q', q
     = submit_tag 'Search'

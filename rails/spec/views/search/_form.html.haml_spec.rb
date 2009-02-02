@@ -1,8 +1,8 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe '/search/_form' do
-  def do_render
-    render :partial => '/search/form'
+  def do_render(locals = {})
+    render :partial => '/search/form', :locals => { :q => '', :context => '' }.merge(locals)
   end
   
   it 'should include a search form' do
@@ -28,6 +28,12 @@ describe '/search/_form' do
       end
     end
     
+    it 'should populate the text field with the given query' do
+      query = 'hairy.madstop'
+      do_render :q => query
+      response.should have_tag('input[name=?][value=?]', 'q', query)
+    end
+    
     it 'should include a choice to search for nodes' do
       do_render
       response.should have_tag('form[id=?]', 'search_form') do
@@ -40,6 +46,30 @@ describe '/search/_form' do
       response.should have_tag('form[id=?]', 'search_form') do
         with_tag('input[type=?][name=?][value=?]', 'radio', 'context', 'log')
       end
+    end
+    
+    it 'should select the node choice if node context given' do
+      do_render :context => 'node'
+      response.should have_tag('input[type=?][name=?][value=?][checked]', 'radio', 'context', 'node')
+      response.should have_tag('input[type=?][name=?][value=?]:not([checked])', 'radio', 'context', 'log')
+    end
+    
+    it 'should select the node choice if no context given' do
+      do_render
+      response.should have_tag('input[type=?][name=?][value=?][checked]', 'radio', 'context', 'node')
+      response.should have_tag('input[type=?][name=?][value=?]:not([checked])', 'radio', 'context', 'log')
+    end
+    
+    it 'should select the node choice if blank context given' do
+      do_render :context => ''
+      response.should have_tag('input[type=?][name=?][value=?][checked]', 'radio', 'context', 'node')
+      response.should have_tag('input[type=?][name=?][value=?]:not([checked])', 'radio', 'context', 'log')
+    end
+    
+    it 'should select the log choice if log context given' do
+      do_render :context => 'log'
+      response.should have_tag('input[type=?][name=?][value=?][checked]', 'radio', 'context', 'log')
+      response.should have_tag('input[type=?][name=?][value=?]:not([checked])', 'radio', 'context', 'node')
     end
     
     it 'should include a submit button' do

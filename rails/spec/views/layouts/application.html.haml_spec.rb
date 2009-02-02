@@ -10,8 +10,13 @@ describe '/layouts/application' do
     response.should have_text(/jquery\.flot\.js/)
   end
   
-  it 'should include the search form' do
-    template.expects(:render).with(:partial => '/search/form')
+  it 'should include the search form, passing search parameters' do
+    query = 'hairy.mad.stop'
+    context = 'log'
+    params[:q] = query
+    params[:context] = context
+    
+    template.expects(:render).with(:partial => '/search/form', :locals => { :q => query, :context => context})
     do_render
   end
 end
