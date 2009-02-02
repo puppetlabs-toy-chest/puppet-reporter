@@ -34,12 +34,22 @@ describe SearchParser do
       it 'should handle a wildcard marker only at the end' do
         SearchParser.parse('blah*').should == { :name => 'blah*' }
       end
+      
+      it 'should combine terms into a multiple-check name parameter' do
+        SearchParser.parse('something else').should == { :name => 'something,else' }
+      end
+      
     end
 
     describe 'when keywords are present' do
       it 'should associate non-keyworded terms with the name keyword' do
+        result = SearchParser.parse('key:foo something bar:baz')
+        result[:name].should == 'something'
+      end
+      
+      it 'should combine non-keyworded terms into a multiple-check name parameter' do
         result = SearchParser.parse('key:foo something else bar:baz')
-        result[:name].should == 'something else'
+        result[:name].should == 'something,else'
       end
       
       it 'should keep wildcard markers intact with a non-keyworded term' do
@@ -61,6 +71,11 @@ describe SearchParser do
         result = SearchParser.parse('key:foo something else bar:baz')
         result[:key].should == 'foo'
         result[:bar].should == 'baz'
+      end
+
+      it 'should combine keyworded terms into a multiple-check parameter' do
+        result = SearchParser.parse('key:foo key:goo something else bar:baz')
+        result[:key].should == 'foo,goo'
       end
 
       it 'should keep double-quoted keyworded strings intact' do
@@ -125,7 +140,7 @@ describe SearchParser do
 
       it 'should merge any explicit name with non-keyworded terms' do
         result = SearchParser.parse("key:'foo bar' something else name:xyzzy")
-        result[:name].should == 'something else xyzzy'
+        result[:name].should == 'something,else,xyzzy'
       end
     end
   end
