@@ -17,7 +17,7 @@ describe "/logs/_log" do
 
     it 'should be classed with log level' do
       do_render
-      response.should have_tag('tr[class=?]', @log.level)
+      response.should have_tag('tr[class=?]', "log_#{@log.level}")
     end
 
     it 'should include log message' do
