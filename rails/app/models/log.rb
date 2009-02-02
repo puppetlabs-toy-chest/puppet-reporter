@@ -14,6 +14,7 @@ class Log < ActiveRecord::Base
     indexes level
     indexes message
     indexes source
+    indexes tags.name, :as => :tag
     indexes report.node.name, :as => :name
     indexes report.node.facts.values, :as => :facts
     set_property :enable_star => true
