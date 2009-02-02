@@ -18,6 +18,18 @@ describe Log do
       Log.sphinx_indexes.collect(&:fields).flatten.collect(&:columns).flatten.detect { |index| index.__stack == [:facts] and index.__name == :values }
     end
     
+    it 'should allow searching by log level' do
+      Log.should have_index(:level)
+    end
+    
+    it 'should allow searching by log message' do
+      Log.should have_index(:message)
+    end
+    
+    it 'should allow searching by log source' do
+      Log.should have_index(:source)
+    end
+    
     it 'should enable wildcard searching' do
       Log.sphinx_index_options[:enable_star].should == true
     end
