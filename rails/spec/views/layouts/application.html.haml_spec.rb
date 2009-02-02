@@ -9,4 +9,9 @@ describe '/layouts/application' do
     do_render
     response.should have_text(/jquery\.flot\.js/)
   end
+  
+  it 'should include the search form' do
+    template.expects(:render).with(:partial => '/search/form')
+    do_render
+  end
 end
