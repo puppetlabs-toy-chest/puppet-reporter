@@ -12,7 +12,7 @@ describe "/logs/_log" do
   describe 'log item' do
     it 'should include log level' do
       do_render
-      response.should have_tag('tr', :text => Regexp.new(Regexp.escape(@log.level)))
+      response.should have_tag('tr', :text => Regexp.new(Regexp.escape(@log.level), true))
     end
 
     it 'should be classed with log level' do

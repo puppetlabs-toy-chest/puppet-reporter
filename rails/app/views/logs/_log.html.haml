@@ -1,23 +1,15 @@
 %tr{ :class => "log_#{log.level}" }
   %td
-    = log.level
-  %td
-    = display_log_message(log.message)
-    %br/
-    %br/
-    = log.source
-    %br/
-    %br/
-    = log.timestamp
+    %h4== #{log.level.capitalize} Message
+    .log_attr= display_log_message(log.message)
+    %h6 Source
+    .log_attr= log.source
+    %h6 Logged at
+    .log_attr= log.timestamp
     - unless log.tag_names.blank?
-      %br/
-      %br/
-      tags:
-      = log.tag_names
-    %br/
-    %br/
-    = link_to log.node.name, node_path(log.node)
-    %br/
-    %br/
-    reported at
-    = link_to log.report.timestamp, report_path(log.report)
+      %h6 Tags
+      .log_attr= log.tag_names
+    %h6 Node
+    .log_attr= link_to log.node.name, node_path(log.node)
+    %h6 Reported at
+    .log_attr= link_to log.report.timestamp, report_path(log.report)

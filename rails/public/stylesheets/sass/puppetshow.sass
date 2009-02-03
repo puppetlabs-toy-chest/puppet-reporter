@@ -29,6 +29,19 @@ table.logs
   td
     :border-bottom thin solid black
     :vertical-align top
+    
+    h4
+      :color #333
+      :margin 0
+      
+    h6
+      :color #333
+      :font-style italic
+      :font-weight normal
+      :margin 0
+      
+    div.log_attr
+      :margin-bottom 10px
 
 img.sparkline
   :border none
@@ -60,19 +73,26 @@ img.sparkline
 
 .logs
   .log_debug
-    :background-color bisque
+    :background-color #fff77d
 
   .log_info
-    :background-color tan
+    :background-color #fff8d7
 
   .log_notice
-    :background-color lightblue
+    :background-color #e6f0ff
 
   .log_warning
-    :background-color khaki
+    :background-color #ffbf00
 
   .log_err
-    :background-color pink
+    :background-color #af1e2d
+    :color #fff
+    
+    h4
+      :color #fff
+      
+    h6
+      :color #ddd
 
 .report_category_metrics
   :float left
