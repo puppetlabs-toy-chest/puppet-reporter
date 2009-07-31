@@ -1,4 +1,4 @@
-PuppetShow tool for viewing and manipulating Puppet Report data
+Puppet-Reporter tool for viewing and manipulating Puppet Report data
 
  * This is pre-alpha quality software.  Use at own risk.
 
@@ -14,8 +14,8 @@ SETUP:
  Method 2:
  - 'rake build_setup' will install vendored copies of puppet and facter for local testing purposes.
 
- - copy puppetshow/rails/config/*.example to the non-example filenames (e.g. database.yml.example -> database.yml) and make any necessary changes
- - cd into puppetshow/rails
+ - copy Puppet-Reporter/rails/config/*.example to the non-example filenames (e.g. database.yml.example -> database.yml) and make any necessary changes
+ - cd into Puppet-Reporter/rails
  - RAILS_ENV=development rake db:create
  - RAILS_ENV=test rake db:create
  - RAILS_ENV=production rake db:create
@@ -23,14 +23,14 @@ SETUP:
  - rake db:test:prepare
  - rake spec   (with any luck these should all pass)
  - load report data:
-   - untar puppetshow/reports.tgz to puppetshow/reports/
+   - untar Puppet-Reporter/reports.tgz to Puppet-Reporter/reports/
    - time find ../reports -type f -name '*.yaml' | xargs ruby script/runner script/import_yaml_reports.rb    (and go get lunch :-)
  - rake ts:index (index the database for searching)
  - rake ts:start (start the search daemon)
  - ruby script/server 
  - connect to http://localhost:3000/
  - if you want to load data from a running Puppet instance
-   -  update the connection settings in rails/puppet/report/puppet_show.rb to point to where your PuppetShow instance can be reached.
+   -  update the connection settings in rails/puppet/report/puppet_reporter.rb to point to where your Puppet-Reporter instance can be reached.
    - review and update the environment variable settings at the top of the 'go' script
    - 'sh -x go' and see what happens
 

@@ -1,6 +1,6 @@
 require 'puppet'
 
-module PuppetShowReportHelpers
+module PuppetReporterReportHelpers
   def connection_settings
     { :host => 'localhost', :port => 3000 }
   end
@@ -18,12 +18,12 @@ module PuppetShowReportHelpers
   end
 end
 
-Puppet::Reports.register_report(:puppet_show) do
+Puppet::Reports.register_report(:puppet_reporter) do
   Puppet.settings.use(:reporting)
-  desc "Send report information to PuppetShow"
+  desc "Send report information to Puppet-Reporter"
 
   def process
-    self.class.send(:include, PuppetShowReportHelpers)
+    self.class.send(:include, PuppetReporterReportHelpers)
     self.submit_yaml_report_to_puppetshow(self)
   rescue Exception => e
     File.open('/tmp/report_testing_output.txt', 'w') {|f| f.puts e.to_s }
