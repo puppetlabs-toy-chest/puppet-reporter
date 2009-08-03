@@ -26,7 +26,9 @@ class Metric < ActiveRecord::Base
     end
     
     def categorize(metrics)
-      metrics.inject({}) {|h, m| h[m.category] ||= []; h[m.category] << m; h}
+      results = metrics.inject({}) {|h, m| h[m.category] ||= []; h[m.category] << m; h}
+      results.keys.each {|k| results[k] = results[k].sort_by(&:label) }
+      results
     end
     
     def self.define_time_interval_method(type, data)
