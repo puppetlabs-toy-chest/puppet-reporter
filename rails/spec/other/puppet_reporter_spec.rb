@@ -1,8 +1,8 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe "running the puppet_show Puppet report" do
+describe "running the puppet_reporter Puppet report" do
   def run_report
-    eval File.read(File.join(RAILS_ROOT, 'puppet', 'report', 'puppet_show.rb'))
+    eval File.read(File.join(RAILS_ROOT, 'puppet', 'report', 'puppet_reporter.rb'))
   end
   
   before :each do
@@ -12,8 +12,8 @@ describe "running the puppet_show Puppet report" do
     Puppet.stubs(:settings).returns(@puppet_settings)
   end
   
-  it "should register the report under the name 'puppet_show'" do
-    Puppet::Reports.expects(:register_report).with(:puppet_show)
+  it "should register the report under the name 'puppet_reporter'" do
+    Puppet::Reports.expects(:register_report).with(:puppet_reporter)
     run_report
   end
   
@@ -42,7 +42,7 @@ describe "running the puppet_show Puppet report" do
     before :each do
       Puppet::Reports.stubs(:register_report).yields
       run_report
-      self.class.send :include, PuppetShowReportHelpers
+      self.class.send :include, PuppetReporterReportHelpers
     end
 
     describe 'when submitting YAML data' do
@@ -53,17 +53,17 @@ describe "running the puppet_show Puppet report" do
       end
 
       it 'should require the report instance' do
-        lambda { submit_yaml_report_to_puppetshow }.should raise_error(ArgumentError)
+        lambda { submit_yaml_report_to_puppetreporter }.should raise_error(ArgumentError)
       end
     
       it 'should convert the report instance to yaml' do
         @report.expects(:to_yaml).returns(@yaml)
-        submit_yaml_report_to_puppetshow(@report)
+        submit_yaml_report_to_puppetreporter(@report)
       end
 
-      it 'should submit the yaml data to puppetshow' do
+      it 'should submit the yaml data to puppetreporter' do
         self.expects(:network_post).with(@yaml)
-        submit_yaml_report_to_puppetshow(@report)
+        submit_yaml_report_to_puppetreporter(@report)
       end
     end
 

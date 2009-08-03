@@ -11,4 +11,5 @@ log/searchd.*.pid
 /coverage
 vendor/facter
 vendor/puppet
-public/stylesheets/puppetshow.css
+public/stylesheets/puppetreporter.css
+tmp/*

@@ -5,7 +5,7 @@ module PuppetReporterReportHelpers
     { :host => 'localhost', :port => 3000 }
   end
 
-  def submit_yaml_report_to_puppetshow(report)
+  def submit_yaml_report_to_puppetreporter(report)
     network_post report.to_yaml
   end
 
@@ -24,7 +24,7 @@ Puppet::Reports.register_report(:puppet_reporter) do
 
   def process
     self.class.send(:include, PuppetReporterReportHelpers)
-    self.submit_yaml_report_to_puppetshow(self)
+    self.submit_yaml_report_to_puppetreporter(self)
   rescue Exception => e
     File.open('/tmp/report_testing_output.txt', 'w') {|f| f.puts e.to_s }
   end
